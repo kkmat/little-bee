@@ -40,6 +40,10 @@ html, body {
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  /* Floating florals are positioned with negative offsets that push 30 px
+     past the viewport edges. Clip horizontal overflow at the document
+     level so guests never see a horizontal scrollbar on any page. */
+  overflow-x: hidden;
 }
 
 body::before {
