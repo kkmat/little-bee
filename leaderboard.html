@@ -52,13 +52,13 @@
   <main class="game-shell">
     <header class="text-center mb-6">
       <p class="font-script text-3xl text-[color:var(--rust-deep)]">🏆</p>
-      <h1 class="font-display text-3xl uppercase tracking-[0.18em]">Leaderboard</h1>
-      <p class="muted mt-1">Live across all guests · auto-refreshes every few seconds</p>
+      <h1 class="font-display text-3xl uppercase tracking-[0.18em]" data-i18n="leaderboardPage.title">Leaderboard</h1>
+      <p class="muted mt-1" data-i18n="leaderboardPage.sub">Live across all guests · auto-refreshes every few seconds</p>
     </header>
 
     <div class="game-tabs" id="tabs"></div>
-    <div id="board" class="grid gap-2"><p class="muted text-center">Loading...</p></div>
-    <p class="muted text-center mt-6 text-sm" id="empty-hint" hidden>
+    <div id="board" class="grid gap-2"><p class="muted text-center" data-i18n="leaderboardPage.loading">Loading...</p></div>
+    <p class="muted text-center mt-6 text-sm" id="empty-hint" hidden data-i18n="leaderboardPage.empty">
       No scores yet — go play a game and come back!
     </p>
   </main>
@@ -66,11 +66,12 @@
   <script src="./js/i18n.js"></script>
   <script src="./js/api.js"></script>
   <script>
+  const T = window.LittleBeeI18n.t;
   const GAMES = [
-    { key: 'all',      label: 'Overall' },
-    { key: 'trivia',   label: '🧠 Trivia' },
-    { key: 'scramble', label: '🔤 Scramble' },
-    { key: 'emoji',    label: '🍼 Emoji' },
+    { key: 'all',      i18n: 'leaderboardPage.tabAll',      def: 'Overall' },
+    { key: 'trivia',   i18n: 'leaderboardPage.tabTrivia',   def: '🧠 Trivia' },
+    { key: 'scramble', i18n: 'leaderboardPage.tabScramble', def: '🔤 Scramble' },
+    { key: 'emoji',    i18n: 'leaderboardPage.tabEmoji',    def: '🍼 Emoji' },
   ];
   let active = 'all';
   let lastData = null;
@@ -79,18 +80,22 @@
   const $board = document.getElementById('board');
   const $hint  = document.getElementById('empty-hint');
 
-  GAMES.forEach(g => {
-    const b = document.createElement('button');
-    b.className = 'game-tab' + (g.key === active ? ' active' : '');
-    b.textContent = g.label;
-    b.dataset.key = g.key;
-    b.addEventListener('click', () => {
-      active = g.key;
-      [...$tabs.children].forEach(c => c.classList.toggle('active', c.dataset.key === active));
-      render();
+  function buildTabs() {
+    $tabs.innerHTML = '';
+    GAMES.forEach(g => {
+      const b = document.createElement('button');
+      b.className = 'game-tab' + (g.key === active ? ' active' : '');
+      b.textContent = T(g.i18n, g.def);
+      b.dataset.key = g.key;
+      b.addEventListener('click', () => {
+        active = g.key;
+        [...$tabs.children].forEach(c => c.classList.toggle('active', c.dataset.key === active));
+        render();
+      });
+      $tabs.appendChild(b);
     });
-    $tabs.appendChild(b);
-  });
+  }
+  buildTabs();
 
   function render() {
     if (!lastData) return;
@@ -118,7 +123,7 @@
       `;
       el.querySelector('.lb-rank').textContent = r.rank;
       el.querySelector('.lb-nick').textContent = r.nickname;
-      el.querySelector('.lb-pts').textContent  = r.score + ' pts';
+      el.querySelector('.lb-pts').textContent  = r.score + ' ' + T('leaderboardPage.pts','pts');
       $board.appendChild(el);
     });
   }
@@ -128,9 +133,10 @@
       lastData = await window.LittleBeeAPI.getLeaderboard();
       render();
     } catch (err) {
-      $board.innerHTML = '<p class="muted text-center">Could not load yet — retrying...</p>';
+      $board.innerHTML = `<p class="muted text-center">${T('leaderboardPage.retrying','Could not load yet — retrying...')}</p>`;
     }
   }
+  window.addEventListener('lb-lang-changed', () => { buildTabs(); render(); });
 
   poll();
   setInterval(poll, 5000);

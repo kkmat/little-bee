@@ -19,18 +19,18 @@
   <main class="game-shell">
     <header class="text-center mb-4">
       <p class="font-script text-3xl text-[color:var(--rust-deep)]">🍯</p>
-      <h1 class="font-display text-2xl uppercase tracking-[0.18em]">Suggest a Name</h1>
-      <p class="muted mt-1">We haven't picked a name yet — help us! Vote for your favourites too.</p>
+      <h1 class="font-display text-2xl uppercase tracking-[0.18em]" data-i18n="namesGame.title">Suggest a Name</h1>
+      <p class="muted mt-1" data-i18n="namesGame.sub">We haven't picked a name yet — help us! Vote for your favourites too.</p>
     </header>
 
     <div class="game-card">
-      <input id="name" class="lb-text" maxlength="40" placeholder="Drop your favourite name..." />
-      <button id="send" class="btn w-full mt-3">Suggest 🍯</button>
+      <input id="name" class="lb-text" maxlength="40" placeholder="Drop your favourite name..." data-i18n-attr="placeholder:namesGame.namePh" />
+      <button id="send" class="btn w-full mt-3" data-i18n="namesGame.suggest">Suggest 🍯</button>
       <p id="status" class="muted text-sm mt-2 text-center">&nbsp;</p>
     </div>
 
-    <h2 class="section-title mt-8">All suggestions</h2>
-    <div id="list" class="grid gap-2 mt-2"><p class="muted text-center">Loading...</p></div>
+    <h2 class="section-title mt-8" data-i18n="namesGame.listTitle">All suggestions</h2>
+    <div id="list" class="grid gap-2 mt-2"><p class="muted text-center" data-i18n="common.loading">Loading...</p></div>
   </main>
 
   <script src="../js/i18n.js"></script>
@@ -51,13 +51,15 @@
     localStorage.setItem('lb-name-voted', JSON.stringify([...s]));
   }
 
+  const T = window.LittleBeeI18n.t;
+
   async function load() {
     try {
       const data = await window.LittleBeeAPI.listNames();
       const voted = votedSet();
       $list.innerHTML = '';
       if (!data.items || data.items.length === 0) {
-        $list.innerHTML = '<p class="muted text-center">No suggestions yet — go first!</p>';
+        $list.innerHTML = `<p class="muted text-center">${T('namesGame.listEmpty','No suggestions yet — go first!')}</p>`;
         return;
       }
       data.items.forEach(it => {
@@ -71,7 +73,7 @@
           <button class="btn btn--ghost vote">💛 <span class="votes"></span></button>
         `;
         c.querySelector('.font-display').textContent = it.name;
-        c.querySelector('.muted').textContent = `suggested by ${it.suggested_by}`;
+        c.querySelector('.muted').textContent = `${T('namesGame.suggestedBy','suggested by')} ${it.suggested_by}`;
         c.querySelector('.votes').textContent = it.votes;
         const btn = c.querySelector('.vote');
         if (voted.has(it.id)) btn.disabled = true;
@@ -86,7 +88,7 @@
         $list.appendChild(c);
       });
     } catch (err) {
-      $list.innerHTML = '<p class="muted text-center">Could not load yet.</p>';
+      $list.innerHTML = `<p class="muted text-center">${T('namesGame.listError','Could not load yet.')}</p>`;
     }
   }
 
@@ -97,15 +99,16 @@
     try {
       await window.LittleBeeAPI.postName(v);
       $name.value = '';
-      $status.textContent = 'Suggested 💛';
+      $status.textContent = T('namesGame.suggested','Suggested 💛');
       setTimeout(() => { $status.textContent = ' '; }, 1500);
       load();
     } catch (err) {
-      $status.textContent = 'Could not save — try again?';
+      $status.textContent = T('namesGame.error','Could not save — try again?');
     } finally {
       $send.disabled = false;
     }
   }
+  window.addEventListener('lb-lang-changed', load);
 
   $send.addEventListener('click', send);
   if (window.LittleBeeAPI.isJoined()) load();

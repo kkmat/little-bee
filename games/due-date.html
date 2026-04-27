@@ -19,19 +19,19 @@
   <main class="game-shell">
     <header class="text-center mb-4">
       <p class="font-script text-3xl text-[color:var(--rust-deep)]">📅</p>
-      <h1 class="font-display text-2xl uppercase tracking-[0.18em]">Due Date Guess</h1>
-      <p class="muted mt-1">When will baby actually arrive? Closest guess wins after birth!</p>
+      <h1 class="font-display text-2xl uppercase tracking-[0.18em]" data-i18n="dueGame.title">Due Date Guess</h1>
+      <p class="muted mt-1" data-i18n="dueGame.sub">When will baby actually arrive? Closest guess wins after birth!</p>
     </header>
 
     <div class="game-card">
-      <p class="muted text-center mb-3">Official due date: <strong>July 6, 2026</strong></p>
+      <p class="muted text-center mb-3" data-i18n="dueGame.dueDateLabel">Official due date: July 6, 2026</p>
       <input id="guess" type="date" class="lb-text" min="2026-06-01" max="2026-08-15" />
-      <button id="send" class="btn w-full mt-3">Lock in your guess</button>
+      <button id="send" class="btn w-full mt-3" data-i18n="dueGame.lockIn">Lock in your guess</button>
       <p id="status" class="muted text-sm mt-2 text-center">&nbsp;</p>
     </div>
 
-    <h2 class="section-title mt-8">Everyone's guesses</h2>
-    <div id="wall" class="wall"><p class="muted text-center">Loading...</p></div>
+    <h2 class="section-title mt-8" data-i18n="dueGame.wallTitle">Everyone's guesses</h2>
+    <div id="wall" class="wall"><p class="muted text-center" data-i18n="common.loading">Loading...</p></div>
   </main>
 
   <script src="../js/i18n.js"></script>
@@ -44,12 +44,14 @@
   const $wall = document.getElementById('wall');
   $g.value = '2026-07-06';
 
+  const T = window.LittleBeeI18n.t;
+
   async function load() {
     try {
       const data = await window.LittleBeeAPI.listDueDate();
       $wall.innerHTML = '';
       if (!data.items || data.items.length === 0) {
-        $wall.innerHTML = '<p class="muted text-center">Be the first to guess!</p>';
+        $wall.innerHTML = `<p class="muted text-center">${T('dueGame.wallEmpty','Be the first to guess!')}</p>`;
         return;
       }
       // Sort by date asc
@@ -64,7 +66,7 @@
         $wall.appendChild(c);
       });
     } catch (err) {
-      $wall.innerHTML = '<p class="muted text-center">Could not load yet.</p>';
+      $wall.innerHTML = `<p class="muted text-center">${T('dueGame.wallError','Could not load yet.')}</p>`;
     }
   }
 
@@ -74,15 +76,16 @@
     $send.disabled = true;
     try {
       await window.LittleBeeAPI.postDueDate(v);
-      $status.textContent = 'Locked in 💛';
+      $status.textContent = T('dueGame.locked','Locked in 💛');
       setTimeout(() => { $status.textContent = ' '; }, 1500);
       load();
     } catch (err) {
-      $status.textContent = 'Could not save — try again?';
+      $status.textContent = T('dueGame.error','Could not save — try again?');
     } finally {
       $send.disabled = false;
     }
   }
+  window.addEventListener('lb-lang-changed', load);
 
   $send.addEventListener('click', send);
   if (window.LittleBeeAPI.isJoined()) load();

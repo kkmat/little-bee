@@ -79,17 +79,17 @@
 
   <main class="game-shell">
     <header class="text-center mb-6">
-      <span class="font-display italic text-xs tracking-[0.4em] uppercase text-[color:var(--ink-faded)] block mb-2">a keepsake from the day</span>
-      <h1 class="font-script text-5xl md:text-6xl text-[color:var(--rust-deep)] leading-none">Memory Wall</h1>
+      <span class="font-display italic text-xs tracking-[0.4em] uppercase text-[color:var(--ink-faded)] block mb-2" data-i18n="memoryWall.eyebrow">a keepsake from the day</span>
+      <h1 class="font-script text-5xl md:text-6xl text-[color:var(--rust-deep)] leading-none" data-i18n="memoryWall.title">Memory Wall</h1>
       <span class="block mx-auto mt-3" style="width:90px;height:14px;background-image:url('data:image/svg+xml;utf8,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 90 14%22 fill=%22none%22&gt;&lt;path d=%22M2 7 Q 22 0, 45 7 T 88 7%22 stroke=%22%23A55F38%22 stroke-width=%221.4%22 fill=%22none%22 stroke-linecap=%22round%22/&gt;&lt;circle cx=%2245%22 cy=%227%22 r=%222.4%22 fill=%22%23A55F38%22/&gt;&lt;/svg&gt;');background-repeat:no-repeat;background-position:center;"></span>
-      <p class="muted mt-3 max-w-md mx-auto">Everything you've left for our little one — voices, advice, predictions, names, drawings 🐝</p>
-      <button id="print-btn" class="btn btn--ghost mt-4">🖨️ Print as a memento</button>
+      <p class="muted mt-3 max-w-md mx-auto" data-i18n="memoryWall.sub">Everything you've left for our little one — voices, advice, predictions, names, drawings 🐝</p>
+      <button id="print-btn" class="btn btn--ghost mt-4" data-i18n="memoryWall.print">🖨️ Print as a memento</button>
     </header>
 
     <div class="divider divider--garland mb-6"></div>
 
     <div id="wall" class="masonry">
-      <p class="muted text-center" style="column-span: all;">Gathering memories...</p>
+      <p class="muted text-center" style="column-span: all;" data-i18n="memoryWall.loading">Gathering memories...</p>
     </div>
   </main>
 
@@ -97,6 +97,7 @@
   <script src="./js/api.js"></script>
   <script>
   document.getElementById('print-btn').addEventListener('click', () => window.print());
+  const T = window.LittleBeeI18n.t;
 
   function el(html) { const d = document.createElement('div'); d.innerHTML = html.trim(); return d.firstElementChild; }
   function tilt(i) { return i % 2 === 0 ? 'tilt-l' : 'tilt-r'; }
@@ -116,43 +117,43 @@
     // Photo album hero card (always present)
     items.push({ ts: Date.now(), html: `
       <div class="mem theme-photos">
-        <span class="mem__type">photos</span>
-        <p class="font-script text-3xl" style="color: var(--rust-deep)">View the album</p>
-        <p class="muted text-sm">Photos uploaded by everyone today</p>
-        <a class="btn" href="https://photos.app.goo.gl/ucdYLxEE6SmjXZHd7" target="_blank" rel="noopener">📸 Open Photo Album</a>
+        <span class="mem__type">${T('memoryWall.typePhotos','photos')}</span>
+        <p class="font-script text-3xl" style="color: var(--rust-deep)">${T('memoryWall.albumTitle','View the album')}</p>
+        <p class="muted text-sm">${T('memoryWall.albumSub','Photos uploaded by everyone today')}</p>
+        <a class="btn" href="https://photos.app.goo.gl/ucdYLxEE6SmjXZHd7" target="_blank" rel="noopener">${T('memoryWall.albumBtn','📸 Open Photo Album')}</a>
       </div>` });
 
     voices.forEach(v => items.push({ ts: v.created_at, html: `
       <div class="mem">
-        <span class="mem__type">voice note · ${(v.duration||0).toFixed(1)}s</span>
+        <span class="mem__type">${T('memoryWall.typeVoice','voice note')} · ${(v.duration||0).toFixed(1)}s</span>
         <span class="mem__nick">${escape(v.nickname)}</span>
         <audio controls preload="none" src="${v.audio_b64}"></audio>
       </div>` }));
 
     advice.forEach(a => items.push({ ts: a.created_at, html: `
       <div class="mem">
-        <span class="mem__type">advice</span>
+        <span class="mem__type">${T('memoryWall.typeAdvice','advice')}</span>
         <span class="mem__nick">${escape(a.nickname)}</span>
         <p class="mem__body italic">${escape(a.message)}</p>
       </div>` }));
 
     predictions.forEach(p => items.push({ ts: p.created_at, html: `
       <div class="mem">
-        <span class="mem__type">prediction · ${escape(p.prompt_key||'')}</span>
+        <span class="mem__type">${T('memoryWall.typePrediction','prediction')} · ${escape(p.prompt_key||'')}</span>
         <span class="mem__nick">${escape(p.nickname)}</span>
         <p class="mem__body">${escape(p.value)}</p>
       </div>` }));
 
     names.forEach(n => items.push({ ts: n.created_at, html: `
       <div class="mem">
-        <span class="mem__type">name suggestion · ${n.votes||0} 💛</span>
+        <span class="mem__type">${T('memoryWall.typeName','name suggestion')} · ${n.votes||0} 💛</span>
         <span class="mem__nick">${escape(n.suggested_by)}</span>
         <p class="mem__big">${escape(n.name)}</p>
       </div>` }));
 
     onesies.forEach(o => items.push({ ts: o.created_at, html: `
       <div class="mem">
-        <span class="mem__type">onesie · ${o.likes||0} 💛</span>
+        <span class="mem__type">${T('memoryWall.typeOnesie','onesie')} · ${o.likes||0} 💛</span>
         <span class="mem__nick">${escape(o.nickname)}</span>
         <img src="${o.image_b64}" alt="onesie design" />
       </div>` }));
@@ -161,7 +162,7 @@
     items.sort((a, b) => (b.ts || 0) - (a.ts || 0));
 
     if (items.length <= 1) {
-      $w.innerHTML = `<div class="mem theme-empty" style="column-span: all;">Memories will gather here as guests contribute throughout the day 🐝</div>`;
+      $w.innerHTML = `<div class="mem theme-empty" style="column-span: all;">${T('memoryWall.empty','Memories will gather here as guests contribute throughout the day 🐝')}</div>`;
       return;
     }
 
@@ -174,6 +175,7 @@
   }
 
   build();
+  window.addEventListener('lb-lang-changed', build);
   </script>
 </body>
 </html>

@@ -22,8 +22,8 @@
   <main class="game-shell">
     <header class="text-center mb-4">
       <p class="font-script text-3xl text-[color:var(--rust-deep)]">🍼</p>
-      <h1 class="font-display text-2xl uppercase tracking-[0.18em]">Emoji Pictionary</h1>
-      <p class="muted mt-1">Each emoji puzzle = one baby phrase. Pick the right answer!</p>
+      <h1 class="font-display text-2xl uppercase tracking-[0.18em]" data-i18n="emojiGame.title">Emoji Pictionary</h1>
+      <p class="muted mt-1" data-i18n="emojiGame.sub">Each emoji puzzle = one baby phrase. Pick the right answer!</p>
     </header>
 
     <div id="game" class="game-card">
@@ -36,13 +36,13 @@
     </div>
 
     <div id="end" class="game-card final-score" hidden>
-      <p class="muted">Your score</p>
+      <p class="muted" data-i18n="emojiGame.yourScore">Your score</p>
       <p class="final-score__num" id="final">0</p>
-      <p class="final-score__lbl">points</p>
+      <p class="final-score__lbl" data-i18n="emojiGame.points">points</p>
       <p id="endMsg" class="mt-3"></p>
       <div class="grid gap-2 mt-6">
-        <a class="btn" href="../leaderboard.html">🏆 See Leaderboard</a>
-        <a class="btn btn--ghost" href="./index.html">More Games</a>
+        <a class="btn" href="../leaderboard.html" data-i18n="emojiGame.seeLb">🏆 See Leaderboard</a>
+        <a class="btn btn--ghost" href="./index.html" data-i18n="emojiGame.moreGames">More Games</a>
       </div>
     </div>
   </main>
@@ -52,21 +52,38 @@
   <script src="../js/join.js"></script>
   <script>
   const POOL = [
-    { c: "🍼+😴", a: "Bedtime bottle", w: ["Sleep training","Dream feed","Nap time"] },
-    { c: "👶+💩", a: "Diaper change", w: ["Potty training","Tummy ache","Snack time"] },
-    { c: "🤰+🍦", a: "Pregnancy craving", w: ["Ice-cream date","Brain freeze","Sugar rush"] },
-    { c: "🐣+🌙", a: "Night-night, little one", w: ["Sleeping bag","Egg moon","Lullaby"] },
-    { c: "👶+🚼+🚗", a: "Baby on board", w: ["Road trip","Carseat","Stroller race"] },
-    { c: "🍼+🧦+🧣", a: "Newborn essentials", w: ["Winter outfit","Laundry day","Hand-me-downs"] },
-    { c: "🤰+📅", a: "Due date", w: ["Maternity leave","Baby shower","Trimester"] },
-    { c: "👶+🎂+1️⃣", a: "First birthday", w: ["Baby's first cake","One year ago","Smash cake"] },
-    { c: "🦷+👶", a: "Teething", w: ["Tooth fairy","Bite size","Milk teeth"] },
-    { c: "👀+🩺", a: "Doctor's visit", w: ["Eye exam","Check-up","Vaccinations"] },
-    { c: "🍼+🌅", a: "Morning bottle", w: ["Sunrise nap","Breakfast","Wake up call"] },
-    { c: "👣+🧸", a: "Baby's first steps", w: ["Teddy bear walk","Toy box","Soft toys"] },
-    { c: "🤱+❤️", a: "Mama's love", w: ["Breast feeding","Hugs","Family"] },
-    { c: "👶+📚", a: "Bedtime story", w: ["Story time","First word","Reading rainbow"] },
+    { c: "🍼+😴",     a: "Bedtime bottle",        w: ["Sleep training","Dream feed","Nap time"],
+                       aAr: "زجاجة قبل النوم",   wAr: ["تدريب النوم","رضعة حلم","وقت القيلولة"] },
+    { c: "👶+💩",     a: "Diaper change",         w: ["Potty training","Tummy ache","Snack time"],
+                       aAr: "تغيير الحفّاض",     wAr: ["تدريب الحمّام","ألم في البطن","وقت الوجبة الخفيفة"] },
+    { c: "🤰+🍦",     a: "Pregnancy craving",     w: ["Ice-cream date","Brain freeze","Sugar rush"],
+                       aAr: "وحم الحمل",         wAr: ["موعد آيس كريم","تجمّد الدماغ","نشوة سكر"] },
+    { c: "🐣+🌙",     a: "Night-night, little one", w: ["Sleeping bag","Egg moon","Lullaby"],
+                       aAr: "تصبح على خير، صغيري", wAr: ["كيس النوم","قمر البيضة","تهويدة"] },
+    { c: "👶+🚼+🚗",  a: "Baby on board",         w: ["Road trip","Carseat","Stroller race"],
+                       aAr: "بيبي على متنها",    wAr: ["رحلة طريق","كرسي السيارة","سباق العربات"] },
+    { c: "🍼+🧦+🧣",  a: "Newborn essentials",    w: ["Winter outfit","Laundry day","Hand-me-downs"],
+                       aAr: "أساسيات المولود",  wAr: ["زي شتوي","يوم الغسيل","ملابس مستعملة"] },
+    { c: "🤰+📅",     a: "Due date",              w: ["Maternity leave","Baby shower","Trimester"],
+                       aAr: "موعد الولادة",      wAr: ["إجازة الأمومة","حفل البيبي","ثلث الحمل"] },
+    { c: "👶+🎂+1️⃣", a: "First birthday",        w: ["Baby's first cake","One year ago","Smash cake"],
+                       aAr: "أول عيد ميلاد",     wAr: ["أول كيكة","قبل عام","كيكة السحق"] },
+    { c: "🦷+👶",     a: "Teething",              w: ["Tooth fairy","Bite size","Milk teeth"],
+                       aAr: "التسنين",           wAr: ["جنية الأسنان","حجم اللقمة","أسنان الحليب"] },
+    { c: "👀+🩺",     a: "Doctor's visit",        w: ["Eye exam","Check-up","Vaccinations"],
+                       aAr: "زيارة الطبيب",      wAr: ["فحص العين","فحص شامل","تطعيمات"] },
+    { c: "🍼+🌅",     a: "Morning bottle",        w: ["Sunrise nap","Breakfast","Wake up call"],
+                       aAr: "زجاجة الصباح",      wAr: ["قيلولة الفجر","الفطور","نداء الاستيقاظ"] },
+    { c: "👣+🧸",     a: "Baby's first steps",    w: ["Teddy bear walk","Toy box","Soft toys"],
+                       aAr: "أولى خطوات البيبي", wAr: ["مشي الدبدوب","صندوق الألعاب","ألعاب ناعمة"] },
+    { c: "🤱+❤️",    a: "Mama's love",           w: ["Breast feeding","Hugs","Family"],
+                       aAr: "حب الأم",           wAr: ["الرضاعة الطبيعية","عناق","عائلة"] },
+    { c: "👶+📚",     a: "Bedtime story",         w: ["Story time","First word","Reading rainbow"],
+                       aAr: "قصة قبل النوم",     wAr: ["وقت القصة","أول كلمة","قوس قزح القراءة"] },
   ];
+
+  function isAr() { return (document.documentElement.lang || 'en').startsWith('ar'); }
+  const T = window.LittleBeeI18n.t;
 
   function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
   const rounds = shuffle([...POOL]).slice(0, 10);
@@ -83,18 +100,22 @@
   const $endMsg=document.getElementById('endMsg');
   $tot.textContent = String(rounds.length);
 
+  function getA(r)  { return isAr() ? r.aAr  : r.a;  }
+  function getWs(r) { return isAr() ? r.wAr  : r.w;  }
+
   function render() {
     locked = false;
     const r = rounds[qi];
     $idx.textContent = String(qi+1);
     $clue.textContent = r.c;
-    const all = shuffle([r.a, ...r.w].slice(0, 4));
+    const correctText = getA(r);
+    const all = shuffle([correctText, ...getWs(r)].slice(0, 4));
     $opts.innerHTML = '';
     all.forEach(opt => {
       const b = document.createElement('button');
       b.className = 'q-option';
       b.textContent = opt;
-      b.addEventListener('click', () => answer(opt, r.a));
+      b.addEventListener('click', () => answer(opt, correctText));
       $opts.appendChild(b);
     });
   }
@@ -119,11 +140,11 @@
     $game.hidden = true;
     $end.hidden = false;
     $final.textContent = score;
-    let msg = "Thanks for playing! 🐝";
-    if (score >= 900) msg = "Emoji whisperer! 🍼✨";
-    else if (score >= 600) msg = "Great instincts.";
-    else if (score >= 300) msg = "Solid try!";
-    else msg = "Cake will help 🍰";
+    let msg = T('emojiGame.endThanks','Thanks for playing! 🐝');
+    if (score >= 900) msg = T('emojiGame.endWhisperer','Emoji whisperer! 🍼✨');
+    else if (score >= 600) msg = T('emojiGame.endGreat','Great instincts.');
+    else if (score >= 300) msg = T('emojiGame.endSolid','Solid try!');
+    else msg = T('emojiGame.endCake','Cake will help 🍰');
     $endMsg.textContent = msg;
     try { await window.LittleBeeAPI.submitScore('emoji', score); }
     catch (err) { console.warn('score submit failed', err); }

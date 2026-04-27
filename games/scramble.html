@@ -19,14 +19,15 @@
   <main class="game-shell">
     <header class="text-center mb-4">
       <p class="font-script text-3xl text-[color:var(--rust-deep)]">🔤</p>
-      <h1 class="font-display text-2xl uppercase tracking-[0.18em]">Word Scramble</h1>
-      <p class="muted mt-1">Unscramble as many baby words as you can — 90 seconds!</p>
+      <h1 class="font-display text-2xl uppercase tracking-[0.18em]" data-i18n="scrambleGame.title">Word Scramble</h1>
+      <p class="muted mt-1" data-i18n="scrambleGame.sub">Unscramble as many baby words as you can — 90 seconds!</p>
     </header>
 
     <div id="intro" class="game-card text-center">
-      <p>You'll get a stream of scrambled baby-themed words. Type the answer, hit Enter (or skip — but you get fewer points later).</p>
-      <p class="muted mt-3">10 points per correct word + bonus for time remaining.</p>
-      <button id="start" class="btn mt-5">Start the timer</button>
+      <p data-i18n="scrambleGame.intro">You'll get a stream of scrambled baby-themed words. Type the answer, hit Enter (or skip — but you get fewer points later).</p>
+      <p class="muted mt-3" data-i18n="scrambleGame.scoring">10 points per correct word + bonus for time remaining.</p>
+      <p id="ar-note" class="muted mt-3 italic text-sm" data-i18n="scrambleGame.noteAr"></p>
+      <button id="start" class="btn mt-5" data-i18n="scrambleGame.start">Start the timer</button>
     </div>
 
     <div id="game" class="game-card" hidden>
@@ -35,22 +36,22 @@
         <span class="badge-pill"><span class="num" id="score">0</span> pts</span>
       </div>
       <div class="scramble-word" id="word">- - -</div>
-      <input id="ans" class="scramble-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="your guess" />
+      <input id="ans" class="scramble-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="your guess" data-i18n-attr="placeholder:scrambleGame.guessPh" />
       <div class="grid grid-cols-2 gap-2 mt-3">
-        <button id="skip" class="btn btn--ghost">Skip</button>
-        <button id="submit" class="btn">Submit</button>
+        <button id="skip" class="btn btn--ghost" data-i18n="scrambleGame.skip">Skip</button>
+        <button id="submit" class="btn" data-i18n="scrambleGame.submit">Submit</button>
       </div>
       <p class="muted mt-2 text-sm" id="status">&nbsp;</p>
     </div>
 
     <div id="end" class="game-card final-score" hidden>
-      <p class="muted">Your score</p>
+      <p class="muted" data-i18n="scrambleGame.yourScore">Your score</p>
       <p class="final-score__num" id="final">0</p>
-      <p class="final-score__lbl">points</p>
+      <p class="final-score__lbl" data-i18n="scrambleGame.points">points</p>
       <p class="mt-3" id="endMsg"></p>
       <div class="grid gap-2 mt-6">
-        <a class="btn" href="../leaderboard.html">🏆 See Leaderboard</a>
-        <a class="btn btn--ghost" href="./index.html">More Games</a>
+        <a class="btn" href="../leaderboard.html" data-i18n="scrambleGame.seeLb">🏆 See Leaderboard</a>
+        <a class="btn btn--ghost" href="./index.html" data-i18n="scrambleGame.moreGames">More Games</a>
       </div>
     </div>
   </main>
@@ -101,6 +102,8 @@
     setTimeout(() => { $status.textContent = ' '; }, 900);
   }
 
+  const T = window.LittleBeeI18n.t;
+
   function submit() {
     if (!current) return;
     const guess = $ans.value.trim().toLowerCase();
@@ -111,12 +114,12 @@
       flash('✓ ' + current, true);
       next();
     } else {
-      flash('not quite — try again', false);
+      flash(T('scrambleGame.tryAgain','not quite — try again'), false);
       $ans.select();
     }
   }
 
-  function skip() { flash('skipped — was: ' + current, false); next(); }
+  function skip() { flash(T('scrambleGame.skipped','skipped — was: ') + current, false); next(); }
 
   function start() {
     $intro.hidden = true;
@@ -135,11 +138,11 @@
     $game.hidden = true;
     $end.hidden  = false;
     $final.textContent = score;
-    let msg = "Bee proud.";
-    if (score >= 150) msg = "Wordsmith! 🐝";
-    else if (score >= 80) msg = "Strong scramble.";
-    else if (score >= 30) msg = "Nice effort!";
-    else msg = "Cake awaits 🍰";
+    let msg = T('scrambleGame.endProud','Bee proud.');
+    if (score >= 150) msg = T('scrambleGame.endWordsmith','Wordsmith! 🐝');
+    else if (score >= 80) msg = T('scrambleGame.endStrong','Strong scramble.');
+    else if (score >= 30) msg = T('scrambleGame.endNice','Nice effort!');
+    else msg = T('scrambleGame.endCake','Cake awaits 🍰');
     $endMsg.textContent = msg;
     try { await window.LittleBeeAPI.submitScore('scramble', score); }
     catch (err) { console.warn('score submit failed', err); }

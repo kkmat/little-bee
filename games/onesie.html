@@ -51,8 +51,8 @@
   <main class="game-shell">
     <header class="text-center mb-4">
       <p class="font-script text-3xl text-[color:var(--rust-deep)]">👕</p>
-      <h1 class="font-display text-2xl uppercase tracking-[0.18em]">Design a Onesie</h1>
-      <p class="muted mt-1">Doodle something for baby's first outfit. Most-loved design wins!</p>
+      <h1 class="font-display text-2xl uppercase tracking-[0.18em]" data-i18n="onesieGame.title">Design a Onesie</h1>
+      <p class="muted mt-1" data-i18n="onesieGame.sub">Doodle something for baby's first outfit. Most-loved design wins!</p>
     </header>
 
     <div class="game-card">
@@ -64,20 +64,20 @@
       <div class="flex gap-2 justify-center flex-wrap mt-4" id="palette"></div>
 
       <div class="grid grid-cols-3 gap-2 mt-3">
-        <button id="brush-sm" class="btn btn--ghost">small</button>
-        <button id="brush-md" class="btn btn--ghost">medium</button>
-        <button id="brush-lg" class="btn btn--ghost">large</button>
+        <button id="brush-sm" class="btn btn--ghost" data-i18n="onesieGame.small">small</button>
+        <button id="brush-md" class="btn btn--ghost" data-i18n="onesieGame.medium">medium</button>
+        <button id="brush-lg" class="btn btn--ghost" data-i18n="onesieGame.large">large</button>
       </div>
       <div class="grid grid-cols-2 gap-2 mt-2">
-        <button id="undo" class="btn btn--ghost">↩ Undo</button>
-        <button id="clear" class="btn btn--ghost">✕ Clear</button>
+        <button id="undo" class="btn btn--ghost" data-i18n="onesieGame.undo">↩ Undo</button>
+        <button id="clear" class="btn btn--ghost" data-i18n="onesieGame.clear">✕ Clear</button>
       </div>
-      <button id="save" class="btn w-full mt-3">Submit your design 👕</button>
+      <button id="save" class="btn w-full mt-3" data-i18n="onesieGame.save">Submit your design 👕</button>
       <p id="status" class="muted text-sm mt-2 text-center">&nbsp;</p>
     </div>
 
-    <h2 class="section-title mt-8">Gallery</h2>
-    <p class="muted text-center mb-3">Tap 💛 on your favourites</p>
+    <h2 class="section-title mt-8" data-i18n="onesieGame.galleryTitle">Gallery</h2>
+    <p class="muted text-center mb-3" data-i18n="onesieGame.galleryHint">Tap 💛 on your favourites</p>
     <div id="gallery" class="gallery-grid"></div>
   </main>
 
@@ -239,22 +239,23 @@
     ec.drawImage(bg,   0, 0, exp.width, exp.height);
     ec.drawImage(draw, 0, 0, exp.width, exp.height);
     const dataURL = exp.toDataURL('image/png');
-    if (dataURL.length > 800_000) { $status.textContent = 'image too large — try fewer details'; return; }
+    if (dataURL.length > 800_000) { $status.textContent = T('onesieGame.tooLarge','image too large — try fewer details'); return; }
     $save.disabled = true;
     try {
       await window.LittleBeeAPI.postOnesie(dataURL);
-      $status.textContent = 'Submitted 💛';
+      $status.textContent = T('onesieGame.saved','Submitted 💛');
       setTimeout(() => $status.textContent = ' ', 1500);
       // Clear the user layer so they can keep drawing if they want
       dctx.clearRect(0,0,draw.width,draw.height);
       undoStack.length = 0;
       loadGallery();
     } catch (e) {
-      $status.textContent = 'Could not submit — try again?';
+      $status.textContent = T('onesieGame.error','Could not submit — try again?');
     } finally {
       $save.disabled = false;
     }
   });
+  const T = window.LittleBeeI18n.t;
 
   // Gallery
   const $gallery = document.getElementById('gallery');
@@ -272,7 +273,7 @@
       const liked = likedSet();
       $gallery.innerHTML = '';
       if (!data.items || data.items.length === 0) {
-        $gallery.innerHTML = '<p class="muted text-center col-span-2">No designs yet — go first!</p>';
+        $gallery.innerHTML = `<p class="muted text-center col-span-2">${T('onesieGame.galleryEmpty','No designs yet — go first!')}</p>`;
         return;
       }
       data.items.forEach(it => {
@@ -298,9 +299,10 @@
         $gallery.appendChild(c);
       });
     } catch (e) {
-      $gallery.innerHTML = '<p class="muted text-center col-span-2">Could not load gallery.</p>';
+      $gallery.innerHTML = `<p class="muted text-center col-span-2">${T('onesieGame.galleryError','Could not load gallery.')}</p>`;
     }
   }
+  window.addEventListener('lb-lang-changed', loadGallery);
 
   window.addEventListener('resize', fitCanvases);
   fitCanvases();

@@ -19,37 +19,39 @@
   <main class="game-shell">
     <header class="text-center mb-4">
       <p class="font-script text-3xl text-[color:var(--rust-deep)]">🔮</p>
-      <h1 class="font-display text-2xl uppercase tracking-[0.18em]">Predictions</h1>
-      <p class="muted mt-1">Peek into baby's future. We'll save your prophecies for posterity.</p>
+      <h1 class="font-display text-2xl uppercase tracking-[0.18em]" data-i18n="predGame.title">Predictions</h1>
+      <p class="muted mt-1" data-i18n="predGame.sub">Peek into baby's future. We'll save your prophecies for posterity.</p>
     </header>
 
     <div id="form-card" class="game-card">
-      <p class="muted">Pick a question, then drop your prediction:</p>
+      <p class="muted" data-i18n="predGame.pickQ">Pick a question, then drop your prediction:</p>
       <select id="prompt" class="lb-text mt-3"></select>
-      <input id="value" class="lb-text mt-3" maxlength="200" placeholder="your prediction..." />
-      <button id="send" class="btn w-full mt-3">Save Prediction 🔮</button>
+      <input id="value" class="lb-text mt-3" maxlength="200" placeholder="your prediction..." data-i18n-attr="placeholder:predGame.valuePh" />
+      <button id="send" class="btn w-full mt-3" data-i18n="predGame.save">Save Prediction 🔮</button>
       <p id="status" class="muted text-sm mt-2 text-center">&nbsp;</p>
     </div>
 
-    <h2 class="section-title mt-8">Predictions wall</h2>
+    <h2 class="section-title mt-8" data-i18n="predGame.wallTitle">Predictions wall</h2>
     <div id="filter" class="flex flex-wrap gap-2 justify-center mb-3"></div>
-    <div id="wall" class="wall"><p class="muted text-center">Loading...</p></div>
+    <div id="wall" class="wall"><p class="muted text-center" data-i18n="common.loading">Loading...</p></div>
   </main>
 
   <script src="../js/i18n.js"></script>
   <script src="../js/api.js"></script>
   <script src="../js/join.js"></script>
   <script>
+  const T = window.LittleBeeI18n.t;
   const PROMPTS = [
-    { key: 'eye_color',   label: "Baby's eye color" },
-    { key: 'first_word',  label: "Baby's first word" },
-    { key: 'looks_like',  label: "Baby will look more like..." },
-    { key: 'birth_weight',label: "Birth weight (kg)" },
-    { key: 'first_food',  label: "First favourite food" },
-    { key: 'profession',  label: "Future profession" },
-    { key: 'personality', label: "One word for baby's personality" },
-    { key: 'hidden_talent',label:"Surprise hidden talent" },
+    { key: 'eye_color',     i18n: 'predGame.promptEyeColor',     defaultLabel: "Baby's eye color" },
+    { key: 'first_word',    i18n: 'predGame.promptFirstWord',    defaultLabel: "Baby's first word" },
+    { key: 'looks_like',    i18n: 'predGame.promptLooksLike',    defaultLabel: "Baby will look more like..." },
+    { key: 'birth_weight',  i18n: 'predGame.promptBirthWeight',  defaultLabel: "Birth weight (kg)" },
+    { key: 'first_food',    i18n: 'predGame.promptFirstFood',    defaultLabel: "First favourite food" },
+    { key: 'profession',    i18n: 'predGame.promptProfession',   defaultLabel: "Future profession" },
+    { key: 'personality',   i18n: 'predGame.promptPersonality',  defaultLabel: "One word for baby's personality" },
+    { key: 'hidden_talent', i18n: 'predGame.promptHiddenTalent', defaultLabel: "Surprise hidden talent" },
   ];
+  function promptLabel(p) { return T(p.i18n, p.defaultLabel); }
 
   const $prompt = document.getElementById('prompt');
   const $value  = document.getElementById('value');
@@ -58,26 +60,30 @@
   const $wall   = document.getElementById('wall');
   const $filter = document.getElementById('filter');
 
-  PROMPTS.forEach(p => {
-    const o = document.createElement('option');
-    o.value = p.key;
-    o.textContent = p.label;
-    $prompt.appendChild(o);
-  });
+  function buildSelect() {
+    $prompt.innerHTML = '';
+    PROMPTS.forEach(p => {
+      const o = document.createElement('option');
+      o.value = p.key;
+      o.textContent = promptLabel(p);
+      $prompt.appendChild(o);
+    });
+  }
 
   let activeFilter = '';
   function buildFilter() {
     $filter.innerHTML = '';
     const all = document.createElement('button');
     all.className = 'badge-pill';
-    all.textContent = 'All';
+    all.style.cursor = 'pointer';
+    all.textContent = T('predGame.filterAll','All');
     all.addEventListener('click', () => { activeFilter = ''; load(); });
     $filter.appendChild(all);
     PROMPTS.forEach(p => {
       const b = document.createElement('button');
       b.className = 'badge-pill';
       b.style.cursor = 'pointer';
-      b.textContent = p.label;
+      b.textContent = promptLabel(p);
       b.addEventListener('click', () => { activeFilter = p.key; load(); });
       $filter.appendChild(b);
     });
@@ -88,21 +94,22 @@
       const data = await window.LittleBeeAPI.listPredictions(activeFilter || undefined);
       $wall.innerHTML = '';
       if (!data.items || data.items.length === 0) {
-        $wall.innerHTML = '<p class="muted text-center">No predictions yet — be the first prophet 🔮</p>';
+        $wall.innerHTML = `<p class="muted text-center">${T('predGame.wallEmpty','No predictions yet — be the first prophet 🔮')}</p>`;
         return;
       }
       data.items.forEach(it => {
         const c = document.createElement('div');
         c.className = 'wall-card';
-        const promptLabel = (PROMPTS.find(p => p.key === (it.prompt_key || activeFilter)) || {}).label || (it.prompt_key || '');
+        const p = PROMPTS.find(p => p.key === (it.prompt_key || activeFilter));
+        const label = p ? promptLabel(p) : (it.prompt_key || '');
         c.innerHTML = `<span class="wall-card__nick"></span><p class="wall-card__msg"></p><span class="wall-card__meta"></span>`;
         c.querySelector('.wall-card__nick').textContent = it.nickname;
-        c.querySelector('.wall-card__msg').textContent  = `${promptLabel}: ${it.value}`;
+        c.querySelector('.wall-card__msg').textContent  = `${label}: ${it.value}`;
         c.querySelector('.wall-card__meta').textContent = new Date(it.created_at).toLocaleString();
         $wall.appendChild(c);
       });
     } catch (err) {
-      $wall.innerHTML = '<p class="muted text-center">Could not load yet.</p>';
+      $wall.innerHTML = `<p class="muted text-center">${T('predGame.wallError','Could not load yet.')}</p>`;
     }
   }
 
@@ -113,18 +120,20 @@
     try {
       await window.LittleBeeAPI.postPrediction($prompt.value, v);
       $value.value = '';
-      $status.textContent = 'Saved 💛';
+      $status.textContent = T('predGame.saved','Saved 💛');
       setTimeout(() => { $status.textContent = ' '; }, 1500);
       load();
     } catch (err) {
-      $status.textContent = 'Could not save — try again?';
+      $status.textContent = T('predGame.error','Could not save — try again?');
     } finally {
       $send.disabled = false;
     }
   }
 
   $send.addEventListener('click', send);
+  buildSelect();
   buildFilter();
+  window.addEventListener('lb-lang-changed', () => { buildSelect(); buildFilter(); load(); });
   if (window.LittleBeeAPI.isJoined()) load();
   else window.addEventListener('lb-joined', load);
   </script>

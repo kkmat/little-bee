@@ -79,5 +79,27 @@
     });
   }
 
-  window.LittleBeeI18n = { apply, current: () => current };
+  // Synchronous string lookup for use inside game JS. Returns the cached
+  // translation if available, otherwise the supplied fallback (or the key).
+  // Pre-load the current language so first call after DOM-ready already has
+  // the dictionary in cache.
+  load(current);
+  function t(key, fallback) {
+    const dict = cache[current];
+    if (dict) {
+      const v = getKey(dict, key);
+      if (typeof v === 'string') return v;
+    }
+    return fallback != null ? fallback : key;
+  }
+
+  // Notify listeners when the language changes so they can re-render
+  // dynamic content. Wraps apply().
+  const _origApply = apply;
+  apply = async function (lang) {
+    await _origApply(lang);
+    window.dispatchEvent(new CustomEvent('lb-lang-changed', { detail: { lang } }));
+  };
+
+  window.LittleBeeI18n = { apply, current: () => current, t, isAr: () => current === 'ar' };
 })();
