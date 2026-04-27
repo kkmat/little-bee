@@ -1,0 +1,59 @@
+{
+  "envelope": {
+    "hint": "tap the seal to open"
+  },
+  "hero": {
+    "kicker": "Our little one is on the way!",
+    "line1": "Join us for our",
+    "line2": "Baby Shower",
+    "celebrating": "Celebrating Mom-to-Be",
+    "dateline": "Friday · May 1, 2026 · 1:00 PM"
+  },
+  "countdown": {
+    "title": "Counting down the days",
+    "days": "Days",
+    "hours": "Hours",
+    "mins": "Minutes",
+    "secs": "Seconds"
+  },
+  "scratch": {
+    "title": "Boy or Girl?",
+    "sub": "Scratch the card... but don't get too excited 😉",
+    "hint": "✦ scratch here ✦",
+    "reveal": {
+      "h": "Nice try!",
+      "p": "The real reveal happens at the party — with cake! 🎂"
+    }
+  },
+  "location": {
+    "title": "Where to find us",
+    "name": "House 38C",
+    "line1": "Salem Sabah Al Salem Al Sabah Street",
+    "line2": "Block 4, Mahboula, Kuwait",
+    "time": "Friday, May 1 · 1:00 PM",
+    "cta": "Open in Google Maps"
+  },
+  "gifts": {
+    "title": "No gifts, please",
+    "body": "Your presence is the greatest gift we could ask for. Please — no gifts. Just bring your love and excitement! 💛"
+  },
+  "cta": {
+    "title": "A little something extra",
+    "games": "Play the Games",
+    "photos": "Shared Photo Album",
+    "advice": "Leave Advice for the Parents",
+    "leaderboard": "Live Leaderboard"
+  },
+  "footer": {
+    "line1": "made with 🐝 + 💛 for our little one"
+  },
+  "common": {
+    "back": "Back",
+    "submit": "Submit",
+    "loading": "Loading...",
+    "yourName": "Your name",
+    "namePh": "What should we call you?",
+    "saved": "Saved! Thank you 💛",
+    "error": "Something went wrong. Try again?"
+  }
+}

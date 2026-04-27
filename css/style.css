@@ -1,0 +1,389 @@
+/* === Little Bee — shared styles ============================================ */
+
+:root {
+  --cream: #FBF6EE;
+  --cream-2: #F4ECDD;
+  --ink: #5C3D1F;
+  --ink-soft: #8B6A4A;
+  --gold: #E8B547;
+  --gold-deep: #C99936;
+  --sage: #98A77C;
+  --sage-deep: #6F8056;
+  --rust: #C57A4F;
+  --rust-deep: #A55F38;
+  --wax: #B8633A;
+  --wax-deep: #8E4527;
+  --shadow: 0 10px 30px -10px rgba(92, 61, 31, 0.25);
+}
+
+html, body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 18px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-script   { font-family: 'Dancing Script', cursive; font-weight: 600; }
+.font-display  { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 500; letter-spacing: 0.02em; }
+.font-arabic   { font-family: 'Amiri', 'Cormorant Garamond', serif; }
+
+[dir="rtl"] body, [dir="rtl"] .font-script {
+  font-family: 'Amiri', 'Cormorant Garamond', serif;
+}
+
+/* === Botanical decorative frame ============================================ */
+.botanical {
+  position: relative;
+  background:
+    radial-gradient(ellipse at top, rgba(232, 181, 71, 0.08), transparent 60%),
+    var(--cream);
+}
+
+.botanical::before, .botanical::after {
+  content: '';
+  position: absolute;
+  width: 120px; height: 120px;
+  background-image: url("../assets/vine.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 0.65;
+  pointer-events: none;
+}
+.botanical::before { top: 0; left: 0; }
+.botanical::after  { bottom: 0; right: 0; transform: rotate(180deg); }
+
+/* === Envelope =============================================================== */
+#envelope-stage {
+  position: fixed; inset: 0;
+  background: linear-gradient(180deg, #F4ECDD 0%, #EBDFC7 100%);
+  display: grid; place-items: center;
+  z-index: 100;
+  perspective: 1500px;
+  transition: opacity 800ms ease, transform 800ms ease;
+}
+#envelope-stage.opened {
+  opacity: 0;
+  transform: translateY(40px);
+  pointer-events: none;
+}
+
+.envelope {
+  width: min(86vw, 420px);
+  aspect-ratio: 7 / 5;
+  position: relative;
+  transform-style: preserve-3d;
+  filter: drop-shadow(0 25px 40px rgba(92, 61, 31, 0.3));
+}
+
+.envelope__body {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, #F0E2C5 0%, #E8D4AC 100%);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.envelope__body::before {
+  /* Bottom triangle (front fold) */
+  content: '';
+  position: absolute; left: 0; right: 0; bottom: 0; top: 50%;
+  background: linear-gradient(180deg, #DCC79B 0%, #C8B07A 100%);
+  clip-path: polygon(0 100%, 50% 0, 100% 100%);
+}
+
+.envelope__body::after {
+  /* Side fold lines */
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(45deg, transparent 49.5%, rgba(92, 61, 31, 0.12) 49.5%, rgba(92, 61, 31, 0.12) 50.5%, transparent 50.5%),
+    linear-gradient(-45deg, transparent 49.5%, rgba(92, 61, 31, 0.12) 49.5%, rgba(92, 61, 31, 0.12) 50.5%, transparent 50.5%);
+}
+
+.envelope__flap {
+  position: absolute; left: 0; right: 0; top: 0;
+  height: 50%;
+  background: linear-gradient(180deg, #E8D4AC 0%, #D8BE85 100%);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transform-origin: top center;
+  transition: transform 1100ms cubic-bezier(0.55, -0.2, 0.4, 1.4);
+  z-index: 3;
+}
+
+.envelope.opening .envelope__flap {
+  transform: rotateX(180deg);
+}
+
+/* Wax seal */
+.wax-seal {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 100px; height: 100px;
+  margin-left: -50px; margin-top: -50px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 30%, #E29275 0%, var(--wax) 35%, var(--wax-deep) 75%, #6B321A 100%);
+  display: grid; place-items: center;
+  color: #F4ECDD;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  z-index: 5;
+  cursor: pointer;
+  box-shadow:
+    inset 4px -4px 8px rgba(0,0,0,0.35),
+    inset -3px 3px 6px rgba(255,255,255,0.18),
+    0 6px 18px rgba(92, 61, 31, 0.45);
+  animation: pulse 2.4s ease-in-out infinite;
+  transition: transform 200ms ease;
+}
+.wax-seal::before {
+  content: '';
+  position: absolute; inset: 6px;
+  border-radius: 50%;
+  border: 1.5px dashed rgba(244, 236, 221, 0.4);
+}
+.wax-seal:hover { transform: scale(1.05); }
+.wax-seal:active { transform: scale(0.96); }
+
+@keyframes pulse {
+  0%, 100% { box-shadow: inset 4px -4px 8px rgba(0,0,0,0.35), inset -3px 3px 6px rgba(255,255,255,0.18), 0 6px 18px rgba(92, 61, 31, 0.45), 0 0 0 0 rgba(184, 99, 58, 0.4); }
+  50%      { box-shadow: inset 4px -4px 8px rgba(0,0,0,0.35), inset -3px 3px 6px rgba(255,255,255,0.18), 0 6px 18px rgba(92, 61, 31, 0.45), 0 0 0 18px rgba(184, 99, 58, 0); }
+}
+
+.envelope-tap-hint {
+  position: absolute;
+  bottom: -56px; left: 0; right: 0;
+  text-align: center;
+  color: var(--ink-soft);
+  font-style: italic;
+  font-size: 16px;
+  animation: bob 1.8s ease-in-out infinite;
+}
+@keyframes bob {
+  0%,100% { transform: translateY(0); opacity: 0.7; }
+  50%     { transform: translateY(4px); opacity: 1; }
+}
+
+/* === Main content reveal ==================================================== */
+#main-content {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 900ms ease 200ms, transform 900ms ease 200ms;
+}
+#main-content.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* === Cards ================================================================== */
+.card {
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(184, 99, 58, 0.18);
+  border-radius: 18px;
+  padding: 28px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(4px);
+}
+
+/* === Countdown ============================================================== */
+.countdown {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  max-width: 520px;
+  margin: 0 auto;
+}
+.countdown__cell {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(184, 99, 58, 0.2);
+  border-radius: 14px;
+  padding: 14px 6px;
+  text-align: center;
+}
+.countdown__num {
+  display: block;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: clamp(28px, 7vw, 44px);
+  color: var(--ink);
+  line-height: 1;
+}
+.countdown__label {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* === Scratch-off ============================================================ */
+.scratch-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  aspect-ratio: 16 / 9;
+  margin: 0 auto;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  background: var(--cream-2);
+}
+.scratch-reveal {
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  text-align: center;
+  padding: 18px;
+  background: linear-gradient(135deg, #FFF6E1, #F4ECDD);
+  color: var(--ink);
+}
+.scratch-reveal h3 {
+  font-family: 'Dancing Script', cursive;
+  font-size: 28px;
+  margin-bottom: 6px;
+  color: var(--rust-deep);
+}
+#scratch-canvas {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  touch-action: none;
+  cursor: grab;
+}
+.scratch-hint {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: rgba(255,255,255,0.95);
+  font-family: 'Dancing Script', cursive;
+  font-size: 26px;
+  pointer-events: none;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+/* === Buttons ================================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 22px;
+  border-radius: 999px;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: 0.04em;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-deep) 100%);
+  color: var(--ink);
+  border: 1px solid rgba(92, 61, 31, 0.15);
+  box-shadow: 0 6px 16px -6px rgba(184, 99, 58, 0.4);
+  text-decoration: none;
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+.btn:hover  { transform: translateY(-2px); box-shadow: 0 12px 22px -8px rgba(184, 99, 58, 0.55); }
+.btn:active { transform: translateY(0); }
+
+.btn--ghost {
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--ink);
+}
+.btn--sage {
+  background: linear-gradient(135deg, #B0BE93 0%, var(--sage-deep) 100%);
+  color: #FBF6EE;
+}
+.btn--rust {
+  background: linear-gradient(135deg, var(--rust) 0%, var(--rust-deep) 100%);
+  color: #FBF6EE;
+}
+
+/* === Section headings ======================================================= */
+.section-title {
+  font-family: 'Dancing Script', cursive;
+  font-weight: 600;
+  font-size: clamp(32px, 6vw, 48px);
+  color: var(--rust-deep);
+  text-align: center;
+  margin-bottom: 8px;
+}
+.section-sub {
+  text-align: center;
+  color: var(--ink-soft);
+  font-style: italic;
+  margin-bottom: 28px;
+}
+
+/* === Lang toggle ============================================================ */
+.lang-toggle {
+  position: fixed;
+  top: 14px; right: 14px;
+  z-index: 50;
+  display: inline-flex;
+  background: rgba(255,255,255,0.8);
+  border: 1px solid rgba(184, 99, 58, 0.25);
+  border-radius: 999px;
+  padding: 4px;
+  box-shadow: var(--shadow);
+}
+[dir="rtl"] .lang-toggle { right: auto; left: 14px; }
+.lang-toggle button {
+  border: 0;
+  background: transparent;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.lang-toggle button.active {
+  background: var(--ink);
+  color: var(--cream);
+}
+
+/* === Confetti for reveal moment ============================================= */
+#confetti-canvas {
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 200;
+}
+
+/* === Bee floater ============================================================ */
+.bee-float {
+  position: absolute;
+  font-size: 28px;
+  animation: beeFly 12s ease-in-out infinite;
+  opacity: 0.55;
+  pointer-events: none;
+}
+.bee-float.b1 { top: 10%; left: 6%; animation-delay: 0s; }
+.bee-float.b2 { top: 40%; right: 8%; animation-delay: -4s; }
+.bee-float.b3 { bottom: 12%; left: 14%; animation-delay: -8s; }
+@keyframes beeFly {
+  0%,100% { transform: translate(0,0) rotate(-8deg); }
+  25%     { transform: translate(20px,-15px) rotate(8deg); }
+  50%     { transform: translate(-10px,-30px) rotate(-12deg); }
+  75%     { transform: translate(-25px,-10px) rotate(6deg); }
+}
+
+/* === Footer ================================================================= */
+footer {
+  text-align: center;
+  padding: 40px 20px 60px;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+footer .sig {
+  font-family: 'Dancing Script', cursive;
+  font-size: 22px;
+  color: var(--rust-deep);
+}
+
+/* === Responsive nudges ====================================================== */
+@media (max-width: 480px) {
+  .card { padding: 22px 18px; }
+  .wax-seal { width: 86px; height: 86px; margin-left: -43px; margin-top: -43px; font-size: 24px; }
+}

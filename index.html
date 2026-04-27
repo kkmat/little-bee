@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+  <meta name="theme-color" content="#FBF6EE" />
+  <title>🐝 Neethu & Kevin's Baby Shower — May 1, 2026</title>
+  <meta name="description" content="Our little one is on the way! Join us as we celebrate Mom-to-Be Neethu — Friday, May 1, 2026, 1 PM, Mahboula." />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="🐝 Neethu & Kevin's Baby Shower" />
+  <meta property="og:description" content="Our little one is on the way! May 1, 2026 · 1 PM · Mahboula, Kuwait" />
+  <meta property="og:image" content="./assets/invitation.png" />
+  <meta property="og:type" content="website" />
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Dancing+Script:wght@500;600;700&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+
+  <!-- ============ ENVELOPE STAGE ============ -->
+  <div id="envelope-stage" aria-label="Tap the wax seal to open the invitation">
+    <div class="envelope" id="envelope">
+      <div class="envelope__body"></div>
+      <div class="envelope__flap"></div>
+      <button class="wax-seal" id="wax-seal" aria-label="Open invitation">N&amp;K</button>
+      <div class="envelope-tap-hint" data-i18n="envelope.hint">tap the seal to open</div>
+    </div>
+  </div>
+
+  <!-- ============ LANG TOGGLE ============ -->
+  <div class="lang-toggle" role="group" aria-label="Language">
+    <button data-lang="en" class="active">EN</button>
+    <button data-lang="ar">ع</button>
+  </div>
+
+  <!-- ============ MAIN CONTENT ============ -->
+  <main id="main-content" class="botanical">
+
+    <!-- floating bees -->
+    <div class="bee-float b1" aria-hidden="true">🐝</div>
+    <div class="bee-float b2" aria-hidden="true">🐝</div>
+    <div class="bee-float b3" aria-hidden="true">🐝</div>
+
+    <!-- HERO -->
+    <section class="px-5 pt-20 pb-12 text-center max-w-3xl mx-auto">
+      <p class="font-script text-3xl md:text-4xl text-[color:var(--rust-deep)] mb-1" data-i18n="hero.kicker">Our little one is on the way!</p>
+      <p class="tracking-[0.3em] uppercase text-sm text-[color:var(--ink-soft)] mt-4" data-i18n="hero.line1">Join us for our</p>
+      <h1 class="font-display tracking-[0.2em] uppercase text-4xl md:text-6xl my-3" data-i18n="hero.line2">Baby Shower</h1>
+
+      <img src="./assets/invitation.png" alt="Baby shower invitation with watercolor geese" class="mx-auto mt-6 rounded-2xl shadow-xl max-w-xs md:max-w-sm" />
+
+      <p class="mt-8 tracking-[0.25em] uppercase text-sm text-[color:var(--ink-soft)]" data-i18n="hero.celebrating">Celebrating Mom-to-Be</p>
+      <p class="font-script text-6xl md:text-7xl text-[color:var(--rust-deep)] my-2">Neethu</p>
+
+      <p class="mt-6 text-lg" data-i18n="hero.dateline">Friday · May 1, 2026 · 1:00 PM</p>
+    </section>
+
+    <!-- COUNTDOWN -->
+    <section class="px-5 pb-12 max-w-3xl mx-auto">
+      <h2 class="section-title" data-i18n="countdown.title">Counting down the days</h2>
+      <div class="countdown" id="countdown">
+        <div class="countdown__cell"><span class="countdown__num" id="cd-days">0</span><span class="countdown__label" data-i18n="countdown.days">Days</span></div>
+        <div class="countdown__cell"><span class="countdown__num" id="cd-hours">0</span><span class="countdown__label" data-i18n="countdown.hours">Hours</span></div>
+        <div class="countdown__cell"><span class="countdown__num" id="cd-mins">0</span><span class="countdown__label" data-i18n="countdown.mins">Minutes</span></div>
+        <div class="countdown__cell"><span class="countdown__num" id="cd-secs">0</span><span class="countdown__label" data-i18n="countdown.secs">Seconds</span></div>
+      </div>
+    </section>
+
+    <!-- SCRATCH-OFF GENDER TEASER -->
+    <section class="px-5 pb-16 max-w-3xl mx-auto">
+      <h2 class="section-title" data-i18n="scratch.title">Boy or Girl?</h2>
+      <p class="section-sub" data-i18n="scratch.sub">Scratch the card... but don't get too excited 😉</p>
+      <div class="scratch-wrap">
+        <div class="scratch-reveal">
+          <div>
+            <h3 data-i18n="scratch.reveal.h">Nice try!</h3>
+            <p data-i18n="scratch.reveal.p">The real reveal happens at the party — with cake! 🎂</p>
+          </div>
+        </div>
+        <canvas id="scratch-canvas"></canvas>
+        <div class="scratch-hint" data-i18n="scratch.hint">✦ scratch here ✦</div>
+      </div>
+    </section>
+
+    <!-- LOCATION -->
+    <section class="px-5 pb-16 max-w-3xl mx-auto">
+      <h2 class="section-title" data-i18n="location.title">Where to find us</h2>
+      <div class="card text-center">
+        <p class="font-display text-2xl mb-2" data-i18n="location.name">House 38C</p>
+        <p data-i18n="location.line1">Salem Sabah Al Salem Al Sabah Street</p>
+        <p data-i18n="location.line2">Block 4, Mahboula, Kuwait</p>
+        <p class="mt-3 text-[color:var(--ink-soft)] italic" data-i18n="location.time">Friday, May 1 · 1:00 PM</p>
+        <div class="mt-6">
+          <a class="btn btn--sage" href="https://www.google.com/maps/search/?api=1&query=House+38C+Salem+Sabah+Al+Salem+Al+Sabah+Street+Block+4+Mahboula+Kuwait" target="_blank" rel="noopener">
+            📍 <span data-i18n="location.cta">Open in Google Maps</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- NO GIFTS -->
+    <section class="px-5 pb-16 max-w-2xl mx-auto">
+      <div class="card text-center">
+        <p class="font-script text-3xl text-[color:var(--rust-deep)] mb-3" data-i18n="gifts.title">No gifts, please</p>
+        <p data-i18n="gifts.body">Your presence is the greatest gift we could ask for. Please — no gifts. Just bring your love and excitement! 💛</p>
+      </div>
+    </section>
+
+    <!-- CTA BUTTONS -->
+    <section class="px-5 pb-20 max-w-2xl mx-auto">
+      <h2 class="section-title" data-i18n="cta.title">A little something extra</h2>
+      <div class="grid gap-3">
+        <a class="btn" href="./games/index.html">🎮 <span data-i18n="cta.games">Play the Games</span></a>
+        <a class="btn btn--rust" href="https://photos.app.goo.gl/ucdYLxEE6SmjXZHd7" target="_blank" rel="noopener">📸 <span data-i18n="cta.photos">Shared Photo Album</span></a>
+        <a class="btn btn--sage" href="./games/advice.html">💌 <span data-i18n="cta.advice">Leave Advice for the Parents</span></a>
+        <a class="btn btn--ghost" href="./leaderboard.html">🏆 <span data-i18n="cta.leaderboard">Live Leaderboard</span></a>
+      </div>
+    </section>
+
+    <footer>
+      <p data-i18n="footer.line1">made with 🐝 + 💛 for our little one</p>
+      <p class="sig">Neethu &amp; Kevin</p>
+    </footer>
+  </main>
+
+  <script src="./js/i18n.js"></script>
+  <script src="./js/envelope.js"></script>
+  <script src="./js/countdown.js"></script>
+  <script src="./js/scratch.js"></script>
+</body>
+</html>
