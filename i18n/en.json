@@ -61,7 +61,7 @@
     "leaderboard": "Live Leaderboard",
     "memory": "Memory Wall",
     "voice": "Voice Note for Baby",
-    "songs": "Request a Song"
+    "songs": "Add to the Spotify Playlist"
   },
   "favors": {
     "title": "Before You Go! 🤍",
@@ -89,7 +89,7 @@
     "advice": "Advice Wall", "adviceSub": "Leave Kevin & Neethu your best parenting wisdom",
     "lb": "Live Leaderboard", "lbSub": "See who's winning right now",
     "voice": "Voice Notes for Baby", "voiceSub": "Record a 30-second message for our little one",
-    "songs": "Music Requests", "songsSub": "Drop a song you'd love to hear tonight",
+    "songs": "Add to the Spotify Playlist", "songsSub": "Open the live playlist · add your favourites directly",
     "memory": "Memory Wall", "memorySub": "Everything everyone has left for our little one"
   }
 }
