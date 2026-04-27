@@ -6,25 +6,28 @@
 // spawns ~32 particles.
 
 (function () {
-  // Single shared overlay canvas pinned over the page.
+  // Single shared overlay canvas pinned over the page. Append to <html>
+  // (not <body>) so body's overflow-x:hidden never clips it.
   const canvas = document.createElement('canvas');
-  canvas.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:300';
-  document.body.appendChild(canvas);
+  canvas.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9999';
+  document.documentElement.appendChild(canvas);
   const ctx = canvas.getContext('2d');
-  const dpr = window.devicePixelRatio || 1;
   const COLORS = ['#E8B547', '#F5C84B', '#C57A4F', '#98A77C', '#FBF6EE', '#A55F38'];
 
   function fit() {
+    const dpr = window.devicePixelRatio || 1;
     canvas.width  = innerWidth  * dpr;
     canvas.height = innerHeight * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
   fit();
   window.addEventListener('resize', fit);
+  window.addEventListener('orientationchange', fit);
 
   const particles = [];
 
   function spawn(x, y) {
+    fit(); // ensure canvas matches the current viewport for every burst
     for (let i = 0; i < 32; i++) {
       particles.push({
         x, y,
