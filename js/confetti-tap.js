@@ -28,14 +28,26 @@
 
   function spawn(x, y) {
     fit();
-    for (let i = 0; i < 32; i++) {
+    // Radial burst — particles explode outward from the exact (x, y) of the
+    // tapped icon. Each particle is launched at a random angle (0..2π) with
+    // a random speed; gravity pulls them down afterwards. This produces a
+    // proper "fireworks-from-the-icon" effect rather than a fountain.
+    const COUNT = 48;
+    for (let i = 0; i < COUNT; i++) {
+      // Slight upward bias so the burst feels celebratory: skew the angle
+      // toward the upper hemisphere (-π .. 0 in screen coords) ~70% of the time.
+      const upward = Math.random() < 0.7;
+      const angle = upward
+        ? -Math.PI + Math.random() * Math.PI                 // upper half-circle
+        : Math.random() * Math.PI;                           // lower half-circle
+      const speed = 4 + Math.random() * 7;                   // 4..11 px/frame
       particles.push({
         x, y,
-        vx: (Math.random() - 0.5) * 6,
-        vy: -Math.random() * 7 - 2,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
         rot: Math.random() * Math.PI * 2,
-        vrot: (Math.random() - 0.5) * 0.4,
-        size: Math.random() * 6 + 4,
+        vrot: (Math.random() - 0.5) * 0.45,
+        size: Math.random() * 7 + 4,
         color: COLORS[(Math.random() * COLORS.length) | 0],
         life: 1,
         kind: Math.random() < 0.6 ? 'rect' : 'circle',
