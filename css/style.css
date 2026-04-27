@@ -718,11 +718,13 @@ main, .lang-toggle, .back-link, header, footer { position: relative; z-index: 3;
   z-index: 110;       /* above the curtain (z-index 100) so guests can switch lang before opening */
   display: inline-flex;
   background:
-    linear-gradient(180deg, rgba(255,253,247,0.92), rgba(244,236,221,0.92));
-  border: 1px solid rgba(184, 134, 42, 0.35);
+    linear-gradient(180deg, rgba(255,253,247,0.95), rgba(244,236,221,0.95));
+  border: 2px solid rgba(232, 181, 71, 0.85);
   border-radius: 999px;
-  padding: 4px;
-  box-shadow: var(--shadow-sm);
+  padding: 5px;
+  box-shadow:
+    0 4px 12px rgba(0,0,0,0.35),
+    0 0 0 2px rgba(60, 32, 12, 0.15);
 }
 [dir="rtl"] .lang-toggle { right: auto; left: 16px; }
 .lang-toggle button {
