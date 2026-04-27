@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 100" fill="none">
+  <!-- main vine -->
+  <path d="M40 60 C 120 30, 180 80, 300 50 S 480 30, 560 60" stroke="#6F8056" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+  <!-- leaves left to right -->
+  <g fill="#98A77C" stroke="#5C3D1F" stroke-width="0.5" opacity="0.95">
+    <ellipse cx="80"  cy="48" rx="9" ry="4" transform="rotate(-30 80 48)"/>
+    <ellipse cx="120" cy="38" rx="10" ry="4.5" transform="rotate(30 120 38)"/>
+    <ellipse cx="160" cy="55" rx="9" ry="4" transform="rotate(-20 160 55)"/>
+    <ellipse cx="220" cy="62" rx="10" ry="4.5" transform="rotate(15 220 62)"/>
+    <ellipse cx="280" cy="48" rx="9" ry="4" transform="rotate(-30 280 48)"/>
+    <ellipse cx="340" cy="48" rx="10" ry="4.5" transform="rotate(30 340 48)"/>
+    <ellipse cx="400" cy="58" rx="9" ry="4" transform="rotate(-20 400 58)"/>
+    <ellipse cx="460" cy="42" rx="10" ry="4.5" transform="rotate(15 460 42)"/>
+    <ellipse cx="520" cy="55" rx="9" ry="4" transform="rotate(-30 520 55)"/>
+  </g>
+  <!-- daisies -->
+  <g>
+    <g transform="translate(170 60) scale(0.28)">
+      <g fill="#FFFBEC" stroke="#5C3D1F" stroke-width="1">
+        <ellipse cx="0" cy="-22" rx="7" ry="14"/><ellipse cx="22" cy="0" rx="7" ry="14" transform="rotate(90 22 0)"/>
+        <ellipse cx="0" cy="22" rx="7" ry="14"/><ellipse cx="-22" cy="0" rx="7" ry="14" transform="rotate(90 -22 0)"/>
+        <ellipse cx="16" cy="-16" rx="7" ry="14" transform="rotate(45 16 -16)"/>
+        <ellipse cx="16" cy="16" rx="7" ry="14" transform="rotate(135 16 16)"/>
+        <ellipse cx="-16" cy="16" rx="7" ry="14" transform="rotate(45 -16 16)"/>
+        <ellipse cx="-16" cy="-16" rx="7" ry="14" transform="rotate(135 -16 -16)"/>
+      </g>
+      <circle r="9" fill="#E8B547" stroke="#5C3D1F" stroke-width="1.2"/>
+    </g>
+    <g transform="translate(310 36) scale(0.32)">
+      <g fill="#FFFBEC" stroke="#5C3D1F" stroke-width="1">
+        <ellipse cx="0" cy="-22" rx="7" ry="14"/><ellipse cx="22" cy="0" rx="7" ry="14" transform="rotate(90 22 0)"/>
+        <ellipse cx="0" cy="22" rx="7" ry="14"/><ellipse cx="-22" cy="0" rx="7" ry="14" transform="rotate(90 -22 0)"/>
+        <ellipse cx="16" cy="-16" rx="7" ry="14" transform="rotate(45 16 -16)"/>
+        <ellipse cx="16" cy="16" rx="7" ry="14" transform="rotate(135 16 16)"/>
+        <ellipse cx="-16" cy="16" rx="7" ry="14" transform="rotate(45 -16 16)"/>
+        <ellipse cx="-16" cy="-16" rx="7" ry="14" transform="rotate(135 -16 -16)"/>
+      </g>
+      <circle r="9" fill="#E8B547" stroke="#5C3D1F" stroke-width="1.2"/>
+    </g>
+    <g transform="translate(440 60) scale(0.26)">
+      <g fill="#FFFBEC" stroke="#5C3D1F" stroke-width="1">
+        <ellipse cx="0" cy="-22" rx="7" ry="14"/><ellipse cx="22" cy="0" rx="7" ry="14" transform="rotate(90 22 0)"/>
+        <ellipse cx="0" cy="22" rx="7" ry="14"/><ellipse cx="-22" cy="0" rx="7" ry="14" transform="rotate(90 -22 0)"/>
+        <ellipse cx="16" cy="-16" rx="7" ry="14" transform="rotate(45 16 -16)"/>
+        <ellipse cx="16" cy="16" rx="7" ry="14" transform="rotate(135 16 16)"/>
+        <ellipse cx="-16" cy="16" rx="7" ry="14" transform="rotate(45 -16 16)"/>
+        <ellipse cx="-16" cy="-16" rx="7" ry="14" transform="rotate(135 -16 -16)"/>
+      </g>
+      <circle r="9" fill="#E8B547" stroke="#5C3D1F" stroke-width="1.2"/>
+    </g>
+  </g>
+  <!-- berries -->
+  <g fill="#C57A4F" stroke="#5C3D1F" stroke-width="0.5">
+    <circle cx="245" cy="68" r="3"/>
+    <circle cx="251" cy="72" r="2.5"/>
+    <circle cx="385" cy="68" r="3"/>
+    <circle cx="391" cy="72" r="2.5"/>
+  </g>
+</svg>

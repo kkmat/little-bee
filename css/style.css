@@ -1,29 +1,72 @@
-/* === Little Bee — shared styles ============================================ */
+/* ============================================================================
+   Little Bee — pressed botanical journal
+   ----------------------------------------------------------------------------
+   Aesthetic: heirloom letter pressed between journal pages. Cream parchment,
+   ink-brown linework, sage vines, gold-leaf accents, scattered watercolor
+   florals. Editorial pacing. No solid backgrounds — every surface has texture.
+============================================================================ */
 
 :root {
-  --cream: #FBF6EE;
-  --cream-2: #F4ECDD;
-  --ink: #5C3D1F;
-  --ink-soft: #8B6A4A;
-  --gold: #E8B547;
-  --gold-deep: #C99936;
-  --sage: #98A77C;
-  --sage-deep: #6F8056;
-  --rust: #C57A4F;
-  --rust-deep: #A55F38;
-  --wax: #B8633A;
-  --wax-deep: #8E4527;
-  --shadow: 0 10px 30px -10px rgba(92, 61, 31, 0.25);
+  --cream:       #FBF6EE;
+  --cream-2:     #F4ECDD;
+  --cream-3:     #EDE0C5;
+  --parchment:   #F2E6CC;
+  --ink:         #3D2814;
+  --ink-soft:    #6B4A2B;
+  --ink-faded:   #8B6A4A;
+  --gold:        #E8B547;
+  --gold-light:  #F5C84B;
+  --gold-deep:   #B8862A;
+  --sage:        #98A77C;
+  --sage-deep:   #6F8056;
+  --sage-shadow: #4F5E36;
+  --rust:        #C57A4F;
+  --rust-deep:   #A55F38;
+  --wax:         #B8633A;
+  --wax-deep:    #7B3A1E;
+  --shadow-sm:   0 4px 12px -6px rgba(92, 61, 31, 0.20);
+  --shadow:      0 18px 40px -18px rgba(92, 61, 31, 0.35);
+  --shadow-lg:   0 35px 70px -30px rgba(92, 61, 31, 0.45);
 }
 
+/* ----------------------------------------------------------------------------
+   Paper grain — SVG turbulence noise applied as body texture.
+---------------------------------------------------------------------------- */
 html, body {
-  background: var(--cream);
+  background-color: var(--cream);
   color: var(--ink);
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 18px;
-  line-height: 1.5;
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
+
+body::before {
+  /* Stable noise grain layer */
+  content: '';
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='3'/><feColorMatrix values='0 0 0 0 0.36 0 0 0 0 0.24 0 0 0 0 0.12 0 0 0 0.18 0'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>");
+  background-size: 220px 220px;
+}
+
+body::after {
+  /* Warm vignette + subtle paper tone */
+  content: '';
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  background:
+    radial-gradient(ellipse at top, rgba(232, 181, 71, 0.10), transparent 55%),
+    radial-gradient(ellipse at bottom, rgba(165, 95, 56, 0.08), transparent 60%),
+    radial-gradient(circle at 50% 50%, transparent 40%, rgba(60, 40, 20, 0.10) 100%);
+}
+
+main, .lang-toggle, .back-link, header, footer { position: relative; z-index: 3; }
 
 .font-script   { font-family: 'Dancing Script', cursive; font-weight: 600; }
 .font-display  { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 500; letter-spacing: 0.02em; }
@@ -33,219 +76,521 @@ html, body {
   font-family: 'Amiri', 'Cormorant Garamond', serif;
 }
 
-/* === Botanical decorative frame ============================================ */
+/* Drop cap for opening paragraphs */
+.drop-cap::first-letter {
+  font-family: 'Dancing Script', cursive;
+  float: left;
+  font-size: 4.4em;
+  line-height: 0.85;
+  margin: 0.05em 0.08em 0 0;
+  color: var(--rust-deep);
+}
+[dir="rtl"] .drop-cap::first-letter { float: right; margin: 0.05em 0 0 0.08em; }
+
+/* ============================================================================
+   Botanical floaters — scattered watercolor SVGs that drift gently in margins
+============================================================================ */
 .botanical {
   position: relative;
-  background:
-    radial-gradient(ellipse at top, rgba(232, 181, 71, 0.08), transparent 60%),
-    var(--cream);
+  background-color: var(--cream);
+  overflow-x: clip;
 }
 
-.botanical::before, .botanical::after {
+.flora {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  z-index: 1;
+}
+.flora--bee     { width: 56px; }
+.flora--daisy   { width: 60px; }
+.flora--mush    { width: 60px; }
+.flora--sun     { width: 110px; }
+.flora--corner  { width: 200px; }
+
+.flora.spin   { animation: spinFlora 60s linear infinite; }
+.flora.drift  { animation: drift 14s ease-in-out infinite; }
+.flora.bobbin { animation: bobbin 6s ease-in-out infinite; }
+
+@keyframes spinFlora { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+@keyframes drift {
+  0%,100% { transform: translate(0,0) rotate(-3deg); }
+  25%     { transform: translate(8px,-10px) rotate(2deg); }
+  50%     { transform: translate(-6px,-18px) rotate(-4deg); }
+  75%     { transform: translate(-12px,-6px) rotate(3deg); }
+}
+@keyframes bobbin {
+  0%,100% { transform: translateY(0); }
+  50%     { transform: translateY(-8px); }
+}
+
+/* ============================================================================
+   Section dividers — hand-drawn ornaments between content blocks
+============================================================================ */
+.divider {
+  width: min(86vw, 460px);
+  height: 60px;
+  margin: 36px auto 28px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  opacity: 0.85;
+  position: relative;
+  z-index: 3;
+}
+.divider--sun   { background-image: url("../assets/divider-sun.svg"); }
+.divider--bee   { background-image: url("../assets/divider-bee.svg"); height: 70px; }
+.divider--garland {
+  width: min(92vw, 600px);
+  height: 100px;
+  background-image: url("../assets/garland.svg");
+}
+
+/* ============================================================================
+   Deckle-edge card — irregular torn paper edges + warm shadow
+============================================================================ */
+.card {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(255,253,247,0.92), rgba(248,238,220,0.85));
+  color: var(--ink);
+  padding: 32px 28px;
+  border-radius: 4px;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.6) inset,
+    0 0 0 1px rgba(184, 134, 42, 0.25),
+    var(--shadow);
+  z-index: 3;
+}
+
+/* irregular deckle edge using svg mask */
+.card.deckle {
+  mask-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'><path d='M 0 1.5 Q 5 0.4, 10 1.4 T 22 1.2 T 36 1.6 T 52 0.8 T 68 1.5 T 84 0.6 T 100 1.5 L 100 98.5 Q 94 99.6, 88 98.5 T 76 99 T 60 98.4 T 44 99.2 T 28 98.6 T 14 99.4 T 0 98.6 Z' fill='black'/></svg>");
+  mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  -webkit-mask-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'><path d='M 0 1.5 Q 5 0.4, 10 1.4 T 22 1.2 T 36 1.6 T 52 0.8 T 68 1.5 T 84 0.6 T 100 1.5 L 100 98.5 Q 94 99.6, 88 98.5 T 76 99 T 60 98.4 T 44 99.2 T 28 98.6 T 14 99.4 T 0 98.6 Z' fill='black'/></svg>");
+  -webkit-mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+}
+
+/* Hand-stitched border accent for important cards */
+.card.stitched::before {
   content: '';
   position: absolute;
-  width: 120px; height: 120px;
-  background-image: url("../assets/vine.svg");
-  background-repeat: no-repeat;
-  background-size: contain;
-  opacity: 0.65;
+  inset: 8px;
+  border: 1px dashed rgba(165, 95, 56, 0.4);
+  border-radius: inherit;
   pointer-events: none;
 }
-.botanical::before { top: 0; left: 0; }
-.botanical::after  { bottom: 0; right: 0; transform: rotate(180deg); }
 
-/* === Envelope =============================================================== */
+.card.deep {
+  background:
+    linear-gradient(180deg, var(--parchment), #E8D7B4);
+  color: var(--ink);
+}
+
+/* ============================================================================
+   ENVELOPE STAGE — heirloom letter sealed with wax & wrapped in twine
+============================================================================ */
 #envelope-stage {
   position: fixed; inset: 0;
-  background: linear-gradient(180deg, #F4ECDD 0%, #EBDFC7 100%);
   display: grid; place-items: center;
   z-index: 100;
-  perspective: 1500px;
-  transition: opacity 800ms ease, transform 800ms ease;
+  perspective: 1800px;
+  background:
+    radial-gradient(circle at 50% 35%, #F4E6C4 0%, #DEC79B 55%, #B79964 100%);
+  transition: opacity 900ms cubic-bezier(0.4, 0, 0.2, 1),
+              transform 900ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+#envelope-stage::before {
+  /* paper grain */
+  content: '';
+  position: absolute; inset: 0;
+  pointer-events: none;
+  opacity: 0.45;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='7'/><feColorMatrix values='0 0 0 0 0.4 0 0 0 0 0.28 0 0 0 0 0.14 0 0 0 0.16 0'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>");
+  background-size: 240px 240px;
+}
+#envelope-stage::after {
+  /* warm vignette */
+  content: '';
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 60%, transparent 30%, rgba(60, 32, 12, 0.45) 100%);
 }
 #envelope-stage.opened {
   opacity: 0;
-  transform: translateY(40px);
+  transform: scale(1.05) translateY(-30px);
   pointer-events: none;
 }
 
 .envelope {
-  width: min(86vw, 420px);
+  width: min(86vw, 460px);
   aspect-ratio: 7 / 5;
   position: relative;
   transform-style: preserve-3d;
-  filter: drop-shadow(0 25px 40px rgba(92, 61, 31, 0.3));
+  filter: drop-shadow(0 35px 50px rgba(60, 32, 12, 0.55));
+  z-index: 2;
+  animation: floatEnvelope 6s ease-in-out infinite;
+}
+@keyframes floatEnvelope {
+  0%, 100% { transform: translateY(0) rotate(-0.6deg); }
+  50%      { transform: translateY(-12px) rotate(0.6deg); }
 }
 
 .envelope__body {
   position: absolute; inset: 0;
-  background: linear-gradient(135deg, #F0E2C5 0%, #E8D4AC 100%);
-  border-radius: 6px;
+  background:
+    /* watermark "N&K" in faded ink */
+    radial-gradient(ellipse at 50% 50%, rgba(60, 40, 20, 0.06), transparent 35%),
+    /* paper grain */
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='2' seed='2'/><feColorMatrix values='0 0 0 0 0.4 0 0 0 0 0.28 0 0 0 0 0.14 0 0 0 0.10 0'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>"),
+    linear-gradient(135deg, #F1E2BE 0%, #E0C99A 100%);
+  background-size: 220px 220px, 200px 200px, auto;
+  border-radius: 4px;
   overflow: hidden;
+  box-shadow: inset 0 0 60px rgba(140, 100, 50, 0.18);
+}
+/* Hand-written address (calligraphy) */
+.envelope__addr {
+  position: absolute;
+  left: 14%; right: 14%;
+  top: 22%;
+  text-align: center;
+  font-family: 'Dancing Script', cursive;
+  color: rgba(60, 32, 12, 0.78);
+  font-size: clamp(13px, 3.4vw, 18px);
+  line-height: 1.4;
+  transform: rotate(-1.5deg);
+  z-index: 3;
+}
+.envelope__addr .to {
+  display: block;
+  font-style: italic;
+  font-size: 0.78em;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(60, 32, 12, 0.6);
+  margin-bottom: 6px;
+}
+.envelope__addr .name {
+  display: block;
+  font-size: 1.7em;
+  letter-spacing: 0.02em;
+}
+.envelope__addr .place {
+  display: block;
+  margin-top: 6px;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 0.85em;
+  color: rgba(60, 32, 12, 0.55);
+}
+
+/* postmark stamp top-right */
+.envelope__postmark {
+  position: absolute;
+  top: 6%; right: 6%;
+  width: 26%;
+  max-width: 130px;
+  transform: rotate(8deg);
+  opacity: 0.78;
+  z-index: 4;
 }
 
 .envelope__body::before {
   /* Bottom triangle (front fold) */
   content: '';
   position: absolute; left: 0; right: 0; bottom: 0; top: 50%;
-  background: linear-gradient(180deg, #DCC79B 0%, #C8B07A 100%);
+  background:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='2' seed='4'/><feColorMatrix values='0 0 0 0 0.4 0 0 0 0 0.28 0 0 0 0 0.14 0 0 0 0.10 0'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>"),
+    linear-gradient(180deg, #D9BE85 0%, #BFA065 100%);
+  background-size: 180px 180px, auto;
   clip-path: polygon(0 100%, 50% 0, 100% 100%);
+  z-index: 1;
 }
-
 .envelope__body::after {
-  /* Side fold lines */
+  /* faint side fold lines */
   content: '';
   position: absolute; inset: 0;
   background:
-    linear-gradient(45deg, transparent 49.5%, rgba(92, 61, 31, 0.12) 49.5%, rgba(92, 61, 31, 0.12) 50.5%, transparent 50.5%),
-    linear-gradient(-45deg, transparent 49.5%, rgba(92, 61, 31, 0.12) 49.5%, rgba(92, 61, 31, 0.12) 50.5%, transparent 50.5%);
+    linear-gradient(45deg, transparent 49.7%, rgba(80, 50, 20, 0.18) 49.7%, rgba(80, 50, 20, 0.18) 50.3%, transparent 50.3%),
+    linear-gradient(-45deg, transparent 49.7%, rgba(80, 50, 20, 0.18) 49.7%, rgba(80, 50, 20, 0.18) 50.3%, transparent 50.3%);
+  z-index: 2;
 }
 
 .envelope__flap {
   position: absolute; left: 0; right: 0; top: 0;
   height: 50%;
-  background: linear-gradient(180deg, #E8D4AC 0%, #D8BE85 100%);
+  background:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='2' seed='5'/><feColorMatrix values='0 0 0 0 0.4 0 0 0 0 0.28 0 0 0 0 0.14 0 0 0 0.12 0'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>"),
+    linear-gradient(180deg, #E8D4AC 0%, #CBAA72 100%);
+  background-size: 180px 180px, auto;
   clip-path: polygon(0 0, 100% 0, 50% 100%);
   transform-origin: top center;
-  transition: transform 1100ms cubic-bezier(0.55, -0.2, 0.4, 1.4);
-  z-index: 3;
+  transition: transform 1300ms cubic-bezier(0.55, -0.18, 0.4, 1.45);
+  z-index: 5;
+  box-shadow: 0 6px 14px rgba(80, 50, 20, 0.25);
+}
+.envelope__flap::after {
+  /* gold inner lining peek when opening */
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 60%, rgba(245, 200, 75, 0.5) 100%);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+.envelope.opening .envelope__flap { transform: rotateX(178deg); }
+
+/* twine wrap + label */
+.envelope__twine {
+  position: absolute; left: -6%; right: -6%; top: 48%;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, #6B4A2B 0 6px, #8B6A4A 6px 10px);
+  opacity: 0.6;
+  z-index: 4;
+  transform: rotate(-1deg);
 }
 
-.envelope.opening .envelope__flap {
-  transform: rotateX(180deg);
-}
-
-/* Wax seal */
+/* Wax seal — large textured medallion */
 .wax-seal {
   position: absolute;
   left: 50%; top: 50%;
-  width: 100px; height: 100px;
-  margin-left: -50px; margin-top: -50px;
+  width: 130px; height: 130px;
+  margin-left: -65px; margin-top: -65px;
   border-radius: 50%;
-  background:
-    radial-gradient(circle at 35% 30%, #E29275 0%, var(--wax) 35%, var(--wax-deep) 75%, #6B321A 100%);
   display: grid; place-items: center;
   color: #F4ECDD;
   font-family: 'Cormorant Garamond', serif;
   font-style: italic;
-  font-size: 28px;
+  font-size: 36px;
   font-weight: 700;
-  letter-spacing: 0.05em;
-  z-index: 5;
+  letter-spacing: 0.04em;
+  z-index: 8;
   cursor: pointer;
+  border: 0;
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255, 230, 200, 0.6) 0%, transparent 22%),
+    radial-gradient(circle at 35% 30%, #E29275 0%, var(--wax) 30%, var(--wax-deep) 75%, #4A1F0C 100%);
   box-shadow:
-    inset 4px -4px 8px rgba(0,0,0,0.35),
-    inset -3px 3px 6px rgba(255,255,255,0.18),
-    0 6px 18px rgba(92, 61, 31, 0.45);
-  animation: pulse 2.4s ease-in-out infinite;
-  transition: transform 200ms ease;
+    inset 6px -6px 12px rgba(0,0,0,0.45),
+    inset -4px 4px 8px rgba(255,200,170,0.25),
+    0 12px 24px rgba(60, 32, 12, 0.55),
+    0 0 0 2px rgba(184, 99, 58, 0.5),
+    0 0 0 4px rgba(255, 245, 220, 0.25);
+  transition: transform 220ms ease;
+  animation: pulse 2.6s ease-in-out infinite;
 }
 .wax-seal::before {
+  /* Sunburst ornamental ring */
   content: '';
-  position: absolute; inset: 6px;
+  position: absolute; inset: 12px;
   border-radius: 50%;
-  border: 1.5px dashed rgba(244, 236, 221, 0.4);
+  background:
+    repeating-conic-gradient(rgba(244, 236, 221, 0.25) 0deg 4deg, transparent 4deg 12deg);
+  mix-blend-mode: screen;
+  pointer-events: none;
 }
-.wax-seal:hover { transform: scale(1.05); }
-.wax-seal:active { transform: scale(0.96); }
+.wax-seal::after {
+  /* dashed inner circle */
+  content: '';
+  position: absolute; inset: 18px;
+  border-radius: 50%;
+  border: 1px dashed rgba(244, 236, 221, 0.55);
+  pointer-events: none;
+}
+.wax-seal:hover  { transform: scale(1.04); }
+.wax-seal:active { transform: scale(0.97); }
 
 @keyframes pulse {
-  0%, 100% { box-shadow: inset 4px -4px 8px rgba(0,0,0,0.35), inset -3px 3px 6px rgba(255,255,255,0.18), 0 6px 18px rgba(92, 61, 31, 0.45), 0 0 0 0 rgba(184, 99, 58, 0.4); }
-  50%      { box-shadow: inset 4px -4px 8px rgba(0,0,0,0.35), inset -3px 3px 6px rgba(255,255,255,0.18), 0 6px 18px rgba(92, 61, 31, 0.45), 0 0 0 18px rgba(184, 99, 58, 0); }
+  0%, 100% {
+    box-shadow: inset 6px -6px 12px rgba(0,0,0,0.45), inset -4px 4px 8px rgba(255,200,170,0.25),
+      0 12px 24px rgba(60,32,12,0.55), 0 0 0 2px rgba(184,99,58,0.5),
+      0 0 0 4px rgba(255,245,220,0.25), 0 0 0 0 rgba(184, 99, 58, 0.5);
+  }
+  50% {
+    box-shadow: inset 6px -6px 12px rgba(0,0,0,0.45), inset -4px 4px 8px rgba(255,200,170,0.25),
+      0 12px 24px rgba(60,32,12,0.55), 0 0 0 2px rgba(184,99,58,0.5),
+      0 0 0 4px rgba(255,245,220,0.25), 0 0 0 22px rgba(184, 99, 58, 0);
+  }
 }
 
 .envelope-tap-hint {
   position: absolute;
-  bottom: -56px; left: 0; right: 0;
+  bottom: -64px; left: 0; right: 0;
   text-align: center;
-  color: var(--ink-soft);
-  font-style: italic;
-  font-size: 16px;
-  animation: bob 1.8s ease-in-out infinite;
+  color: rgba(60, 32, 12, 0.7);
+  font-family: 'Dancing Script', cursive;
+  font-size: 22px;
+  letter-spacing: 0.05em;
+  animation: bob 2s ease-in-out infinite;
+  z-index: 3;
 }
 @keyframes bob {
-  0%,100% { transform: translateY(0); opacity: 0.7; }
-  50%     { transform: translateY(4px); opacity: 1; }
+  0%,100% { transform: translateY(0); opacity: 0.65; }
+  50%     { transform: translateY(6px); opacity: 1; }
 }
 
-/* === Main content reveal ==================================================== */
+/* ============================================================================
+   Main content reveal — staggered choreography on entrance
+============================================================================ */
 #main-content {
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 900ms ease 200ms, transform 900ms ease 200ms;
+  transition: opacity 1100ms ease 250ms;
 }
-#main-content.visible {
+#main-content.visible { opacity: 1; }
+
+.reveal-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 900ms cubic-bezier(0.4, 0, 0.2, 1),
+              transform 900ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.reveal-up.in {
   opacity: 1;
   transform: translateY(0);
 }
 
-/* === Cards ================================================================== */
-.card {
-  background: rgba(255, 255, 255, 0.65);
-  border: 1px solid rgba(184, 99, 58, 0.18);
-  border-radius: 18px;
-  padding: 28px;
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(4px);
-}
+/* Staggered entry on hero */
+.hero-line { opacity: 0; transform: translateY(14px); transition: opacity 900ms ease, transform 900ms ease; }
+.visible .hero-line.h1 { opacity: 1; transform: translateY(0); transition-delay: 350ms; }
+.visible .hero-line.h2 { opacity: 1; transform: translateY(0); transition-delay: 600ms; }
+.visible .hero-line.h3 { opacity: 1; transform: translateY(0); transition-delay: 850ms; }
+.visible .hero-line.h4 { opacity: 1; transform: translateY(0); transition-delay: 1100ms; }
+.visible .hero-line.h5 { opacity: 1; transform: translateY(0); transition-delay: 1350ms; }
 
-/* === Countdown ============================================================== */
+/* ============================================================================
+   Hero invitation frame — washi tape "pinned" to a journal page
+============================================================================ */
+.invitation-frame {
+  position: relative;
+  display: inline-block;
+  margin: 24px auto;
+  padding: 18px 18px 22px;
+  background:
+    linear-gradient(180deg, #FFFCF3, #F2E4C4);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.9) inset,
+    0 0 0 1px rgba(184, 134, 42, 0.35),
+    0 25px 50px -20px rgba(60, 32, 12, 0.45),
+    0 6px 14px -6px rgba(60, 32, 12, 0.25);
+  transform: rotate(-1.2deg);
+}
+.invitation-frame img {
+  display: block;
+  max-width: min(78vw, 320px);
+  height: auto;
+  border-radius: 2px;
+  box-shadow: 0 6px 18px -6px rgba(60, 32, 12, 0.4);
+}
+.invitation-frame::before,
+.invitation-frame::after {
+  /* washi tape strips */
+  content: '';
+  position: absolute;
+  width: 80px; height: 22px;
+  background:
+    repeating-linear-gradient(45deg, rgba(232, 181, 71, 0.85) 0 8px, rgba(245, 200, 75, 0.85) 8px 16px);
+  box-shadow: 0 2px 4px rgba(60, 32, 12, 0.2);
+  opacity: 0.92;
+}
+.invitation-frame::before { top: -10px; left: 14px;  transform: rotate(-12deg); }
+.invitation-frame::after  { top: -10px; right: 14px; transform: rotate(10deg); }
+
+/* ============================================================================
+   Countdown — like train-ticket flip cards on parchment strips
+============================================================================ */
 .countdown {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  max-width: 520px;
+  gap: 12px;
+  max-width: 540px;
   margin: 0 auto;
 }
 .countdown__cell {
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(184, 99, 58, 0.2);
-  border-radius: 14px;
-  padding: 14px 6px;
+  position: relative;
+  background:
+    linear-gradient(180deg, #FFFCF3 0%, #F2E4C4 100%);
+  border: 1px solid rgba(184, 134, 42, 0.3);
+  border-radius: 4px;
+  padding: 18px 6px 14px;
   text-align: center;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.7),
+    0 8px 18px -10px rgba(60, 32, 12, 0.35);
+}
+.countdown__cell::before {
+  /* hairline through middle, like a ticket fold */
+  content: '';
+  position: absolute; left: 4px; right: 4px; top: 50%;
+  height: 1px;
+  background: rgba(165, 95, 56, 0.18);
 }
 .countdown__num {
   display: block;
   font-family: 'Cormorant Garamond', serif;
   font-weight: 600;
-  font-size: clamp(28px, 7vw, 44px);
+  font-style: italic;
+  font-size: clamp(34px, 8vw, 52px);
   color: var(--ink);
   line-height: 1;
+  letter-spacing: -0.01em;
 }
 .countdown__label {
   display: block;
-  margin-top: 6px;
-  font-size: 12px;
-  letter-spacing: 0.15em;
+  margin-top: 8px;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 11px;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: var(--ink-soft);
+  color: var(--ink-faded);
 }
 
-/* === Scratch-off ============================================================ */
+/* ============================================================================
+   Wax-stamp scratch-off — parchment background w/ deep wax cover
+============================================================================ */
 .scratch-wrap {
   position: relative;
   width: 100%;
-  max-width: 360px;
-  aspect-ratio: 16 / 9;
+  max-width: 380px;
+  aspect-ratio: 16 / 10;
   margin: 0 auto;
-  border-radius: 16px;
+  border-radius: 4px;
   overflow: hidden;
   box-shadow: var(--shadow);
-  background: var(--cream-2);
+  background:
+    /* parchment with corners darkened */
+    radial-gradient(ellipse at top left,    rgba(184,134,42,0.18), transparent 50%),
+    radial-gradient(ellipse at bottom right,rgba(184,134,42,0.18), transparent 50%),
+    linear-gradient(135deg, #FFFCF3, #F2E4C4);
+  border: 1px solid rgba(184, 134, 42, 0.4);
 }
 .scratch-reveal {
   position: absolute; inset: 0;
   display: grid; place-items: center;
   text-align: center;
-  padding: 18px;
-  background: linear-gradient(135deg, #FFF6E1, #F4ECDD);
+  padding: 22px;
   color: var(--ink);
+}
+.scratch-reveal::before {
+  content: '';
+  position: absolute; inset: 8px;
+  border: 1px dashed rgba(165, 95, 56, 0.35);
+  border-radius: 4px;
+  pointer-events: none;
 }
 .scratch-reveal h3 {
   font-family: 'Dancing Script', cursive;
-  font-size: 28px;
+  font-size: 30px;
   margin-bottom: 6px;
   color: var(--rust-deep);
+}
+.scratch-reveal p {
+  font-style: italic;
+  color: var(--ink-soft);
 }
 #scratch-canvas {
   position: absolute; inset: 0;
@@ -258,132 +603,203 @@ html, body {
   inset: 0;
   display: grid;
   place-items: center;
-  color: rgba(255,255,255,0.95);
+  color: rgba(255,250,240,0.95);
   font-family: 'Dancing Script', cursive;
-  font-size: 26px;
+  font-size: 28px;
+  letter-spacing: 0.05em;
   pointer-events: none;
-  text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  text-shadow: 0 2px 8px rgba(0,0,0,0.45);
 }
 
-/* === Buttons ================================================================ */
+/* ============================================================================
+   Buttons — letterpress feel, gold leaf or sage / rust ink
+============================================================================ */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  padding: 14px 22px;
+  gap: 12px;
+  padding: 16px 26px;
   border-radius: 999px;
   font-family: 'Cormorant Garamond', serif;
   font-weight: 600;
   font-size: 18px;
-  letter-spacing: 0.04em;
-  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-deep) 100%);
+  letter-spacing: 0.06em;
+  background:
+    linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 50%, var(--gold-deep) 100%);
   color: var(--ink);
-  border: 1px solid rgba(92, 61, 31, 0.15);
-  box-shadow: 0 6px 16px -6px rgba(184, 99, 58, 0.4);
+  border: 1px solid rgba(60, 32, 12, 0.18);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.55),
+    inset 0 -2px 4px rgba(80, 50, 20, 0.18),
+    0 8px 18px -6px rgba(184, 134, 42, 0.5);
   text-decoration: none;
-  transition: transform 200ms ease, box-shadow 200ms ease;
+  transition: transform 220ms ease, box-shadow 220ms ease, filter 220ms ease;
+  position: relative;
 }
-.btn:hover  { transform: translateY(-2px); box-shadow: 0 12px 22px -8px rgba(184, 99, 58, 0.55); }
-.btn:active { transform: translateY(0); }
+.btn:hover  { transform: translateY(-2px); filter: brightness(1.04); box-shadow: inset 0 1px 0 rgba(255,255,255,0.55), inset 0 -2px 4px rgba(80,50,20,0.18), 0 16px 28px -10px rgba(184,134,42,0.6); }
+.btn:active { transform: translateY(1px); }
 
 .btn--ghost {
-  background: rgba(255, 255, 255, 0.7);
+  background:
+    linear-gradient(180deg, rgba(255,253,247,0.95), rgba(248,238,220,0.85));
   color: var(--ink);
 }
 .btn--sage {
-  background: linear-gradient(135deg, #B0BE93 0%, var(--sage-deep) 100%);
+  background:
+    linear-gradient(135deg, #B0BE93 0%, var(--sage-deep) 60%, var(--sage-shadow) 100%);
   color: #FBF6EE;
 }
 .btn--rust {
-  background: linear-gradient(135deg, var(--rust) 0%, var(--rust-deep) 100%);
+  background:
+    linear-gradient(135deg, #D88656 0%, var(--rust) 50%, var(--rust-deep) 100%);
   color: #FBF6EE;
 }
 
-/* === Section headings ======================================================= */
+/* ============================================================================
+   Section heading — hand-drawn underline
+============================================================================ */
 .section-title {
   font-family: 'Dancing Script', cursive;
   font-weight: 600;
-  font-size: clamp(32px, 6vw, 48px);
+  font-size: clamp(34px, 7vw, 52px);
   color: var(--rust-deep);
   text-align: center;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
+  line-height: 1.1;
+  position: relative;
+  display: inline-block;
+}
+.section-title-wrap {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 24px;
 }
 .section-sub {
   text-align: center;
-  color: var(--ink-soft);
+  color: var(--ink-faded);
   font-style: italic;
-  margin-bottom: 28px;
+  font-size: 16px;
+}
+.section-eyebrow {
+  display: block;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 12px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+  margin-bottom: 8px;
+}
+.section-rule {
+  display: block;
+  margin-top: 8px;
+  width: 90px;
+  height: 14px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 90 14' fill='none'><path d='M2 7 Q 22 0, 45 7 T 88 7' stroke='%23A55F38' stroke-width='1.4' fill='none' stroke-linecap='round'/><circle cx='45' cy='7' r='2.4' fill='%23A55F38'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
-/* === Lang toggle ============================================================ */
+/* ============================================================================
+   Lang toggle — floating badge with seal feel
+============================================================================ */
 .lang-toggle {
   position: fixed;
-  top: 14px; right: 14px;
+  top: 16px; right: 16px;
   z-index: 50;
   display: inline-flex;
-  background: rgba(255,255,255,0.8);
-  border: 1px solid rgba(184, 99, 58, 0.25);
+  background:
+    linear-gradient(180deg, rgba(255,253,247,0.92), rgba(244,236,221,0.92));
+  border: 1px solid rgba(184, 134, 42, 0.35);
   border-radius: 999px;
   padding: 4px;
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-sm);
 }
-[dir="rtl"] .lang-toggle { right: auto; left: 14px; }
+[dir="rtl"] .lang-toggle { right: auto; left: 16px; }
 .lang-toggle button {
   border: 0;
   background: transparent;
   padding: 6px 14px;
   border-radius: 999px;
-  font-family: inherit;
+  font-family: 'Cormorant Garamond', serif;
   font-size: 14px;
+  font-weight: 600;
   color: var(--ink-soft);
   cursor: pointer;
+  transition: all 200ms ease;
 }
 .lang-toggle button.active {
-  background: var(--ink);
+  background:
+    radial-gradient(circle at 35% 30%, #6B4A2B, #3D2814);
   color: var(--cream);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.15);
 }
 
-/* === Confetti for reveal moment ============================================= */
+/* ============================================================================
+   Footer
+============================================================================ */
+footer {
+  text-align: center;
+  padding: 44px 20px 70px;
+  color: var(--ink-faded);
+  font-style: italic;
+  position: relative;
+}
+footer .sig {
+  font-family: 'Dancing Script', cursive;
+  font-size: 28px;
+  color: var(--rust-deep);
+  margin-top: 4px;
+  display: inline-block;
+}
+
+/* ============================================================================
+   Responsive
+============================================================================ */
+@media (max-width: 480px) {
+  .card { padding: 26px 22px; }
+  .wax-seal { width: 110px; height: 110px; margin-left: -55px; margin-top: -55px; font-size: 30px; }
+  .invitation-frame { padding: 14px 14px 18px; }
+  .flora--corner { width: 140px; }
+  .divider { margin: 28px auto 22px; }
+}
+
+/* ============================================================================
+   Ornate quote / pull-text
+============================================================================ */
+.pull-quote {
+  position: relative;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: clamp(20px, 4.5vw, 26px);
+  color: var(--ink);
+  text-align: center;
+  max-width: 540px;
+  margin: 0 auto;
+  padding: 28px 36px;
+  line-height: 1.4;
+}
+.pull-quote::before, .pull-quote::after {
+  font-family: 'Dancing Script', cursive;
+  font-size: 64px;
+  color: var(--gold-deep);
+  position: absolute;
+  line-height: 1;
+  opacity: 0.65;
+}
+.pull-quote::before { content: '"'; left: -4px; top: -8px; }
+.pull-quote::after  { content: '"'; right: -4px; bottom: -28px; }
+[dir="rtl"] .pull-quote::before { left: auto; right: -4px; }
+[dir="rtl"] .pull-quote::after  { right: auto; left: -4px; }
+
+/* ============================================================================
+   Confetti for reveal moment (existing — kept)
+============================================================================ */
 #confetti-canvas {
   position: fixed; inset: 0;
   pointer-events: none;
   z-index: 200;
-}
-
-/* === Bee floater ============================================================ */
-.bee-float {
-  position: absolute;
-  font-size: 28px;
-  animation: beeFly 12s ease-in-out infinite;
-  opacity: 0.55;
-  pointer-events: none;
-}
-.bee-float.b1 { top: 10%; left: 6%; animation-delay: 0s; }
-.bee-float.b2 { top: 40%; right: 8%; animation-delay: -4s; }
-.bee-float.b3 { bottom: 12%; left: 14%; animation-delay: -8s; }
-@keyframes beeFly {
-  0%,100% { transform: translate(0,0) rotate(-8deg); }
-  25%     { transform: translate(20px,-15px) rotate(8deg); }
-  50%     { transform: translate(-10px,-30px) rotate(-12deg); }
-  75%     { transform: translate(-25px,-10px) rotate(6deg); }
-}
-
-/* === Footer ================================================================= */
-footer {
-  text-align: center;
-  padding: 40px 20px 60px;
-  color: var(--ink-soft);
-  font-style: italic;
-}
-footer .sig {
-  font-family: 'Dancing Script', cursive;
-  font-size: 22px;
-  color: var(--rust-deep);
-}
-
-/* === Responsive nudges ====================================================== */
-@media (max-width: 480px) {
-  .card { padding: 22px 18px; }
-  .wax-seal { width: 86px; height: 86px; margin-left: -43px; margin-top: -43px; font-size: 24px; }
 }

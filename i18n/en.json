@@ -8,17 +8,20 @@
     "dateline": "Friday · May 1, 2026 · 1:00 PM"
   },
   "countdown": {
-    "title": "Counting down the days",
+    "eyebrow": "until the party",
+    "title": "Counting down",
     "days": "Days", "hours": "Hours", "mins": "Minutes", "secs": "Seconds"
   },
   "scratch": {
+    "eyebrow": "a little secret",
     "title": "Boy or Girl?",
-    "sub": "Scratch the card... but don't get too excited 😉",
+    "sub": "Scratch the seal... but don't get too excited 😉",
     "hint": "✦ scratch here ✦",
-    "reveal": { "h": "Nice try!", "p": "The real reveal happens at the party — with cake! 🎂" }
+    "reveal": { "h": "Nice try!", "p": "The real reveal is at the party — with cake! 🎂" }
   },
   "location": {
-    "title": "Where to find us",
+    "eyebrow": "find us at",
+    "title": "The Hive",
     "name": "House 38C",
     "line1": "Salem Sabah Al Salem Al Sabah Street",
     "line2": "Block 4, Mahboula, Kuwait",
@@ -27,10 +30,11 @@
   },
   "gifts": {
     "title": "No gifts, please",
-    "body": "Your presence is the greatest gift we could ask for. Please — no gifts. Just bring your love and excitement! 💛"
+    "body": "Your presence is the greatest gift we could ask for. Just bring your love and excitement."
   },
   "cta": {
-    "title": "A little something extra",
+    "eyebrow": "extras for the day",
+    "title": "A little something more",
     "games": "Play the Games",
     "photos": "Shared Photo Album",
     "advice": "Leave Advice for the Parents",

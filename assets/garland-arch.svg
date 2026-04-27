@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 240" fill="none">
+  <!-- arch frame: vines forming a cathedral arch over content -->
+  <defs>
+    <path id="larch" d="M40 230 C 60 130, 140 50, 300 30"/>
+    <path id="rarch" d="M560 230 C 540 130, 460 50, 300 30"/>
+  </defs>
+  <use href="#larch" stroke="#6F8056" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <use href="#rarch" stroke="#6F8056" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- secondary vines -->
+  <path d="M70 190 C 90 120, 130 90, 180 80" stroke="#98A77C" stroke-width="1.2" fill="none" stroke-linecap="round" opacity="0.85"/>
+  <path d="M530 190 C 510 120, 470 90, 420 80" stroke="#98A77C" stroke-width="1.2" fill="none" stroke-linecap="round" opacity="0.85"/>
+  <!-- leaves -->
+  <g fill="#98A77C" stroke="#5C3D1F" stroke-width="0.5">
+    <ellipse cx="60"  cy="180" rx="10" ry="4.5" transform="rotate(60 60 180)"/>
+    <ellipse cx="78"  cy="148" rx="10" ry="4.5" transform="rotate(50 78 148)"/>
+    <ellipse cx="106" cy="110" rx="11" ry="5"   transform="rotate(40 106 110)"/>
+    <ellipse cx="148" cy="76"  rx="10" ry="4.5" transform="rotate(20 148 76)"/>
+    <ellipse cx="200" cy="52"  rx="11" ry="5"   transform="rotate(0 200 52)"/>
+    <ellipse cx="260" cy="36"  rx="10" ry="4.5" transform="rotate(-15 260 36)"/>
+    <ellipse cx="540" cy="180" rx="10" ry="4.5" transform="rotate(-60 540 180)"/>
+    <ellipse cx="522" cy="148" rx="10" ry="4.5" transform="rotate(-50 522 148)"/>
+    <ellipse cx="494" cy="110" rx="11" ry="5"   transform="rotate(-40 494 110)"/>
+    <ellipse cx="452" cy="76"  rx="10" ry="4.5" transform="rotate(-20 452 76)"/>
+    <ellipse cx="400" cy="52"  rx="11" ry="5"   transform="rotate(0 400 52)"/>
+    <ellipse cx="340" cy="36"  rx="10" ry="4.5" transform="rotate(15 340 36)"/>
+  </g>
+  <!-- daisies along arch -->
+  <g>
+    <g transform="translate(124 92) scale(0.28)">
+      <g fill="#FFFBEC" stroke="#5C3D1F" stroke-width="1">
+        <ellipse cx="0" cy="-22" rx="7" ry="14"/><ellipse cx="22" cy="0" rx="7" ry="14" transform="rotate(90 22 0)"/>
+        <ellipse cx="0" cy="22" rx="7" ry="14"/><ellipse cx="-22" cy="0" rx="7" ry="14" transform="rotate(90 -22 0)"/>
+      </g>
+      <circle r="8" fill="#E8B547" stroke="#5C3D1F"/>
+    </g>
+    <g transform="translate(476 92) scale(0.28)">
+      <g fill="#FFFBEC" stroke="#5C3D1F" stroke-width="1">
+        <ellipse cx="0" cy="-22" rx="7" ry="14"/><ellipse cx="22" cy="0" rx="7" ry="14" transform="rotate(90 22 0)"/>
+        <ellipse cx="0" cy="22" rx="7" ry="14"/><ellipse cx="-22" cy="0" rx="7" ry="14" transform="rotate(90 -22 0)"/>
+      </g>
+      <circle r="8" fill="#E8B547" stroke="#5C3D1F"/>
+    </g>
+    <g transform="translate(300 24) scale(0.34)">
+      <g fill="#FFFBEC" stroke="#5C3D1F" stroke-width="1">
+        <ellipse cx="0" cy="-22" rx="7" ry="14"/><ellipse cx="22" cy="0" rx="7" ry="14" transform="rotate(90 22 0)"/>
+        <ellipse cx="0" cy="22" rx="7" ry="14"/><ellipse cx="-22" cy="0" rx="7" ry="14" transform="rotate(90 -22 0)"/>
+        <ellipse cx="16" cy="-16" rx="7" ry="14" transform="rotate(45 16 -16)"/>
+        <ellipse cx="16" cy="16" rx="7" ry="14" transform="rotate(135 16 16)"/>
+        <ellipse cx="-16" cy="16" rx="7" ry="14" transform="rotate(45 -16 16)"/>
+        <ellipse cx="-16" cy="-16" rx="7" ry="14" transform="rotate(135 -16 -16)"/>
+      </g>
+      <circle r="9" fill="#E8B547" stroke="#5C3D1F" stroke-width="1.2"/>
+    </g>
+  </g>
+</svg>

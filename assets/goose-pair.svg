@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160" fill="none">
+  <!-- left goose -->
+  <g transform="translate(20 30)">
+    <ellipse cx="40" cy="74" rx="34" ry="22" fill="#FBF6EE" stroke="#5C3D1F" stroke-width="1.4"/>
+    <path d="M58 60 Q66 30 56 16 Q44 14 44 26 Q42 44 50 60" fill="#FBF6EE" stroke="#5C3D1F" stroke-width="1.4"/>
+    <!-- party hat -->
+    <path d="M48 14 L60 -8 L70 14 Z" fill="#F5C84B" stroke="#5C3D1F" stroke-width="1.2"/>
+    <circle cx="60" cy="-8" r="2.5" fill="#FBF6EE" stroke="#5C3D1F" stroke-width="1"/>
+    <!-- beak -->
+    <path d="M62 22 L74 26 L62 30 Z" fill="#E8B547" stroke="#5C3D1F" stroke-width="1"/>
+    <!-- eye -->
+    <circle cx="56" cy="22" r="1.4" fill="#5C3D1F"/>
+    <!-- bow -->
+    <path d="M48 38 Q44 42 40 38 Q46 34 48 38 Z" fill="#F5C84B" stroke="#5C3D1F" stroke-width="0.8"/>
+    <!-- wing -->
+    <path d="M22 70 Q40 60 58 78 Q44 92 22 86 Z" fill="#FFF6E1" stroke="#5C3D1F" stroke-width="1"/>
+    <!-- legs -->
+    <line x1="32" y1="94" x2="30" y2="106" stroke="#E8B547" stroke-width="2" stroke-linecap="round"/>
+    <line x1="48" y1="94" x2="48" y2="106" stroke="#E8B547" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <!-- right goose -->
+  <g transform="translate(110 36)">
+    <ellipse cx="40" cy="74" rx="34" ry="22" fill="#FBF6EE" stroke="#5C3D1F" stroke-width="1.4"/>
+    <path d="M22 60 Q14 30 24 16 Q36 14 36 26 Q38 44 30 60" fill="#FBF6EE" stroke="#5C3D1F" stroke-width="1.4"/>
+    <path d="M16 14 L28 -8 L38 14 Z" fill="#E8B547" stroke="#5C3D1F" stroke-width="1.2"/>
+    <circle cx="28" cy="-8" r="2.5" fill="#FBF6EE" stroke="#5C3D1F" stroke-width="1"/>
+    <path d="M18 22 L6 26 L18 30 Z" fill="#E8B547" stroke="#5C3D1F" stroke-width="1"/>
+    <circle cx="24" cy="22" r="1.4" fill="#5C3D1F"/>
+    <path d="M32 38 Q36 42 40 38 Q34 34 32 38 Z" fill="#F5C84B" stroke="#5C3D1F" stroke-width="0.8"/>
+    <path d="M22 78 Q40 60 58 70 Q56 88 36 92 Q26 90 22 78 Z" fill="#FFF6E1" stroke="#5C3D1F" stroke-width="1"/>
+    <line x1="32" y1="94" x2="30" y2="106" stroke="#E8B547" stroke-width="2" stroke-linecap="round"/>
+    <line x1="48" y1="94" x2="48" y2="106" stroke="#E8B547" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <!-- baby duckling between -->
+  <g transform="translate(86 90)">
+    <ellipse cx="14" cy="22" rx="14" ry="10" fill="#F8D165" stroke="#5C3D1F" stroke-width="1.2"/>
+    <circle cx="22" cy="14" r="8" fill="#F8D165" stroke="#5C3D1F" stroke-width="1.2"/>
+    <path d="M16 4 L22 -6 L28 4 Z" fill="#A55F38" stroke="#5C3D1F" stroke-width="1"/>
+    <circle cx="22" cy="-6" r="1.8" fill="#FBF6EE" stroke="#5C3D1F" stroke-width="0.8"/>
+    <path d="M28 14 L34 16 L28 18 Z" fill="#E8B547" stroke="#5C3D1F" stroke-width="0.7"/>
+    <circle cx="24" cy="13" r="1" fill="#5C3D1F"/>
+    <line x1="10" y1="30" x2="10" y2="36" stroke="#E8B547" stroke-width="1.6" stroke-linecap="round"/>
+    <line x1="18" y1="30" x2="18" y2="36" stroke="#E8B547" stroke-width="1.6" stroke-linecap="round"/>
+  </g>
+</svg>
