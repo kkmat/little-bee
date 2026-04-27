@@ -90,8 +90,4 @@
     );
   });
 
-  // Make florals interactive (they were pointer-events:none through .flora)
-  const fix = document.createElement('style');
-  fix.textContent = `.flora--bee, .flora--sun, .flora--daisy { pointer-events: auto; cursor: pointer; }`;
-  document.head.appendChild(fix);
 })();

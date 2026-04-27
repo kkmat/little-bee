@@ -59,7 +59,9 @@
     "photos": "Add to the Photo Album",
     "advice": "Leave Advice for the Parents",
     "leaderboard": "Live Leaderboard",
-    "memory": "Memory Wall"
+    "memory": "Memory Wall",
+    "voice": "Voice Note for Baby",
+    "songs": "Request a Song"
   },
   "favors": {
     "title": "Before You Go! 🤍",

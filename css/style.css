@@ -98,10 +98,12 @@ main, .lang-toggle, .back-link, header, footer { position: relative; z-index: 3;
 
 .flora {
   position: absolute;
-  pointer-events: none;
   user-select: none;
-  z-index: 1;
+  z-index: 4;            /* above main content (z:3) so taps land on the SVG */
 }
+/* Decorative-only florals don't take pointer events; interactive ones do */
+.flora--corner, .flora--mush { pointer-events: none; }
+.flora--bee, .flora--sun, .flora--daisy { pointer-events: auto; cursor: pointer; }
 .flora--bee     { width: 56px; }
 .flora--daisy   { width: 60px; }
 .flora--mush    { width: 60px; }
