@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+  <title>🍽️ Culinary Experience — Neethu & Kevin's Baby Shower</title>
+  <meta name="description" content="The menu for Neethu & Kevin's baby shower." />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Dancing+Script:wght@500;600;700&family=Amiri:ital,wght@0,400;0,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/style.css" />
+  <link rel="stylesheet" href="./css/games.css" />
+</head>
+<body class="botanical">
+
+  <a href="./index.html" class="back-link">← <span data-i18n="common.back">Back</span></a>
+
+  <div class="lang-toggle" role="group" aria-label="Language">
+    <button data-lang="en" class="active">EN</button>
+    <button data-lang="ar">ع</button>
+  </div>
+
+  <!-- Floating florals -->
+  <img src="./assets/corner-tl.svg" class="flora flora--corner" alt="" style="top: 20px; left: -30px; opacity: 0.5;">
+  <img src="./assets/corner-tl.svg" class="flora flora--corner" alt="" style="bottom: 20px; right: -30px; transform: rotate(180deg); opacity: 0.5;">
+  <img src="./assets/sun.svg"       class="flora flora--sun spin" alt="" style="top: 14px; right: 70px; opacity: 0.6; width: 90px;">
+  <img src="./assets/bee.svg"       class="flora flora--bee drift" alt="" style="top: 22%; left: 4%;">
+  <img src="./assets/daisy.svg"     class="flora flora--daisy bobbin" alt="" style="top: 60%; right: 4%; width: 50px;">
+  <img src="./assets/mushroom.svg"  class="flora flora--mush" alt="" style="bottom: 8%; left: 6%; width: 56px;">
+
+  <main class="game-shell" style="padding-top: 96px;">
+
+    <header class="text-center mb-6">
+      <span class="font-display italic text-xs tracking-[0.4em] uppercase text-[color:var(--ink-faded)] block mb-2" data-i18n="menu.eyebrow">A feast for our little bee</span>
+      <h1 class="font-script text-5xl md:text-6xl text-[color:var(--rust-deep)] leading-none" data-i18n="menu.pageTitle">Culinary Experience</h1>
+      <span class="block mx-auto mt-3" style="width:90px;height:14px;background-image:url('data:image/svg+xml;utf8,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 90 14%22 fill=%22none%22&gt;&lt;path d=%22M2 7 Q 22 0, 45 7 T 88 7%22 stroke=%22%23A55F38%22 stroke-width=%221.4%22 fill=%22none%22 stroke-linecap=%22round%22/&gt;&lt;circle cx=%2245%22 cy=%227%22 r=%222.4%22 fill=%22%23A55F38%22/&gt;&lt;/svg&gt;');background-repeat:no-repeat;background-position:center;"></span>
+      <p class="muted mt-3 max-w-md mx-auto" data-i18n="menu.pageSub">Curated for today's celebration 🐝</p>
+    </header>
+
+    <div class="divider divider--bee mb-6"></div>
+
+    <div class="menu-card card deckle stitched">
+      <span class="menu-card__corner menu-card__corner--tl" aria-hidden="true">🌿</span>
+      <span class="menu-card__corner menu-card__corner--br" aria-hidden="true">🌿</span>
+
+      <div class="menu-grid">
+
+        <section class="menu-section">
+          <h3 class="menu-section__title" data-i18n="menu.beverages">Beverages</h3>
+          <ul class="menu-list">
+            <li data-i18n="menu.bev.soft">Soft Drinks</li>
+            <li data-i18n="menu.bev.water">Water</li>
+            <li data-i18n="menu.bev.lemon">Fresh Lemon Mint</li>
+          </ul>
+        </section>
+
+        <section class="menu-section">
+          <h3 class="menu-section__title" data-i18n="menu.salad">Salad</h3>
+          <ul class="menu-list">
+            <li data-i18n="menu.salad.green">Green Salad</li>
+          </ul>
+        </section>
+
+        <section class="menu-section">
+          <h3 class="menu-section__title">
+            <span data-i18n="menu.starters">Starters</span>
+            <span class="live-badge" title="Made to order">
+              <span class="live-badge__dot" aria-hidden="true"></span>
+              <span data-i18n="menu.live">LIVE</span>
+            </span>
+          </h3>
+          <ul class="menu-list">
+            <li data-i18n="menu.start.paneer">Paneer Chilli</li>
+            <li data-i18n="menu.start.lollipop">Chicken Lollipop</li>
+            <li data-i18n="menu.start.tandoori">Tandoori Mix Grill</li>
+            <li data-i18n="menu.start.malai">Malai Broccoli</li>
+            <li data-i18n="menu.start.spinach">Cheese Spinach Rolls</li>
+          </ul>
+        </section>
+
+        <section class="menu-section">
+          <h3 class="menu-section__title" data-i18n="menu.main">Main Course</h3>
+          <ul class="menu-list">
+            <li data-i18n="menu.main.rice">Steamed Rice</li>
+            <li data-i18n="menu.main.thai">Veg Thai Curry</li>
+            <li data-i18n="menu.main.dal">Dal Tadka</li>
+            <li data-i18n="menu.main.mutton">Mutton Rogan Josh</li>
+          </ul>
+        </section>
+
+        <section class="menu-section">
+          <h3 class="menu-section__title">
+            <span data-i18n="menu.stations">Live Stations</span>
+            <span class="live-badge" title="Made to order">
+              <span class="live-badge__dot" aria-hidden="true"></span>
+              <span data-i18n="menu.live">LIVE</span>
+            </span>
+          </h3>
+          <ul class="menu-list">
+            <li data-i18n="menu.stations.roti">Assorted Roti &amp; Naan</li>
+            <li data-i18n="menu.stations.dosa">Masala Dosa <span class="muted text-sm">(Keema, Egg, Potato)</span></li>
+            <li data-i18n="menu.stations.panipuri">Pani Puri &amp; Chat Papdi</li>
+          </ul>
+        </section>
+
+        <section class="menu-section">
+          <h3 class="menu-section__title" data-i18n="menu.dessert">Dessert</h3>
+          <ul class="menu-list">
+            <li data-i18n="menu.dessert.gulab">Gulab Jamun with Ice Cream</li>
+          </ul>
+        </section>
+
+      </div>
+
+      <p class="menu-card__footnote muted text-center" data-i18n="menu.foot">Live stations are made-to-order — request your favourites!</p>
+    </div>
+
+    <div class="divider divider--sun mt-10"></div>
+
+    <div class="text-center">
+      <a class="btn btn--ghost" href="./index.html">← <span data-i18n="common.back">Back</span></a>
+    </div>
+  </main>
+
+  <script src="./js/i18n.js"></script>
+</body>
+</html>
