@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+  <title>🏆 Leaderboard — Little Bee</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Dancing+Script:wght@500;600;700&family=Amiri&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/style.css" />
+  <link rel="stylesheet" href="./css/games.css" />
+  <style>
+    .lb-row {
+      display: grid; grid-template-columns: 40px 1fr auto;
+      gap: 12px; align-items: center;
+      padding: 12px 16px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.78);
+      border: 1px solid rgba(184, 99, 58, 0.15);
+      box-shadow: 0 4px 10px -6px rgba(184,99,58,0.2);
+    }
+    .lb-rank {
+      width: 40px; height: 40px;
+      display: grid; place-items: center;
+      border-radius: 50%;
+      font-weight: 700;
+      background: rgba(184, 99, 58, 0.1);
+      color: var(--ink);
+    }
+    .lb-row.gold   .lb-rank { background: linear-gradient(135deg, #F5C84B, #C99936); color: #5C3D1F; }
+    .lb-row.silver .lb-rank { background: linear-gradient(135deg, #DDD3C0, #A89A7C); color: #3D2D14; }
+    .lb-row.bronze .lb-rank { background: linear-gradient(135deg, #D49B6E, #A36037); color: #FBF6EE; }
+    .lb-nick { font-family: 'Cormorant Garamond', serif; font-size: 22px; }
+    .lb-pts  { font-weight: 600; color: var(--rust-deep); }
+
+    .game-tabs { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; margin-bottom: 16px; }
+    .game-tab {
+      padding: 6px 14px; border-radius: 999px;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid rgba(184, 99, 58, 0.2);
+      font-size: 14px; cursor: pointer;
+    }
+    .game-tab.active { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+  </style>
+</head>
+<body class="botanical">
+  <a href="./index.html" class="back-link">← Back</a>
+  <div class="lang-toggle" role="group"><button data-lang="en" class="active">EN</button><button data-lang="ar">ع</button></div>
+
+  <main class="game-shell">
+    <header class="text-center mb-6">
+      <p class="font-script text-3xl text-[color:var(--rust-deep)]">🏆</p>
+      <h1 class="font-display text-3xl uppercase tracking-[0.18em]">Leaderboard</h1>
+      <p class="muted mt-1">Live across all guests · auto-refreshes every few seconds</p>
+    </header>
+
+    <div class="game-tabs" id="tabs"></div>
+    <div id="board" class="grid gap-2"><p class="muted text-center">Loading...</p></div>
+    <p class="muted text-center mt-6 text-sm" id="empty-hint" hidden>
+      No scores yet — go play a game and come back!
+    </p>
+  </main>
+
+  <script src="./js/i18n.js"></script>
+  <script src="./js/api.js"></script>
+  <script>
+  const GAMES = [
+    { key: 'all',      label: 'Overall' },
+    { key: 'trivia',   label: '🧠 Trivia' },
+    { key: 'scramble', label: '🔤 Scramble' },
+    { key: 'emoji',    label: '🍼 Emoji' },
+  ];
+  let active = 'all';
+  let lastData = null;
+
+  const $tabs = document.getElementById('tabs');
+  const $board = document.getElementById('board');
+  const $hint  = document.getElementById('empty-hint');
+
+  GAMES.forEach(g => {
+    const b = document.createElement('button');
+    b.className = 'game-tab' + (g.key === active ? ' active' : '');
+    b.textContent = g.label;
+    b.dataset.key = g.key;
+    b.addEventListener('click', () => {
+      active = g.key;
+      [...$tabs.children].forEach(c => c.classList.toggle('active', c.dataset.key === active));
+      render();
+    });
+    $tabs.appendChild(b);
+  });
+
+  function render() {
+    if (!lastData) return;
+    let rows;
+    if (active === 'all') {
+      rows = lastData.totals.map((r, i) => ({ rank: i+1, nickname: r.nickname, score: r.score }));
+    } else {
+      const list = lastData.perGame[active] || [];
+      rows = list.slice().sort((a,b) => b.score - a.score).map((r, i) => ({ rank: i+1, nickname: r.nickname, score: r.score }));
+    }
+    $board.innerHTML = '';
+    if (rows.length === 0) { $hint.hidden = false; return; }
+    $hint.hidden = true;
+    rows.forEach(r => {
+      const el = document.createElement('div');
+      let cls = '';
+      if (r.rank === 1) cls = ' gold';
+      else if (r.rank === 2) cls = ' silver';
+      else if (r.rank === 3) cls = ' bronze';
+      el.className = 'lb-row' + cls;
+      el.innerHTML = `
+        <div class="lb-rank"></div>
+        <div class="lb-nick"></div>
+        <div class="lb-pts"></div>
+      `;
+      el.querySelector('.lb-rank').textContent = r.rank;
+      el.querySelector('.lb-nick').textContent = r.nickname;
+      el.querySelector('.lb-pts').textContent  = r.score + ' pts';
+      $board.appendChild(el);
+    });
+  }
+
+  async function poll() {
+    try {
+      lastData = await window.LittleBeeAPI.getLeaderboard();
+      render();
+    } catch (err) {
+      $board.innerHTML = '<p class="muted text-center">Could not load yet — retrying...</p>';
+    }
+  }
+
+  poll();
+  setInterval(poll, 5000);
+  </script>
+</body>
+</html>

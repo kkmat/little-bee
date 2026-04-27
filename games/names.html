@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+  <title>🍯 Suggest a Name — Little Bee</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Dancing+Script:wght@500;600;700&family=Amiri&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/games.css" />
+</head>
+<body class="botanical">
+  <a href="./index.html" class="back-link">← Back</a>
+  <div class="lang-toggle" role="group"><button data-lang="en" class="active">EN</button><button data-lang="ar">ع</button></div>
+
+  <main class="game-shell">
+    <header class="text-center mb-4">
+      <p class="font-script text-3xl text-[color:var(--rust-deep)]">🍯</p>
+      <h1 class="font-display text-2xl uppercase tracking-[0.18em]">Suggest a Name</h1>
+      <p class="muted mt-1">We haven't picked a name yet — help us! Vote for your favourites too.</p>
+    </header>
+
+    <div class="game-card">
+      <input id="name" class="lb-text" maxlength="40" placeholder="Drop your favourite name..." />
+      <button id="send" class="btn w-full mt-3">Suggest 🍯</button>
+      <p id="status" class="muted text-sm mt-2 text-center">&nbsp;</p>
+    </div>
+
+    <h2 class="section-title mt-8">All suggestions</h2>
+    <div id="list" class="grid gap-2 mt-2"><p class="muted text-center">Loading...</p></div>
+  </main>
+
+  <script src="../js/i18n.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/join.js"></script>
+  <script>
+  const $name = document.getElementById('name');
+  const $send = document.getElementById('send');
+  const $status = document.getElementById('status');
+  const $list = document.getElementById('list');
+
+  function votedSet() {
+    try { return new Set(JSON.parse(localStorage.getItem('lb-name-voted') || '[]')); }
+    catch { return new Set(); }
+  }
+  function markVoted(id) {
+    const s = votedSet(); s.add(id);
+    localStorage.setItem('lb-name-voted', JSON.stringify([...s]));
+  }
+
+  async function load() {
+    try {
+      const data = await window.LittleBeeAPI.listNames();
+      const voted = votedSet();
+      $list.innerHTML = '';
+      if (!data.items || data.items.length === 0) {
+        $list.innerHTML = '<p class="muted text-center">No suggestions yet — go first!</p>';
+        return;
+      }
+      data.items.forEach(it => {
+        const c = document.createElement('div');
+        c.className = 'wall-card flex items-center justify-between gap-3';
+        c.innerHTML = `
+          <div>
+            <span class="font-display text-2xl"></span>
+            <span class="block text-xs muted"></span>
+          </div>
+          <button class="btn btn--ghost vote">💛 <span class="votes"></span></button>
+        `;
+        c.querySelector('.font-display').textContent = it.name;
+        c.querySelector('.muted').textContent = `suggested by ${it.suggested_by}`;
+        c.querySelector('.votes').textContent = it.votes;
+        const btn = c.querySelector('.vote');
+        if (voted.has(it.id)) btn.disabled = true;
+        btn.addEventListener('click', async () => {
+          btn.disabled = true;
+          try {
+            await window.LittleBeeAPI.voteName(it.id);
+            markVoted(it.id);
+            load();
+          } catch (e) { btn.disabled = false; }
+        });
+        $list.appendChild(c);
+      });
+    } catch (err) {
+      $list.innerHTML = '<p class="muted text-center">Could not load yet.</p>';
+    }
+  }
+
+  async function send() {
+    const v = $name.value.trim();
+    if (!v) return;
+    $send.disabled = true;
+    try {
+      await window.LittleBeeAPI.postName(v);
+      $name.value = '';
+      $status.textContent = 'Suggested 💛';
+      setTimeout(() => { $status.textContent = ' '; }, 1500);
+      load();
+    } catch (err) {
+      $status.textContent = 'Could not save — try again?';
+    } finally {
+      $send.disabled = false;
+    }
+  }
+
+  $send.addEventListener('click', send);
+  if (window.LittleBeeAPI.isJoined()) load();
+  else window.addEventListener('lb-joined', load);
+  </script>
+</body>
+</html>

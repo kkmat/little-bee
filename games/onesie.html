@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+  <title>👕 Design a Onesie — Little Bee</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Dancing+Script:wght@500;600;700&family=Amiri&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/games.css" />
+  <style>
+    .onesie-stage {
+      position: relative;
+      width: 100%; max-width: 360px;
+      aspect-ratio: 4 / 5;
+      margin: 0 auto;
+      background: var(--cream);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      touch-action: none;
+    }
+    .onesie-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .swatch {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.7);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      cursor: pointer;
+    }
+    .swatch.active { transform: scale(1.15); border-color: var(--ink); }
+    .gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .gallery-item {
+      background: rgba(255,255,255,0.75);
+      border: 1px solid rgba(184, 99, 58, 0.18);
+      border-radius: 14px;
+      padding: 10px;
+      box-shadow: 0 4px 10px -6px rgba(184,99,58,0.25);
+    }
+    .gallery-item img { width: 100%; border-radius: 10px; aspect-ratio: 4/5; object-fit: cover; background: var(--cream); }
+    .gallery-item .meta { display: flex; justify-content: space-between; margin-top: 6px; font-size: 13px; }
+  </style>
+</head>
+<body class="botanical">
+  <a href="./index.html" class="back-link">← Back</a>
+  <div class="lang-toggle" role="group"><button data-lang="en" class="active">EN</button><button data-lang="ar">ع</button></div>
+
+  <main class="game-shell">
+    <header class="text-center mb-4">
+      <p class="font-script text-3xl text-[color:var(--rust-deep)]">👕</p>
+      <h1 class="font-display text-2xl uppercase tracking-[0.18em]">Design a Onesie</h1>
+      <p class="muted mt-1">Doodle something for baby's first outfit. Most-loved design wins!</p>
+    </header>
+
+    <div class="game-card">
+      <div class="onesie-stage">
+        <canvas id="bg"></canvas>
+        <canvas id="draw"></canvas>
+      </div>
+
+      <div class="flex gap-2 justify-center flex-wrap mt-4" id="palette"></div>
+
+      <div class="grid grid-cols-3 gap-2 mt-3">
+        <button id="brush-sm" class="btn btn--ghost">small</button>
+        <button id="brush-md" class="btn btn--ghost">medium</button>
+        <button id="brush-lg" class="btn btn--ghost">large</button>
+      </div>
+      <div class="grid grid-cols-2 gap-2 mt-2">
+        <button id="undo" class="btn btn--ghost">↩ Undo</button>
+        <button id="clear" class="btn btn--ghost">✕ Clear</button>
+      </div>
+      <button id="save" class="btn w-full mt-3">Submit your design 👕</button>
+      <p id="status" class="muted text-sm mt-2 text-center">&nbsp;</p>
+    </div>
+
+    <h2 class="section-title mt-8">Gallery</h2>
+    <p class="muted text-center mb-3">Tap 💛 on your favourites</p>
+    <div id="gallery" class="gallery-grid"></div>
+  </main>
+
+  <script src="../js/i18n.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/join.js"></script>
+  <script>
+  // Onesie outline drawn on bg canvas; user draws on overlay canvas; we save the
+  // composite (bg + overlay) as a PNG.
+
+  const stage = document.querySelector('.onesie-stage');
+  const bg    = document.getElementById('bg');
+  const draw  = document.getElementById('draw');
+  const bctx  = bg.getContext('2d');
+  const dctx  = draw.getContext('2d');
+
+  const COLORS = ['#5C3D1F','#C57A4F','#E8B547','#98A77C','#6F8056','#B8633A','#F5C6CB','#A7C7E7','#FFFFFF','#000000'];
+  let color = '#C57A4F';
+  let size  = 8;
+  let drawing = false;
+  let lastPos = null;
+
+  // Stack of drawing snapshots for undo (cap to 12 so memory stays small).
+  const undoStack = [];
+
+  function fitCanvases() {
+    const dpr = devicePixelRatio || 1;
+    const r = stage.getBoundingClientRect();
+    [bg, draw].forEach(c => {
+      c.width = Math.floor(r.width * dpr);
+      c.height = Math.floor(r.height * dpr);
+    });
+    bctx.setTransform(dpr,0,0,dpr,0,0);
+    dctx.setTransform(dpr,0,0,dpr,0,0);
+    paintBg(r.width, r.height);
+  }
+
+  function paintBg(w, h) {
+    bctx.clearRect(0,0,w,h);
+    // soft cream backdrop already from CSS, but paint anyway for export
+    bctx.fillStyle = '#FBF6EE';
+    bctx.fillRect(0,0,w,h);
+    // Onesie outline (centered, ~75% width)
+    const cx = w/2, top = h*0.10;
+    const bodyW = w*0.62, bodyH = h*0.66;
+    bctx.strokeStyle = 'rgba(92,61,31,0.55)';
+    bctx.fillStyle   = 'rgba(255,255,255,0.65)';
+    bctx.lineWidth   = 2.5;
+    bctx.beginPath();
+    // shoulders
+    bctx.moveTo(cx - bodyW*0.36, top + h*0.05);
+    // left sleeve
+    bctx.quadraticCurveTo(cx - bodyW*0.62, top + h*0.05, cx - bodyW*0.55, top + h*0.18);
+    bctx.lineTo(cx - bodyW*0.42, top + h*0.20);
+    // left side down
+    bctx.quadraticCurveTo(cx - bodyW*0.45, top + bodyH*0.6, cx - bodyW*0.42, top + bodyH);
+    // crotch left
+    bctx.lineTo(cx - bodyW*0.10, top + bodyH);
+    bctx.quadraticCurveTo(cx, top + bodyH*0.92, cx + bodyW*0.10, top + bodyH);
+    // right side
+    bctx.lineTo(cx + bodyW*0.42, top + bodyH);
+    bctx.quadraticCurveTo(cx + bodyW*0.45, top + bodyH*0.6, cx + bodyW*0.42, top + h*0.20);
+    bctx.lineTo(cx + bodyW*0.55, top + h*0.18);
+    // right sleeve
+    bctx.quadraticCurveTo(cx + bodyW*0.62, top + h*0.05, cx + bodyW*0.36, top + h*0.05);
+    // neckline
+    bctx.quadraticCurveTo(cx, top + h*0.10, cx - bodyW*0.36, top + h*0.05);
+    bctx.closePath();
+    bctx.fill();
+    bctx.stroke();
+  }
+
+  function pos(e) {
+    const r = draw.getBoundingClientRect();
+    const t = e.touches ? e.touches[0] : e;
+    return { x: t.clientX - r.left, y: t.clientY - r.top };
+  }
+
+  function pushUndo() {
+    try {
+      undoStack.push(draw.toDataURL());
+      while (undoStack.length > 12) undoStack.shift();
+    } catch (e) { /* ignore */ }
+  }
+
+  function start(e) {
+    e.preventDefault();
+    drawing = true;
+    pushUndo();
+    lastPos = pos(e);
+    dctx.beginPath();
+    dctx.fillStyle = color;
+    dctx.arc(lastPos.x, lastPos.y, size/2, 0, Math.PI*2);
+    dctx.fill();
+  }
+  function move(e) {
+    if (!drawing) return;
+    e.preventDefault();
+    const p = pos(e);
+    dctx.strokeStyle = color;
+    dctx.lineCap = 'round';
+    dctx.lineJoin = 'round';
+    dctx.lineWidth = size;
+    dctx.beginPath();
+    dctx.moveTo(lastPos.x, lastPos.y);
+    dctx.lineTo(p.x, p.y);
+    dctx.stroke();
+    lastPos = p;
+  }
+  function end() { drawing = false; lastPos = null; }
+
+  draw.addEventListener('mousedown', start);
+  draw.addEventListener('mousemove', move);
+  window.addEventListener('mouseup', end);
+  draw.addEventListener('touchstart', start, { passive: false });
+  draw.addEventListener('touchmove', move, { passive: false });
+  draw.addEventListener('touchend', end);
+
+  // Palette
+  const palette = document.getElementById('palette');
+  COLORS.forEach((c, idx) => {
+    const s = document.createElement('button');
+    s.className = 'swatch' + (idx === 1 ? ' active' : '');
+    s.style.background = c;
+    s.addEventListener('click', () => {
+      color = c;
+      palette.querySelectorAll('.swatch').forEach(x => x.classList.remove('active'));
+      s.classList.add('active');
+    });
+    palette.appendChild(s);
+  });
+
+  document.getElementById('brush-sm').addEventListener('click', () => size = 4);
+  document.getElementById('brush-md').addEventListener('click', () => size = 8);
+  document.getElementById('brush-lg').addEventListener('click', () => size = 16);
+
+  document.getElementById('clear').addEventListener('click', () => {
+    pushUndo();
+    dctx.clearRect(0,0,draw.width,draw.height);
+  });
+  document.getElementById('undo').addEventListener('click', () => {
+    const last = undoStack.pop();
+    if (!last) { dctx.clearRect(0,0,draw.width,draw.height); return; }
+    const img = new Image();
+    img.onload = () => {
+      dctx.clearRect(0,0,draw.width,draw.height);
+      dctx.drawImage(img, 0, 0, draw.width / (devicePixelRatio||1), draw.height / (devicePixelRatio||1));
+    };
+    img.src = last;
+  });
+
+  // Save: composite bg + draw onto an export canvas, downscale, and upload.
+  const $save = document.getElementById('save');
+  const $status = document.getElementById('status');
+  $save.addEventListener('click', async () => {
+    const exp = document.createElement('canvas');
+    exp.width = 400; exp.height = 500;
+    const ec = exp.getContext('2d');
+    ec.drawImage(bg,   0, 0, exp.width, exp.height);
+    ec.drawImage(draw, 0, 0, exp.width, exp.height);
+    const dataURL = exp.toDataURL('image/png');
+    if (dataURL.length > 800_000) { $status.textContent = 'image too large — try fewer details'; return; }
+    $save.disabled = true;
+    try {
+      await window.LittleBeeAPI.postOnesie(dataURL);
+      $status.textContent = 'Submitted 💛';
+      setTimeout(() => $status.textContent = ' ', 1500);
+      // Clear the user layer so they can keep drawing if they want
+      dctx.clearRect(0,0,draw.width,draw.height);
+      undoStack.length = 0;
+      loadGallery();
+    } catch (e) {
+      $status.textContent = 'Could not submit — try again?';
+    } finally {
+      $save.disabled = false;
+    }
+  });
+
+  // Gallery
+  const $gallery = document.getElementById('gallery');
+  function likedSet() {
+    try { return new Set(JSON.parse(localStorage.getItem('lb-onesie-liked') || '[]')); }
+    catch { return new Set(); }
+  }
+  function markLiked(id) {
+    const s = likedSet(); s.add(id);
+    localStorage.setItem('lb-onesie-liked', JSON.stringify([...s]));
+  }
+  async function loadGallery() {
+    try {
+      const data = await window.LittleBeeAPI.listOnesies();
+      const liked = likedSet();
+      $gallery.innerHTML = '';
+      if (!data.items || data.items.length === 0) {
+        $gallery.innerHTML = '<p class="muted text-center col-span-2">No designs yet — go first!</p>';
+        return;
+      }
+      data.items.forEach(it => {
+        const c = document.createElement('div');
+        c.className = 'gallery-item';
+        c.innerHTML = `
+          <img alt="onesie design" />
+          <div class="meta">
+            <span class="font-script text-lg" style="color: var(--rust-deep)"></span>
+            <button class="badge-pill like">💛 <span class="lc"></span></button>
+          </div>
+        `;
+        c.querySelector('img').src = it.image_b64;
+        c.querySelector('.font-script').textContent = it.nickname;
+        c.querySelector('.lc').textContent = it.likes;
+        const btn = c.querySelector('.like');
+        if (liked.has(it.id)) btn.disabled = true;
+        btn.addEventListener('click', async () => {
+          btn.disabled = true;
+          try { await window.LittleBeeAPI.likeOnesie(it.id); markLiked(it.id); loadGallery(); }
+          catch { btn.disabled = false; }
+        });
+        $gallery.appendChild(c);
+      });
+    } catch (e) {
+      $gallery.innerHTML = '<p class="muted text-center col-span-2">Could not load gallery.</p>';
+    }
+  }
+
+  window.addEventListener('resize', fitCanvases);
+  fitCanvases();
+  if (window.LittleBeeAPI.isJoined()) loadGallery();
+  else window.addEventListener('lb-joined', loadGallery);
+  </script>
+</body>
+</html>

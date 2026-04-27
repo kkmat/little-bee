@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+  <title>📅 Due Date Guess — Little Bee</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Dancing+Script:wght@500;600;700&family=Amiri&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/games.css" />
+</head>
+<body class="botanical">
+  <a href="./index.html" class="back-link">← Back</a>
+  <div class="lang-toggle" role="group"><button data-lang="en" class="active">EN</button><button data-lang="ar">ع</button></div>
+
+  <main class="game-shell">
+    <header class="text-center mb-4">
+      <p class="font-script text-3xl text-[color:var(--rust-deep)]">📅</p>
+      <h1 class="font-display text-2xl uppercase tracking-[0.18em]">Due Date Guess</h1>
+      <p class="muted mt-1">When will baby actually arrive? Closest guess wins after birth!</p>
+    </header>
+
+    <div class="game-card">
+      <p class="muted text-center mb-3">Official due date: <strong>July 6, 2026</strong></p>
+      <input id="guess" type="date" class="lb-text" min="2026-06-01" max="2026-08-15" />
+      <button id="send" class="btn w-full mt-3">Lock in your guess</button>
+      <p id="status" class="muted text-sm mt-2 text-center">&nbsp;</p>
+    </div>
+
+    <h2 class="section-title mt-8">Everyone's guesses</h2>
+    <div id="wall" class="wall"><p class="muted text-center">Loading...</p></div>
+  </main>
+
+  <script src="../js/i18n.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/join.js"></script>
+  <script>
+  const $g = document.getElementById('guess');
+  const $send = document.getElementById('send');
+  const $status = document.getElementById('status');
+  const $wall = document.getElementById('wall');
+  $g.value = '2026-07-06';
+
+  async function load() {
+    try {
+      const data = await window.LittleBeeAPI.listDueDate();
+      $wall.innerHTML = '';
+      if (!data.items || data.items.length === 0) {
+        $wall.innerHTML = '<p class="muted text-center">Be the first to guess!</p>';
+        return;
+      }
+      // Sort by date asc
+      const items = [...data.items].sort((a,b) => a.guess_date.localeCompare(b.guess_date));
+      items.forEach(it => {
+        const c = document.createElement('div');
+        c.className = 'wall-card';
+        const dateStr = new Date(it.guess_date + 'T12:00:00').toLocaleDateString(undefined, { weekday:'short', month:'short', day:'numeric' });
+        c.innerHTML = `<span class="wall-card__nick"></span><p class="wall-card__msg"></p>`;
+        c.querySelector('.wall-card__nick').textContent = it.nickname;
+        c.querySelector('.wall-card__msg').textContent = `🍼 ${dateStr}`;
+        $wall.appendChild(c);
+      });
+    } catch (err) {
+      $wall.innerHTML = '<p class="muted text-center">Could not load yet.</p>';
+    }
+  }
+
+  async function send() {
+    const v = $g.value;
+    if (!v) return;
+    $send.disabled = true;
+    try {
+      await window.LittleBeeAPI.postDueDate(v);
+      $status.textContent = 'Locked in 💛';
+      setTimeout(() => { $status.textContent = ' '; }, 1500);
+      load();
+    } catch (err) {
+      $status.textContent = 'Could not save — try again?';
+    } finally {
+      $send.disabled = false;
+    }
+  }
+
+  $send.addEventListener('click', send);
+  if (window.LittleBeeAPI.isJoined()) load();
+  else window.addEventListener('lb-joined', load);
+  </script>
+</body>
+</html>
