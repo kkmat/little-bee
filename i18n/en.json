@@ -1,7 +1,5 @@
 {
-  "envelope": {
-    "hint": "tap the seal to open"
-  },
+  "envelope": { "hint": "tap the seal to open" },
   "hero": {
     "kicker": "Our little one is on the way!",
     "line1": "Join us for our",
@@ -11,19 +9,13 @@
   },
   "countdown": {
     "title": "Counting down the days",
-    "days": "Days",
-    "hours": "Hours",
-    "mins": "Minutes",
-    "secs": "Seconds"
+    "days": "Days", "hours": "Hours", "mins": "Minutes", "secs": "Seconds"
   },
   "scratch": {
     "title": "Boy or Girl?",
     "sub": "Scratch the card... but don't get too excited 😉",
     "hint": "✦ scratch here ✦",
-    "reveal": {
-      "h": "Nice try!",
-      "p": "The real reveal happens at the party — with cake! 🎂"
-    }
+    "reveal": { "h": "Nice try!", "p": "The real reveal happens at the party — with cake! 🎂" }
   },
   "location": {
     "title": "Where to find us",
@@ -44,16 +36,26 @@
     "advice": "Leave Advice for the Parents",
     "leaderboard": "Live Leaderboard"
   },
-  "footer": {
-    "line1": "made with 🐝 + 💛 for our little one"
-  },
+  "footer": { "line1": "made with 🐝 + 💛 for our little one" },
   "common": {
-    "back": "Back",
-    "submit": "Submit",
-    "loading": "Loading...",
-    "yourName": "Your name",
-    "namePh": "What should we call you?",
-    "saved": "Saved! Thank you 💛",
-    "error": "Something went wrong. Try again?"
+    "back": "Back", "submit": "Submit", "loading": "Loading...",
+    "yourName": "Your name", "namePh": "What should we call you?",
+    "saved": "Saved! Thank you 💛", "error": "Something went wrong. Try again?"
+  },
+  "join": {
+    "intro": "Pick a nickname so we can show your name on the leaderboard."
+  },
+  "games": {
+    "kicker": "Pick a game", "title": "Baby Shower Games",
+    "sub": "Earn points, leave wishes, draw a onesie 🐝",
+    "trivia": "Baby Trivia", "triviaSub": "Test your baby knowledge",
+    "scramble": "Word Scramble", "scrambleSub": "Unscramble baby words against the clock",
+    "emoji": "Emoji Pictionary", "emojiSub": "Decode baby phrases in emojis",
+    "due": "Due Date Guess", "dueSub": "Pick the arrival date — closest wins!",
+    "pred": "Predictions", "predSub": "Guess the future for this little one",
+    "names": "Suggest a Name", "namesSub": "Help us pick — vote for your favourites",
+    "onesie": "Design a Onesie", "onesieSub": "Doodle your design for baby to wear",
+    "advice": "Advice Wall", "adviceSub": "Leave Kevin & Neethu your best parenting wisdom",
+    "lb": "Live Leaderboard", "lbSub": "See who's winning right now"
   }
 }
