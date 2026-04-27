@@ -121,6 +121,36 @@
         <span class="game-tile__arrow">→</span>
       </a>
 
+      <a class="game-tile t-rust" href="./voices.html">
+        <span class="game-tile__icon">🎙️</span>
+        <span class="game-tile__body">
+          <span class="game-tile__cat">voice</span>
+          <span class="game-tile__label" data-i18n="games.voice">Voice Notes for Baby</span>
+          <span class="game-tile__sub" data-i18n="games.voiceSub">Record a 30-second message for our little one</span>
+        </span>
+        <span class="game-tile__arrow">→</span>
+      </a>
+
+      <a class="game-tile t-blush" href="./songs.html">
+        <span class="game-tile__icon">🎵</span>
+        <span class="game-tile__body">
+          <span class="game-tile__cat">playlist</span>
+          <span class="game-tile__label" data-i18n="games.songs">Music Requests</span>
+          <span class="game-tile__sub" data-i18n="games.songsSub">Drop a song you'd love to hear tonight</span>
+        </span>
+        <span class="game-tile__arrow">→</span>
+      </a>
+
+      <a class="game-tile t-ink" href="../memory-wall.html">
+        <span class="game-tile__icon">📖</span>
+        <span class="game-tile__body">
+          <span class="game-tile__cat">scrapbook</span>
+          <span class="game-tile__label" data-i18n="games.memory">Memory Wall</span>
+          <span class="game-tile__sub" data-i18n="games.memorySub">Everything everyone has left for our little one</span>
+        </span>
+        <span class="game-tile__arrow">→</span>
+      </a>
+
       <a class="game-tile featured" href="../leaderboard.html">
         <span class="game-tile__icon">🏆</span>
         <span class="game-tile__body">
@@ -140,6 +170,7 @@
   <script src="../js/i18n.js"></script>
   <script src="../js/api.js"></script>
   <script src="../js/join.js"></script>
+  <script src="../js/confetti-tap.js"></script>
   <script>
     function setHello() {
       const nick = window.LittleBeeAPI.nickname();
