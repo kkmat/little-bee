@@ -64,6 +64,30 @@
       flex: none;
     }
     .preview-btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+    .open-spotify {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #1ED760, #1DB954);
+      color: #0c1e0c;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      box-shadow: 0 4px 10px -4px rgba(0, 100, 30, 0.5);
+      flex: none;
+    }
+    .open-spotify:hover { filter: brightness(1.05); }
+    .host-pill {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: var(--ink); color: var(--gold-light);
+      font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; font-style: italic;
+      margin-left: 8px;
+    }
   </style>
 </head>
 <body class="botanical">
@@ -97,6 +121,9 @@
     </div>
 
     <h2 class="section-title mt-8">Tonight's queue</h2>
+    <p id="host-hint" class="muted text-center text-sm" hidden>
+      <span class="host-pill">host</span> tap <strong>Add to Spotify</strong> on each song · long-press in Spotify → Add to playlist
+    </p>
     <div id="list" class="wall"><p class="muted text-center">Loading...</p></div>
   </main>
 
@@ -258,6 +285,9 @@
       data.items.forEach(it => {
         const c = document.createElement('div');
         c.className = 'wall-card queue';
+        const spotifyUrl = it.spotify_track_id
+          ? `https://open.spotify.com/track/${it.spotify_track_id}`
+          : null;
         c.innerHTML = `
           ${it.cover_url ? `<img src="${it.cover_url}" alt="">` : '<div style="width:56px;height:56px;border-radius:4px;background:#EDE0C5;flex:none"></div>'}
           <div class="body">
@@ -266,6 +296,7 @@
             <div class="who"></div>
           </div>
           ${it.preview_url ? `<button class="preview-btn" data-pv="${escape(it.preview_url)}">▶</button>` : ''}
+          ${spotifyUrl ? `<a class="open-spotify host-only" href="${spotifyUrl}" target="_blank" rel="noopener" title="Open in Spotify">♫ Add to Spotify</a>` : ''}
         `;
         c.querySelector('.title').textContent = it.song;
         c.querySelector('.a').textContent = it.artist || '';
@@ -273,6 +304,13 @@
         if (it.played) c.style.opacity = '0.55';
         $list.appendChild(c);
       });
+
+      // Host-only UI: only show "Add to Spotify" + the host hint when ?host=PIN
+      // is in the URL. Guests don't see this clutter.
+      const hostMode = new URLSearchParams(location.search).get('host') === '345206';
+      document.documentElement.classList.toggle('host-mode', hostMode);
+      document.getElementById('host-hint').hidden = !hostMode;
+      document.querySelectorAll('.host-only').forEach(el => { if (!hostMode) el.style.display = 'none'; });
       // Hook preview buttons
       $list.querySelectorAll('.preview-btn').forEach(btn => {
         const url = btn.getAttribute('data-pv');
