@@ -65,6 +65,30 @@ CREATE TABLE IF NOT EXISTS onesies (
 );
 CREATE INDEX IF NOT EXISTS idx_onesies_likes ON onesies(likes DESC);
 
+-- Voice messages for baby (≤30s audio kept as base64 webm/mp4 in D1)
+CREATE TABLE IF NOT EXISTS voices (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  player_id   TEXT NOT NULL,
+  audio_b64   TEXT NOT NULL,
+  mime        TEXT NOT NULL DEFAULT 'audio/webm',
+  duration    REAL NOT NULL,
+  created_at  INTEGER NOT NULL,
+  FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_voices_at ON voices(created_at DESC);
+
+-- Music requests — guests submit, you/host curate
+CREATE TABLE IF NOT EXISTS songs (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  player_id   TEXT NOT NULL,
+  song        TEXT NOT NULL,
+  artist      TEXT,
+  played      INTEGER NOT NULL DEFAULT 0,
+  created_at  INTEGER NOT NULL,
+  FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_songs_at ON songs(created_at DESC);
+
 -- Bee-simple per-IP rate limiter for likes / posts
 CREATE TABLE IF NOT EXISTS rate_limits (
   ip          TEXT NOT NULL,

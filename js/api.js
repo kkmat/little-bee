@@ -88,5 +88,13 @@ window.LittleBeeAPI = (function () {
     likeOnesie: (id) =>
       _fetch('/api/onesie/like', { method: 'POST', body: JSON.stringify({ id }) }),
     listOnesies: () => _fetch('/api/onesies', { method: 'GET' }),
+
+    postVoice: (audio, mime, duration) =>
+      _fetch('/api/voice', { method: 'POST', body: JSON.stringify({ audio, mime, duration }) }),
+    listVoices: () => _fetch('/api/voices', { method: 'GET' }),
+
+    postSong: (song, artist) =>
+      _fetch('/api/song', { method: 'POST', body: JSON.stringify({ song, artist }) }),
+    listSongs: () => _fetch('/api/songs', { method: 'GET' }),
   };
 })();
