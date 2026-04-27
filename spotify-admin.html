@@ -47,9 +47,19 @@
     <!-- Step 3: Playlist -->
     <div class="card deckle mb-6" id="step-playlist" hidden>
       <p class="font-display italic uppercase tracking-[0.32em] text-xs text-[color:var(--ink-faded)] mb-3">Step 3 — Playlist</p>
-      <p class="muted text-sm mb-3">Paste a playlist URL or ID. Open Spotify, find the playlist, tap Share → Copy link.</p>
-      <input id="playlist" class="lb-text" placeholder="https://open.spotify.com/playlist/..." />
-      <button id="save-playlist" class="btn w-full mt-3">Save playlist</button>
+      <p class="muted text-sm mb-3">Pick one of your playlists below 👇</p>
+
+      <div id="pl-list" class="grid gap-2 mb-3">
+        <p class="muted text-sm text-center">Loading your playlists...</p>
+      </div>
+
+      <details class="mt-3">
+        <summary class="muted text-sm italic cursor-pointer">Or paste a link / ID manually</summary>
+        <div class="mt-3">
+          <input id="playlist" class="lb-text" placeholder="https://open.spotify.com/playlist/..." />
+          <button id="save-playlist" class="btn w-full mt-3">Save playlist</button>
+        </div>
+      </details>
       <p id="pl-status" class="muted text-sm text-center mt-2"></p>
     </div>
 
@@ -110,6 +120,7 @@
       $connPill.textContent = 'connected';
       $connect.textContent = 'Reconnect Spotify';
       show(stepPlaylist);
+      loadPlaylists(status.playlist_id);
       if (status.playlist_id) {
         $playlist.value = status.playlist_id;
         $plStatus.textContent = `Saved · playlist ${status.playlist_id}`;
@@ -119,6 +130,53 @@
       $connPill.className = 'pill-warn';
       $connPill.textContent = 'not connected';
     }
+  }
+
+  async function loadPlaylists(currentId) {
+    const $plList = document.getElementById('pl-list');
+    const pin = sessionStorage.getItem('lb-admin-pin');
+    try {
+      const res = await fetch(`${API}/api/spotify/playlists?pin=${pin}`);
+      if (!res.ok) throw 0;
+      const data = await res.json();
+      $plList.innerHTML = '';
+      if (!data.items || data.items.length === 0) {
+        $plList.innerHTML = '<p class="muted text-sm text-center">You have no playlists you own. Create one in Spotify first.</p>';
+        return;
+      }
+      data.items.forEach(p => {
+        const b = document.createElement('button');
+        b.className = 'btn btn--ghost';
+        b.style.cssText = 'display:flex;align-items:center;gap:12px;padding:10px 14px;text-align:left;justify-content:flex-start';
+        b.innerHTML = `
+          ${p.cover ? `<img src="${p.cover}" alt="" style="width:42px;height:42px;border-radius:4px;object-fit:cover;flex:none;box-shadow:0 2px 6px rgba(60,32,12,0.25)">` :
+                      '<div style="width:42px;height:42px;border-radius:4px;background:#EDE0C5;flex:none"></div>'}
+          <span style="flex:1;min-width:0">
+            <span style="display:block;font-family:Cormorant Garamond,serif;font-weight:600;font-size:17px;line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+            <span style="display:block;font-size:12px;color:var(--ink-faded);font-style:italic">${p.tracks} tracks${p.public ? '' : ' · private'}</span>
+          </span>
+          ${currentId === p.id ? '<span class="pill-ok">selected</span>' : ''}
+        `;
+        b.querySelector('span > span').textContent = p.name;
+        b.addEventListener('click', () => savePlaylist(p.id, p.name));
+        $plList.appendChild(b);
+      });
+    } catch (err) {
+      $plList.innerHTML = '<p class="muted text-sm text-center">Could not load playlists.</p>';
+    }
+  }
+
+  async function savePlaylist(id, label) {
+    const pin = sessionStorage.getItem('lb-admin-pin');
+    const res = await fetch(`${API}/api/spotify/playlist`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pin, playlist_id: id }),
+    });
+    const data = await res.json();
+    if (!data.ok) { $plStatus.textContent = data.error || 'failed'; return; }
+    $plStatus.textContent = `Saved · ${label || data.playlist_id}`;
+    show(stepDone);
+    refresh();
   }
 
   $connect.addEventListener('click', async () => {
