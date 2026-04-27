@@ -78,24 +78,46 @@
     else { ticking = false; ctx.clearRect(0, 0, canvas.width, canvas.height); }
   }
 
-  // Wire taps on bees + sun (the playful florals). Use event delegation so
-  // newly-added bees would also work. The bees drift via CSS animation, so
-  // spawn the confetti at the element's CURRENT visual center rather than
-  // the raw tap coordinate — that way the puff always lands ON the bee
-  // even if the user tapped a few pixels off.
-  document.addEventListener('click', (e) => {
-    const target = e.target.closest('.flora--bee, .flora--sun, .flora--daisy');
-    if (!target) return;
+  // The florals drift via CSS animation, so a tap aimed at them often
+  // lands a few pixels off — and if the bee happens to be drifting over
+  // a card/button, that element steals the click instead. Solution:
+  // detect taps within 60 px of any floral's current center and treat
+  // those as a hit.
+  const HIT_RADIUS = 60;
+
+  function nearestFloral(x, y) {
+    let best = null, bestD = Infinity;
+    document.querySelectorAll('.flora--bee, .flora--sun, .flora--daisy').forEach(f => {
+      const r = f.getBoundingClientRect();
+      // skip elements that are off-screen so we don't fire confetti for
+      // distant florals when tapping random space
+      if (r.bottom < 0 || r.top > innerHeight || r.right < 0 || r.left > innerWidth) return;
+      const cx = r.left + r.width / 2;
+      const cy = r.top + r.height / 2;
+      const d = Math.hypot(x - cx, y - cy);
+      if (d < bestD) { bestD = d; best = f; }
+    });
+    return best && bestD <= HIT_RADIUS ? { el: best, dist: bestD } : null;
+  }
+
+  function fireFor(target) {
     const r = target.getBoundingClientRect();
     spawn(r.left + r.width / 2, r.top + r.height / 2);
-    // gentle bounce to confirm interaction (composite transform so we don't
-    // override the drift/bobbin keyframes)
     target.animate(
       [{ transform: 'scale(1)' },
        { transform: 'scale(1.18)' },
        { transform: 'scale(1)' }],
       { duration: 360, easing: 'ease-out', composite: 'add' }
     );
+  }
+
+  document.addEventListener('click', (e) => {
+    // Direct hit?
+    const direct = e.target.closest('.flora--bee, .flora--sun, .flora--daisy');
+    if (direct) { fireFor(direct); return; }
+    // Near miss?
+    const near = nearestFloral(e.clientX, e.clientY);
+    if (near) fireFor(near.el);
   });
 
 })();
