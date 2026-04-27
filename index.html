@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
   <meta name="theme-color" content="#FBF6EE" />
-  <title>🐝 Neethu & Kevin's Baby Shower — May 1, 2026</title>
-  <meta name="description" content="Our little one is on the way! Join us as we celebrate Mom-to-Be Neethu — Friday, May 1, 2026, 1 PM, Mahboula." />
+  <title>🐝 Welcome — Neethu & Kevin's Baby Shower</title>
+  <meta name="description" content="Welcome to Neethu & Kevin's baby shower. Menu, games, photo album, advice wall and more." />
 
   <meta property="og:title" content="🐝 Neethu & Kevin's Baby Shower" />
-  <meta property="og:description" content="Our little one is on the way! May 1, 2026 · 1 PM · Mahboula, Kuwait" />
+  <meta property="og:description" content="Our little one is on the way! Welcome to the celebration." />
   <meta property="og:image" content="./assets/invitation.png" />
   <meta property="og:type" content="website" />
 
@@ -25,22 +25,41 @@
 </head>
 <body>
 
-  <!-- ============ ENVELOPE STAGE ============ -->
-  <div id="envelope-stage" aria-label="Tap the wax seal to open the invitation">
-    <div class="envelope" id="envelope">
-      <div class="envelope__body">
-        <img src="./assets/postmark.svg" alt="" class="envelope__postmark" />
-        <div class="envelope__addr">
-          <span class="to">to our dearest</span>
-          <span class="name">Family &amp; Friends</span>
-          <span class="place">Mahboula · Kuwait</span>
-        </div>
-      </div>
-      <div class="envelope__twine"></div>
-      <div class="envelope__flap"></div>
-      <button class="wax-seal" id="wax-seal" aria-label="Open invitation">N&amp;K</button>
-      <div class="envelope-tap-hint" data-i18n="envelope.hint">tap the seal to open</div>
+  <!-- ============ CURTAIN STAGE — welcome reveal ============ -->
+  <div id="curtain-stage" aria-label="Tap to enter">
+    <!-- Scalloped valance & top sign -->
+    <div class="curtain-valance">
+      <span class="curtain-banner">
+        <span class="curtain-banner__line">🐝</span>
+        <span class="curtain-banner__title font-script" data-i18n="curtain.house">Neethu &amp; Kevin's</span>
+        <span class="curtain-banner__sub" data-i18n="curtain.shower">Baby Shower</span>
+      </span>
     </div>
+
+    <!-- Two fabric panels -->
+    <div class="curtain curtain--left"  aria-hidden="true">
+      <div class="curtain-fabric"></div>
+      <div class="curtain-tieback curtain-tieback--left"></div>
+    </div>
+    <div class="curtain curtain--right" aria-hidden="true">
+      <div class="curtain-fabric"></div>
+      <div class="curtain-tieback curtain-tieback--right"></div>
+    </div>
+
+    <!-- Welcome plaque centered between curtains -->
+    <div class="curtain-plaque">
+      <span class="curtain-plaque__eyebrow" data-i18n="curtain.eyebrow">we're so glad you're here</span>
+      <span class="curtain-plaque__welcome font-script" data-i18n="curtain.welcome">Welcome</span>
+      <span class="curtain-plaque__rule" aria-hidden="true"></span>
+      <span class="curtain-plaque__sub" data-i18n="curtain.sub">Tap to enter the celebration</span>
+    </div>
+
+    <!-- Tassel pull at center bottom -->
+    <button class="curtain-tassel" id="curtain-tassel" aria-label="Open the curtain">
+      <span class="curtain-tassel__rope" aria-hidden="true"></span>
+      <span class="curtain-tassel__bell" aria-hidden="true"></span>
+      <span class="curtain-tassel__fringe" aria-hidden="true"></span>
+    </button>
   </div>
 
   <!-- ============ LANG TOGGLE ============ -->
@@ -56,44 +75,105 @@
     <img src="./assets/corner-tl.svg"  class="flora flora--corner" alt="" style="top: 20px; left: -30px; opacity: 0.55;">
     <img src="./assets/corner-tl.svg"  class="flora flora--corner" alt="" style="bottom: 20px; right: -30px; transform: rotate(180deg); opacity: 0.55;">
     <img src="./assets/sun.svg"        class="flora flora--sun spin" alt="" style="top: 18px; right: 14px; opacity: 0.7;">
-    <img src="./assets/bee.svg"        class="flora flora--bee drift" alt="" style="top: 30%; left: 4%;">
-    <img src="./assets/bee.svg"        class="flora flora--bee drift" alt="" style="top: 60%; right: 6%; animation-delay: -5s;">
-    <img src="./assets/daisy.svg"      class="flora flora--daisy bobbin" alt="" style="top: 45%; left: 86%; animation-delay: -2s;">
-    <img src="./assets/daisy.svg"      class="flora flora--daisy bobbin" alt="" style="top: 70%; left: 3%; animation-delay: -1s;">
-    <img src="./assets/mushroom.svg"   class="flora flora--mush" alt="" style="top: 82%; right: 8%; width: 50px;">
-    <img src="./assets/mushroom.svg"   class="flora flora--mush" alt="" style="top: 92%; left: 7%; width: 60px; transform: scaleX(-1);">
+    <img src="./assets/bee.svg"        class="flora flora--bee drift" alt="" style="top: 32%; left: 4%;">
+    <img src="./assets/bee.svg"        class="flora flora--bee drift" alt="" style="top: 62%; right: 6%; animation-delay: -5s;">
+    <img src="./assets/daisy.svg"      class="flora flora--daisy bobbin" alt="" style="top: 48%; left: 86%; animation-delay: -2s;">
+    <img src="./assets/daisy.svg"      class="flora flora--daisy bobbin" alt="" style="top: 75%; left: 3%; animation-delay: -1s;">
+    <img src="./assets/mushroom.svg"   class="flora flora--mush" alt="" style="top: 88%; right: 8%; width: 50px;">
+    <img src="./assets/mushroom.svg"   class="flora flora--mush" alt="" style="top: 96%; left: 7%; width: 60px; transform: scaleX(-1);">
 
-    <!-- HERO -->
-    <section class="px-5 pt-24 pb-10 text-center max-w-3xl mx-auto relative">
+    <!-- HERO — compact post-curtain header -->
+    <section class="px-5 pt-24 pb-8 text-center max-w-3xl mx-auto relative">
       <p class="hero-line h1 font-script text-3xl md:text-4xl text-[color:var(--rust-deep)]" data-i18n="hero.kicker">Our little one is on the way!</p>
-      <p class="hero-line h2 mt-6 tracking-[0.3em] uppercase text-xs text-[color:var(--ink-faded)]" data-i18n="hero.line1">Join us for our</p>
-      <h1 class="hero-line h3 font-display tracking-[0.18em] uppercase text-4xl md:text-6xl my-3" data-i18n="hero.line2" style="font-weight: 500;">Baby Shower</h1>
-
-      <div class="hero-line h4 invitation-frame">
-        <img src="./assets/invitation.png" alt="Baby shower invitation with watercolor geese" />
-      </div>
-
-      <div class="hero-line h5 mt-4">
-        <p class="tracking-[0.32em] uppercase text-xs text-[color:var(--ink-faded)]" data-i18n="hero.celebrating">Celebrating Mom-to-Be</p>
-        <p class="font-script text-7xl md:text-8xl text-[color:var(--rust-deep)] my-2" style="line-height: 1;">Neethu</p>
-        <p class="mt-4 italic text-lg text-[color:var(--ink-soft)]" data-i18n="hero.dateline">Friday · May 1, 2026 · 1:00 PM</p>
-      </div>
+      <p class="hero-line h2 mt-6 tracking-[0.32em] uppercase text-xs text-[color:var(--ink-faded)]" data-i18n="hero.celebrating">Celebrating Mom-to-Be</p>
+      <p class="hero-line h3 font-script text-7xl md:text-8xl text-[color:var(--rust-deep)] my-2" style="line-height: 1;">Neethu</p>
+      <p class="hero-line h4 mt-3 italic text-[color:var(--ink-soft)]" data-i18n="hero.thanks">So glad to have you celebrating with us today 💛</p>
     </section>
 
     <div class="divider divider--sun reveal-up"></div>
 
-    <!-- COUNTDOWN -->
-    <section class="px-5 pb-12 max-w-3xl mx-auto reveal-up">
+    <!-- MENU -->
+    <section id="menu" class="px-5 pb-12 max-w-3xl mx-auto reveal-up">
       <div class="section-title-wrap">
-        <span class="section-eyebrow" data-i18n="countdown.eyebrow">until the party</span>
-        <h2 class="section-title" data-i18n="countdown.title">Counting down</h2>
+        <span class="section-eyebrow" data-i18n="menu.eyebrow">a feast for our little bee</span>
+        <h2 class="section-title" data-i18n="menu.title">The Menu</h2>
         <span class="section-rule"></span>
       </div>
-      <div class="countdown" id="countdown">
-        <div class="countdown__cell"><span class="countdown__num" id="cd-days">0</span><span class="countdown__label" data-i18n="countdown.days">Days</span></div>
-        <div class="countdown__cell"><span class="countdown__num" id="cd-hours">0</span><span class="countdown__label" data-i18n="countdown.hours">Hours</span></div>
-        <div class="countdown__cell"><span class="countdown__num" id="cd-mins">0</span><span class="countdown__label" data-i18n="countdown.mins">Minutes</span></div>
-        <div class="countdown__cell"><span class="countdown__num" id="cd-secs">0</span><span class="countdown__label" data-i18n="countdown.secs">Seconds</span></div>
+
+      <div class="menu-card card deckle stitched">
+        <span class="menu-card__corner menu-card__corner--tl" aria-hidden="true">🌿</span>
+        <span class="menu-card__corner menu-card__corner--br" aria-hidden="true">🌿</span>
+
+        <div class="menu-grid">
+
+          <section class="menu-section">
+            <h3 class="menu-section__title" data-i18n="menu.beverages">Beverages</h3>
+            <ul class="menu-list">
+              <li data-i18n="menu.bev.soft">Soft Drinks</li>
+              <li data-i18n="menu.bev.water">Water</li>
+              <li data-i18n="menu.bev.lemon">Fresh Lemon Mint</li>
+            </ul>
+          </section>
+
+          <section class="menu-section">
+            <h3 class="menu-section__title" data-i18n="menu.salad">Salad</h3>
+            <ul class="menu-list">
+              <li data-i18n="menu.salad.green">Green Salad</li>
+            </ul>
+          </section>
+
+          <section class="menu-section">
+            <h3 class="menu-section__title">
+              <span data-i18n="menu.starters">Starters</span>
+              <span class="live-badge" title="Made to order">
+                <span class="live-badge__dot" aria-hidden="true"></span>
+                <span data-i18n="menu.live">LIVE</span>
+              </span>
+            </h3>
+            <ul class="menu-list">
+              <li data-i18n="menu.start.paneer">Paneer Chilli</li>
+              <li data-i18n="menu.start.lollipop">Chicken Lollipop</li>
+              <li data-i18n="menu.start.tandoori">Tandoori Mix Grill</li>
+              <li data-i18n="menu.start.malai">Malai Broccoli</li>
+              <li data-i18n="menu.start.spinach">Cheese Spinach Rolls</li>
+            </ul>
+          </section>
+
+          <section class="menu-section">
+            <h3 class="menu-section__title" data-i18n="menu.main">Main Course</h3>
+            <ul class="menu-list">
+              <li data-i18n="menu.main.rice">Steamed Rice</li>
+              <li data-i18n="menu.main.thai">Veg Thai Curry</li>
+              <li data-i18n="menu.main.dal">Dal Tadka</li>
+              <li data-i18n="menu.main.mutton">Mutton Rogan Josh</li>
+            </ul>
+          </section>
+
+          <section class="menu-section">
+            <h3 class="menu-section__title">
+              <span data-i18n="menu.stations">Live Stations</span>
+              <span class="live-badge" title="Made to order">
+                <span class="live-badge__dot" aria-hidden="true"></span>
+                <span data-i18n="menu.live">LIVE</span>
+              </span>
+            </h3>
+            <ul class="menu-list">
+              <li data-i18n="menu.stations.roti">Assorted Roti &amp; Naan</li>
+              <li data-i18n="menu.stations.dosa">Masala Dosa <span class="muted text-sm">(Keema, Egg, Potato)</span></li>
+              <li data-i18n="menu.stations.panipuri">Pani Puri &amp; Chat Papdi</li>
+            </ul>
+          </section>
+
+          <section class="menu-section">
+            <h3 class="menu-section__title" data-i18n="menu.dessert">Dessert</h3>
+            <ul class="menu-list">
+              <li data-i18n="menu.dessert.gulab">Gulab Jamun with Ice Cream</li>
+            </ul>
+          </section>
+
+        </div>
+
+        <p class="menu-card__footnote muted text-center" data-i18n="menu.foot">Live stations are made-to-order — request your favourites!</p>
       </div>
     </section>
 
@@ -111,7 +191,7 @@
         <div class="scratch-reveal">
           <div>
             <h3 data-i18n="scratch.reveal.h">Nice try!</h3>
-            <p data-i18n="scratch.reveal.p">The real reveal is at the party — with cake! 🎂</p>
+            <p data-i18n="scratch.reveal.p">The real reveal is at the cake-cutting — stay tuned! 🎂</p>
           </div>
         </div>
         <canvas id="scratch-canvas"></canvas>
@@ -121,39 +201,16 @@
 
     <div class="divider divider--garland reveal-up"></div>
 
-    <!-- LOCATION -->
-    <section class="px-5 pb-14 max-w-3xl mx-auto reveal-up">
-      <div class="section-title-wrap">
-        <span class="section-eyebrow" data-i18n="location.eyebrow">find us at</span>
-        <h2 class="section-title" data-i18n="location.title">The Hive</h2>
-        <span class="section-rule"></span>
-      </div>
-      <div class="card deckle stitched text-center">
-        <p class="font-display text-3xl mb-2" style="letter-spacing: 0.04em;" data-i18n="location.name">House 38C</p>
-        <p class="italic text-[color:var(--ink-soft)]" data-i18n="location.line1">Salem Sabah Al Salem Al Sabah Street</p>
-        <p class="italic text-[color:var(--ink-soft)]" data-i18n="location.line2">Block 4, Mahboula, Kuwait</p>
-        <div class="my-4 mx-auto" style="width: 60px; height: 1px; background: rgba(165, 95, 56, 0.3);"></div>
-        <p class="font-script text-2xl text-[color:var(--rust-deep)]" data-i18n="location.time">Friday, May 1 · 1:00 PM</p>
-        <div class="mt-6">
-          <a class="btn btn--sage" href="https://www.google.com/maps/search/?api=1&query=House+38C+Salem+Sabah+Al+Salem+Al+Sabah+Street+Block+4+Mahboula+Kuwait" target="_blank" rel="noopener">
-            <span data-i18n="location.cta">Open in Google Maps</span> →
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <div class="divider divider--bee reveal-up"></div>
-
     <!-- CTA BUTTONS -->
-    <section class="px-5 pb-20 max-w-2xl mx-auto reveal-up">
+    <section class="px-5 pb-16 max-w-2xl mx-auto reveal-up">
       <div class="section-title-wrap">
-        <span class="section-eyebrow" data-i18n="cta.eyebrow">extras for the day</span>
+        <span class="section-eyebrow" data-i18n="cta.eyebrow">while you're with us</span>
         <h2 class="section-title" data-i18n="cta.title">A little something more</h2>
         <span class="section-rule"></span>
       </div>
       <div class="grid gap-3">
         <a class="btn" href="./games/index.html"><span>🎮</span><span data-i18n="cta.games">Play the Games</span></a>
-        <a class="btn btn--rust" href="https://photos.app.goo.gl/ucdYLxEE6SmjXZHd7" target="_blank" rel="noopener"><span>📸</span><span data-i18n="cta.photos">Shared Photo Album</span></a>
+        <a class="btn btn--rust" href="https://photos.app.goo.gl/ucdYLxEE6SmjXZHd7" target="_blank" rel="noopener"><span>📸</span><span data-i18n="cta.photos">Add to the Photo Album</span></a>
         <a class="btn btn--sage" href="./games/advice.html"><span>💌</span><span data-i18n="cta.advice">Leave Advice for the Parents</span></a>
         <a class="btn btn--ghost" href="./leaderboard.html"><span>🏆</span><span data-i18n="cta.leaderboard">Live Leaderboard</span></a>
       </div>
@@ -179,8 +236,7 @@
   </main>
 
   <script src="./js/i18n.js"></script>
-  <script src="./js/envelope.js"></script>
-  <script src="./js/countdown.js"></script>
+  <script src="./js/curtain.js"></script>
   <script src="./js/scratch.js"></script>
   <script src="./js/reveal.js"></script>
 </body>

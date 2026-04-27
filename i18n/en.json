@@ -1,42 +1,57 @@
 {
-  "envelope": { "hint": "tap the seal to open" },
+  "curtain": {
+    "house": "Neethu & Kevin's",
+    "shower": "Baby Shower",
+    "eyebrow": "we're so glad you're here",
+    "welcome": "Welcome",
+    "sub": "Tap to enter the celebration"
+  },
   "hero": {
     "kicker": "Our little one is on the way!",
-    "line1": "Join us for our",
-    "line2": "Baby Shower",
     "celebrating": "Celebrating Mom-to-Be",
-    "dateline": "Friday · May 1, 2026 · 1:00 PM"
+    "thanks": "So glad to have you celebrating with us today 💛"
   },
-  "countdown": {
-    "eyebrow": "until the party",
-    "title": "Counting down",
-    "days": "Days", "hours": "Hours", "mins": "Minutes", "secs": "Seconds"
+  "menu": {
+    "eyebrow": "a feast for our little bee",
+    "title": "The Menu",
+    "live": "LIVE",
+    "foot": "Live stations are made-to-order — request your favourites!",
+    "beverages": "Beverages",
+    "bev": { "soft": "Soft Drinks", "water": "Water", "lemon": "Fresh Lemon Mint" },
+    "salad": "Salad",
+    "salad.green": "Green Salad",
+    "starters": "Starters",
+    "start": {
+      "paneer": "Paneer Chilli",
+      "lollipop": "Chicken Lollipop",
+      "tandoori": "Tandoori Mix Grill",
+      "malai": "Malai Broccoli",
+      "spinach": "Cheese Spinach Rolls"
+    },
+    "main": "Main Course",
+    "main.rice": "Steamed Rice",
+    "main.thai": "Veg Thai Curry",
+    "main.dal": "Dal Tadka",
+    "main.mutton": "Mutton Rogan Josh",
+    "stations": "Live Stations",
+    "stations.roti": "Assorted Roti & Naan",
+    "stations.dosa": "Masala Dosa (Keema, Egg, Potato)",
+    "stations.panipuri": "Pani Puri & Chat Papdi",
+    "dessert": "Dessert",
+    "dessert.gulab": "Gulab Jamun with Ice Cream"
   },
   "scratch": {
     "eyebrow": "a little secret",
     "title": "Boy or Girl?",
     "sub": "Scratch the seal... but don't get too excited 😉",
     "hint": "✦ scratch here ✦",
-    "reveal": { "h": "Nice try!", "p": "The real reveal is at the party — with cake! 🎂" }
-  },
-  "location": {
-    "eyebrow": "find us at",
-    "title": "The Hive",
-    "name": "House 38C",
-    "line1": "Salem Sabah Al Salem Al Sabah Street",
-    "line2": "Block 4, Mahboula, Kuwait",
-    "time": "Friday, May 1 · 1:00 PM",
-    "cta": "Open in Google Maps"
-  },
-  "gifts": {
-    "title": "No gifts, please",
-    "body": "Your presence is the greatest gift we could ask for. Just bring your love and excitement."
+    "reveal": { "h": "Nice try!", "p": "The real reveal is at the cake-cutting — stay tuned! 🎂" }
   },
   "cta": {
-    "eyebrow": "extras for the day",
+    "eyebrow": "while you're with us",
     "title": "A little something more",
     "games": "Play the Games",
-    "photos": "Shared Photo Album",
+    "photos": "Add to the Photo Album",
     "advice": "Leave Advice for the Parents",
     "leaderboard": "Live Leaderboard"
   },

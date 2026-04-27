@@ -796,6 +796,384 @@ footer .sig {
 [dir="rtl"] .pull-quote::after  { right: auto; left: -4px; }
 
 /* ============================================================================
+   CURTAIN STAGE — theatrical welcome reveal
+============================================================================ */
+#curtain-stage {
+  position: fixed; inset: 0;
+  display: grid; place-items: center;
+  z-index: 100;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 65%, #4a2c14 0%, #2a160a 70%, #160a04 100%);
+  cursor: pointer;
+  transition: opacity 1100ms ease 600ms;
+}
+#curtain-stage.opening { /* curtains animate; main fades in 1.2s later */ }
+#curtain-stage.opened {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Scalloped valance & banner up top */
+.curtain-valance {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 96px;
+  z-index: 6;
+  background:
+    /* scalloped lower edge via repeating radial */
+    radial-gradient(circle at 12px 96px, #6F8056 22px, transparent 23px) 0 0/24px 96px,
+    linear-gradient(180deg, var(--sage-deep) 0%, var(--sage-shadow) 100%);
+  background-repeat: repeat-x;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+  pointer-events: none;
+}
+.curtain-valance::before {
+  /* gold trim */
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 30px;
+  height: 4px;
+  background: linear-gradient(180deg, var(--gold-light), var(--gold-deep));
+  box-shadow: 0 1px 0 rgba(0,0,0,0.3);
+}
+.curtain-banner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 6px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+}
+.curtain-banner__line {
+  font-size: 18px;
+  margin-bottom: -2px;
+}
+.curtain-banner__title {
+  font-size: clamp(20px, 4.6vw, 26px);
+  color: var(--cream);
+  line-height: 1;
+  margin-bottom: 1px;
+}
+.curtain-banner__sub {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+}
+
+/* Curtain panels */
+.curtain {
+  position: absolute;
+  top: 96px; bottom: 0;
+  width: 52%;
+  z-index: 5;
+  transition: transform 1500ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+.curtain--left  { left: 0; }
+.curtain--right { right: 0; }
+.curtain-fabric {
+  position: absolute;
+  inset: 0;
+  background:
+    /* deep velvet folds — vertical alternating darks */
+    repeating-linear-gradient(90deg,
+      #5a3a1c 0%, #6F4828 4%, #4a2f17 8%, #6F4828 12%, #5a3a1c 16%),
+    radial-gradient(ellipse at 50% 0%, #8a5a30 0%, transparent 60%),
+    linear-gradient(180deg, #6F4828 0%, #3a2410 100%);
+  background-size: auto, 100% 100%, auto;
+  /* hanging weight at bottom — slightly darker */
+  box-shadow:
+    inset 0 -40px 50px rgba(0,0,0,0.45),
+    inset 0 -2px 0 rgba(0,0,0,0.5),
+    0 0 30px rgba(0,0,0,0.4);
+}
+.curtain--left .curtain-fabric  { border-top-left-radius: 0; border-top-right-radius: 14px; }
+.curtain--right .curtain-fabric { border-top-left-radius: 14px; border-top-right-radius: 0; }
+
+/* Tiebacks (gold tassels at the sides) */
+.curtain-tieback {
+  position: absolute;
+  top: 32%;
+  width: 28px; height: 70px;
+  background:
+    radial-gradient(ellipse at 50% 30%, #F5C84B 0%, var(--gold) 35%, var(--gold-deep) 75%, #6e4d10 100%);
+  border-radius: 14px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.45);
+}
+.curtain-tieback--left  { right: -10px; }
+.curtain-tieback--right { left: -10px; }
+.curtain-tieback::after {
+  content: '';
+  position: absolute;
+  bottom: -22px; left: 50%;
+  transform: translateX(-50%);
+  width: 20px; height: 22px;
+  background:
+    repeating-linear-gradient(180deg, #C99936 0 4px, var(--gold) 4px 6px);
+  border-radius: 0 0 8px 8px;
+}
+
+/* Open animation */
+#curtain-stage.opening .curtain--left  { transform: translateX(-110%); }
+#curtain-stage.opening .curtain--right { transform: translateX(110%); }
+#curtain-stage.opening .curtain-plaque { transform: translate(-50%, -80px); opacity: 0; transition: transform 700ms ease, opacity 700ms ease; }
+#curtain-stage.opening .curtain-tassel { opacity: 0; transition: opacity 400ms ease; }
+#curtain-stage.opening .curtain-valance { transform: translateY(-100%); transition: transform 1300ms cubic-bezier(0.6, 0, 0.4, 1) 200ms; }
+
+/* Welcome plaque hangs in front of the closed curtain (above panels). */
+.curtain-plaque {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 8;
+  text-align: center;
+  padding: 32px 36px;
+  background:
+    radial-gradient(circle at 80% 20%, rgba(232, 181, 71, 0.18), transparent 55%),
+    linear-gradient(180deg, #FFFCF3, #F2E4C4);
+  border: 1px solid rgba(184, 134, 42, 0.4);
+  box-shadow:
+    0 30px 60px -20px rgba(0,0,0,0.5),
+    0 0 0 6px rgba(232, 181, 71, 0.18),
+    0 0 0 7px rgba(184, 134, 42, 0.4),
+    inset 0 1px 0 rgba(255,255,255,0.6);
+  border-radius: 6px;
+  max-width: 78vw;
+  animation: plaqueSettle 1100ms cubic-bezier(0.4, 0, 0.2, 1) 250ms both;
+}
+@keyframes plaqueSettle {
+  from { opacity: 0; transform: translate(-50%, -42%) scale(0.92); }
+  to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+.curtain-plaque::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 1px dashed rgba(165, 95, 56, 0.45);
+  border-radius: 4px;
+  pointer-events: none;
+}
+.curtain-plaque__eyebrow {
+  display: block;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+  margin-bottom: 8px;
+}
+.curtain-plaque__welcome {
+  display: block;
+  font-size: clamp(54px, 14vw, 86px);
+  color: var(--rust-deep);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-shadow: 0 2px 0 rgba(255,255,255,0.5);
+}
+.curtain-plaque__rule {
+  display: block;
+  margin: 10px auto 8px;
+  width: 90px; height: 14px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 90 14' fill='none'><path d='M2 7 Q 22 0, 45 7 T 88 7' stroke='%23A55F38' stroke-width='1.4' fill='none' stroke-linecap='round'/><circle cx='45' cy='7' r='2.4' fill='%23A55F38'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.curtain-plaque__sub {
+  display: block;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin-top: 4px;
+}
+
+/* Tassel pull at center bottom */
+.curtain-tassel {
+  position: absolute;
+  bottom: 36px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 7;
+  width: 60px; height: 110px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  padding: 0;
+}
+.curtain-tassel__rope {
+  position: absolute;
+  top: 0; left: 50%;
+  width: 3px; height: 60px;
+  margin-left: -1.5px;
+  background: linear-gradient(180deg, var(--gold-deep), var(--gold), var(--gold-deep));
+  border-radius: 2px;
+  box-shadow: 0 0 6px rgba(0,0,0,0.4);
+  transform-origin: top center;
+  animation: tasselSway 2.4s ease-in-out infinite;
+}
+.curtain-tassel__bell {
+  position: absolute;
+  top: 50px; left: 50%;
+  margin-left: -16px;
+  width: 32px; height: 32px;
+  background:
+    radial-gradient(circle at 35% 30%, #F8D165, var(--gold) 50%, var(--gold-deep));
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  box-shadow:
+    inset 0 4px 6px rgba(255,255,255,0.4),
+    inset 0 -3px 6px rgba(0,0,0,0.3),
+    0 4px 12px rgba(0,0,0,0.4);
+  animation: tasselBob 2.4s ease-in-out infinite;
+}
+.curtain-tassel__fringe {
+  position: absolute;
+  top: 78px; left: 50%;
+  margin-left: -18px;
+  width: 36px; height: 30px;
+  background:
+    repeating-linear-gradient(180deg, var(--gold-deep) 0 6px, var(--gold) 6px 8px);
+  border-radius: 0 0 8px 8px;
+  animation: tasselBob 2.4s ease-in-out infinite;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.35);
+}
+@keyframes tasselSway {
+  0%, 100% { transform: rotate(-5deg); }
+  50%      { transform: rotate(5deg); }
+}
+@keyframes tasselBob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(4px); }
+}
+
+@media (max-width: 480px) {
+  .curtain-tassel { width: 48px; height: 92px; bottom: 28px; }
+  .curtain-tassel__rope { height: 50px; }
+  .curtain-tassel__bell { top: 40px; margin-left: -13px; width: 26px; height: 26px; }
+  .curtain-tassel__fringe { top: 62px; margin-left: -15px; width: 30px; height: 26px; }
+}
+
+/* ============================================================================
+   MENU CARD — feast for our little bee
+============================================================================ */
+.menu-card { position: relative; }
+.menu-card__corner {
+  position: absolute;
+  font-size: 22px;
+  opacity: 0.7;
+  filter: hue-rotate(-15deg) saturate(0.85);
+  z-index: 2;
+}
+.menu-card__corner--tl { top: 12px; left: 16px; transform: rotate(-30deg); }
+.menu-card__corner--br { bottom: 12px; right: 16px; transform: rotate(150deg); }
+
+.menu-grid {
+  display: grid;
+  gap: 22px;
+  margin-top: 8px;
+}
+@media (min-width: 720px) {
+  .menu-grid { grid-template-columns: 1fr 1fr; gap: 28px 36px; }
+}
+
+.menu-section {
+  position: relative;
+  text-align: center;
+}
+
+.menu-section__title {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-style: italic;
+  font-size: clamp(13px, 3vw, 14px);
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin: 0 auto 12px;
+  padding-bottom: 8px;
+  position: relative;
+}
+.menu-section__title::after {
+  /* tiny rule under each section header */
+  content: '';
+  position: absolute;
+  left: 50%; bottom: 0;
+  width: 36px; height: 6px;
+  margin-left: -18px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 6' fill='none'><path d='M2 3 Q 18 0, 34 3' stroke='%23A55F38' stroke-width='1.2' fill='none' stroke-linecap='round'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.85;
+}
+
+.menu-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.menu-list li {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(17px, 4vw, 19px);
+  color: var(--ink);
+  padding: 4px 4px;
+  line-height: 1.45;
+}
+.menu-list li + li {
+  border-top: 1px dotted rgba(165, 95, 56, 0.25);
+  margin-top: 4px;
+  padding-top: 8px;
+}
+
+.menu-card__footnote {
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px dashed rgba(165, 95, 56, 0.3);
+  font-size: 14px;
+}
+
+/* LIVE badge — small gold pill with breathing dot */
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px 3px 8px;
+  border-radius: 999px;
+  background:
+    linear-gradient(135deg, var(--rust) 0%, var(--rust-deep) 100%);
+  color: var(--cream);
+  font-family: 'Cormorant Garamond', serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.25),
+    0 4px 10px -4px rgba(165, 95, 56, 0.5);
+  text-shadow: 0 1px 0 rgba(0,0,0,0.15);
+}
+.live-badge__dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--gold-light);
+  box-shadow: 0 0 0 0 rgba(245, 200, 75, 0.7);
+  animation: livePulse 1.6s ease-in-out infinite;
+}
+@keyframes livePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245, 200, 75, 0.85); }
+  70%      { box-shadow: 0 0 0 8px rgba(245, 200, 75, 0); }
+}
+
+/* ============================================================================
    Favor tag — "Before You Go" reminder, styled like a strung gift tag
 ============================================================================ */
 .favor-tag {
