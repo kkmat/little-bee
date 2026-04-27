@@ -1,0 +1,17 @@
+name = "little-bee-api"
+main = "src/index.js"
+compatibility_date = "2024-09-01"
+
+# CORS origins permitted to call this worker.
+[vars]
+ALLOWED_ORIGINS = "https://kkmat.github.io,http://localhost:8765,http://localhost:8000"
+
+# D1 binding — provision with: wrangler d1 create little-bee
+# Then paste the database_id here.
+[[d1_databases]]
+binding       = "DB"
+database_name = "little-bee"
+database_id   = "REPLACE_WITH_D1_ID"
+
+# Optional: bind to a custom subdomain after deploy, e.g.:
+# routes = [{ pattern = "babyshower-api.nexus.com.kw", custom_domain = true }]
