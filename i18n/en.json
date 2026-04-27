@@ -40,6 +40,10 @@
     "advice": "Leave Advice for the Parents",
     "leaderboard": "Live Leaderboard"
   },
+  "favors": {
+    "title": "Before You Go! 🤍",
+    "body": "Please don't forget to grab a party favor on your way out! Just a little token of our appreciation for celebrating with us today."
+  },
   "footer": { "line1": "made with 🐝 + 💛 for our little one" },
   "common": {
     "back": "Back", "submit": "Submit", "loading": "Loading...",

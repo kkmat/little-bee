@@ -796,6 +796,144 @@ footer .sig {
 [dir="rtl"] .pull-quote::after  { right: auto; left: -4px; }
 
 /* ============================================================================
+   Favor tag — "Before You Go" reminder, styled like a strung gift tag
+============================================================================ */
+.favor-tag {
+  position: relative;
+  max-width: 460px;
+  margin: 36px auto 0;
+  padding: 56px 30px 36px;
+  text-align: center;
+  background:
+    radial-gradient(circle at 80% 20%, rgba(232, 181, 71, 0.18), transparent 55%),
+    radial-gradient(circle at 20% 90%, rgba(165, 95, 56, 0.14), transparent 55%),
+    linear-gradient(180deg, #FFFCF3 0%, #F2E4C4 100%);
+  border: 1px solid rgba(184, 134, 42, 0.32);
+  /* deckle-edge top + bottom + clipped corners (notched gift-tag silhouette) */
+  clip-path: polygon(
+    14% 0%, 86% 0%,                  /* top edge */
+    100% 14%, 100% 100%,             /* notched top-right corner, right edge */
+    0% 100%, 0% 14%                  /* left edge, notched top-left corner */
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.65),
+    0 1px 0 rgba(255, 255, 255, 0.5) inset,
+    0 22px 44px -22px rgba(60, 32, 12, 0.45),
+    0 8px 18px -10px rgba(60, 32, 12, 0.25);
+  animation: favorBreathe 4.5s ease-in-out infinite;
+}
+
+/* Subtle glow + breath pulse — only on this card, only after it's visible */
+.reveal-up.in .favor-tag {
+  animation: favorBreathe 4.5s ease-in-out infinite,
+             favorEntry 1100ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+@keyframes favorBreathe {
+  0%, 100% {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.65),
+      0 22px 44px -22px rgba(60, 32, 12, 0.45),
+      0 8px 18px -10px rgba(60, 32, 12, 0.25),
+      0 0 0 0 rgba(232, 181, 71, 0.0);
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.65),
+      0 28px 50px -22px rgba(60, 32, 12, 0.50),
+      0 12px 24px -10px rgba(60, 32, 12, 0.30),
+      0 0 0 14px rgba(232, 181, 71, 0.10);
+    transform: translateY(-2px) scale(1.008);
+  }
+}
+@keyframes favorEntry {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* string going up out of the tag */
+.favor-tag__string {
+  position: absolute;
+  left: 50%; top: -90px;
+  width: 2px; height: 86px;
+  background:
+    repeating-linear-gradient(180deg, #6B4A2B 0 5px, #8B6A4A 5px 8px);
+  transform: translateX(-50%) rotate(-3deg);
+  transform-origin: bottom center;
+  animation: stringSway 3.2s ease-in-out infinite;
+  z-index: 1;
+  border-radius: 2px;
+}
+@keyframes stringSway {
+  0%, 100% { transform: translateX(-50%) rotate(-3deg); }
+  50%      { transform: translateX(-50%) rotate(3deg); }
+}
+
+/* punched hole at the top of the tag */
+.favor-tag__hole {
+  position: absolute;
+  left: 50%; top: 14px;
+  width: 14px; height: 14px;
+  margin-left: -7px;
+  border-radius: 50%;
+  background: var(--cream);
+  box-shadow:
+    inset 0 1px 2px rgba(60, 32, 12, 0.45),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.5),
+    0 0 0 1px rgba(184, 134, 42, 0.4);
+  z-index: 2;
+}
+
+/* dashed inner border — the "tag" feel */
+.favor-tag::before {
+  content: '';
+  position: absolute;
+  inset: 14px;
+  border: 1px dashed rgba(165, 95, 56, 0.45);
+  pointer-events: none;
+}
+
+.favor-tag__title {
+  font-size: clamp(34px, 7vw, 46px);
+  color: var(--rust-deep);
+  margin-bottom: 14px;
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+}
+
+.favor-tag__body {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: clamp(17px, 3.8vw, 19px);
+  line-height: 1.6;
+  color: var(--ink-soft);
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+.favor-tag__sprig {
+  display: inline-block;
+  margin-top: 14px;
+  font-size: 22px;
+  filter: hue-rotate(-12deg) saturate(0.85);
+  opacity: 0.85;
+}
+
+/* RTL: keep the string and hole centered, but the dashed border still works */
+[dir="rtl"] .favor-tag__string { transform: translateX(50%) rotate(-3deg); }
+[dir="rtl"] @keyframes stringSway {
+  0%, 100% { transform: translateX(50%) rotate(-3deg); }
+  50%      { transform: translateX(50%) rotate(3deg); }
+}
+
+/* Reduced-motion: no breathing pulse, no swaying string */
+@media (prefers-reduced-motion: reduce) {
+  .favor-tag,
+  .reveal-up.in .favor-tag,
+  .favor-tag__string { animation: none !important; }
+}
+
+/* ============================================================================
    Confetti for reveal moment (existing — kept)
 ============================================================================ */
 #confetti-canvas {
