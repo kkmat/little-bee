@@ -197,6 +197,13 @@
   function start() { renderQ(); }
   if (window.LittleBeeAPI.isJoined()) start();
   else window.addEventListener('lb-joined', start);
+
+  // Re-render the current question in the new language whenever the user
+  // toggles ع / EN, OR when the initial async i18n load finishes (which
+  // sets document.documentElement.lang AFTER our first render in English).
+  window.addEventListener('lb-lang-changed', () => {
+    if ($end.hidden && qIdx < questions.length) renderQ();
+  });
   </script>
 </body>
 </html>
