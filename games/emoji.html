@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+  <title>🍼 Emoji Pictionary — Little Bee</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Dancing+Script:wght@500;600;700&family=Amiri&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/games.css" />
+  <style>
+    .emoji-clue { font-size: clamp(48px, 14vw, 80px); text-align: center; letter-spacing: 0.05em; margin: 12px 0 18px; }
+  </style>
+</head>
+<body class="botanical">
+  <a href="./index.html" class="back-link">← Back</a>
+  <div class="lang-toggle" role="group"><button data-lang="en" class="active">EN</button><button data-lang="ar">ع</button></div>
+
+  <main class="game-shell">
+    <header class="text-center mb-4">
+      <p class="font-script text-3xl text-[color:var(--rust-deep)]">🍼</p>
+      <h1 class="font-display text-2xl uppercase tracking-[0.18em]">Emoji Pictionary</h1>
+      <p class="muted mt-1">Each emoji puzzle = one baby phrase. Pick the right answer!</p>
+    </header>
+
+    <div id="game" class="game-card">
+      <div class="flex justify-between items-center">
+        <span class="q-num"><span id="q-idx">1</span> / <span id="q-total">10</span></span>
+        <span class="badge-pill"><span class="num" id="score">0</span> pts</span>
+      </div>
+      <div class="emoji-clue" id="clue">🍼</div>
+      <div class="q-options" id="options"></div>
+    </div>
+
+    <div id="end" class="game-card final-score" hidden>
+      <p class="muted">Your score</p>
+      <p class="final-score__num" id="final">0</p>
+      <p class="final-score__lbl">points</p>
+      <p id="endMsg" class="mt-3"></p>
+      <div class="grid gap-2 mt-6">
+        <a class="btn" href="../leaderboard.html">🏆 See Leaderboard</a>
+        <a class="btn btn--ghost" href="./index.html">More Games</a>
+      </div>
+    </div>
+  </main>
+
+  <script src="../js/i18n.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/join.js"></script>
+  <script>
+  const POOL = [
+    { c: "🍼+😴", a: "Bedtime bottle", w: ["Sleep training","Dream feed","Nap time"] },
+    { c: "👶+💩", a: "Diaper change", w: ["Potty training","Tummy ache","Snack time"] },
+    { c: "🤰+🍦", a: "Pregnancy craving", w: ["Ice-cream date","Brain freeze","Sugar rush"] },
+    { c: "🐣+🌙", a: "Night-night, little one", w: ["Sleeping bag","Egg moon","Lullaby"] },
+    { c: "👶+🚼+🚗", a: "Baby on board", w: ["Road trip","Carseat","Stroller race"] },
+    { c: "🍼+🧦+🧣", a: "Newborn essentials", w: ["Winter outfit","Laundry day","Hand-me-downs"] },
+    { c: "🤰+📅", a: "Due date", w: ["Maternity leave","Baby shower","Trimester"] },
+    { c: "👶+🎂+1️⃣", a: "First birthday", w: ["Baby's first cake","One year ago","Smash cake"] },
+    { c: "🦷+👶", a: "Teething", w: ["Tooth fairy","Bite size","Milk teeth"] },
+    { c: "👀+🩺", a: "Doctor's visit", w: ["Eye exam","Check-up","Vaccinations"] },
+    { c: "🍼+🌅", a: "Morning bottle", w: ["Sunrise nap","Breakfast","Wake up call"] },
+    { c: "👣+🧸", a: "Baby's first steps", w: ["Teddy bear walk","Toy box","Soft toys"] },
+    { c: "🤱+❤️", a: "Mama's love", w: ["Breast feeding","Hugs","Family"] },
+    { c: "👶+📚", a: "Bedtime story", w: ["Story time","First word","Reading rainbow"] },
+  ];
+
+  function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+  const rounds = shuffle([...POOL]).slice(0, 10);
+
+  let qi = 0, score = 0, locked = false;
+  const $clue = document.getElementById('clue');
+  const $opts = document.getElementById('options');
+  const $score= document.getElementById('score');
+  const $idx  = document.getElementById('q-idx');
+  const $tot  = document.getElementById('q-total');
+  const $game = document.getElementById('game');
+  const $end  = document.getElementById('end');
+  const $final= document.getElementById('final');
+  const $endMsg=document.getElementById('endMsg');
+  $tot.textContent = String(rounds.length);
+
+  function render() {
+    locked = false;
+    const r = rounds[qi];
+    $idx.textContent = String(qi+1);
+    $clue.textContent = r.c;
+    const all = shuffle([r.a, ...r.w].slice(0, 4));
+    $opts.innerHTML = '';
+    all.forEach(opt => {
+      const b = document.createElement('button');
+      b.className = 'q-option';
+      b.textContent = opt;
+      b.addEventListener('click', () => answer(opt, r.a));
+      $opts.appendChild(b);
+    });
+  }
+
+  function answer(picked, right) {
+    if (locked) return;
+    locked = true;
+    [...$opts.children].forEach(b => {
+      b.disabled = true;
+      if (b.textContent === right) b.classList.add('is-right');
+      else if (b.textContent === picked) b.classList.add('is-wrong');
+    });
+    if (picked === right) { score += 100; $score.textContent = score; }
+    setTimeout(() => {
+      qi++;
+      if (qi >= rounds.length) finish();
+      else render();
+    }, 1100);
+  }
+
+  async function finish() {
+    $game.hidden = true;
+    $end.hidden = false;
+    $final.textContent = score;
+    let msg = "Thanks for playing! 🐝";
+    if (score >= 900) msg = "Emoji whisperer! 🍼✨";
+    else if (score >= 600) msg = "Great instincts.";
+    else if (score >= 300) msg = "Solid try!";
+    else msg = "Cake will help 🍰";
+    $endMsg.textContent = msg;
+    try { await window.LittleBeeAPI.submitScore('emoji', score); }
+    catch (err) { console.warn('score submit failed', err); }
+  }
+
+  function start() { render(); }
+  if (window.LittleBeeAPI.isJoined()) start();
+  else window.addEventListener('lb-joined', start);
+  </script>
+</body>
+</html>

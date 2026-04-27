@@ -1,0 +1,189 @@
+/* === Games shared styles ============================================ */
+
+.game-shell {
+  min-height: 100vh;
+  padding: 70px 20px 40px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.back-link {
+  position: fixed;
+  top: 14px; left: 14px;
+  z-index: 50;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.85);
+  border: 1px solid rgba(184, 99, 58, 0.25);
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 14px;
+  box-shadow: var(--shadow);
+}
+[dir="rtl"] .back-link { left: auto; right: 14px; }
+
+.game-card {
+  background: rgba(255,255,255,0.75);
+  border: 1px solid rgba(184, 99, 58, 0.18);
+  border-radius: 18px;
+  padding: 24px 22px;
+  box-shadow: var(--shadow);
+  margin-bottom: 16px;
+}
+
+/* Hub tiles */
+.game-tile {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 18px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.8);
+  border: 1px solid rgba(184, 99, 58, 0.2);
+  box-shadow: 0 6px 16px -8px rgba(184, 99, 58, 0.25);
+  text-decoration: none;
+  color: var(--ink);
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+.game-tile:hover { transform: translateY(-2px); box-shadow: 0 14px 24px -10px rgba(184, 99, 58, 0.4); }
+.game-tile__icon {
+  width: 52px; height: 52px;
+  display: grid; place-items: center;
+  border-radius: 14px;
+  font-size: 26px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+  color: var(--ink);
+  flex: none;
+}
+.game-tile.t-rust .game-tile__icon { background: linear-gradient(135deg, var(--rust), var(--rust-deep)); color: var(--cream); }
+.game-tile.t-sage .game-tile__icon { background: linear-gradient(135deg, #B0BE93, var(--sage-deep)); color: var(--cream); }
+.game-tile__label    { display: block; font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; letter-spacing: 0.02em; }
+.game-tile__sub      { display: block; font-size: 13px; color: var(--ink-soft); margin-top: 2px; }
+
+/* Big counters / score badges */
+.badge-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.7);
+  border: 1px solid rgba(184, 99, 58, 0.2);
+  font-size: 14px;
+}
+.badge-pill .num { font-size: 18px; font-weight: 600; color: var(--rust-deep); }
+
+/* Question / quiz layout */
+.q-num { font-size: 13px; color: var(--ink-soft); letter-spacing: 0.2em; text-transform: uppercase; }
+.q-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(20px, 5vw, 26px);
+  line-height: 1.35;
+  margin: 8px 0 18px;
+}
+.q-options { display: grid; gap: 10px; }
+.q-option {
+  display: block; width: 100%; text-align: left;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(184, 99, 58, 0.2);
+  background: rgba(255, 255, 255, 0.75);
+  font-family: inherit;
+  font-size: 17px;
+  color: var(--ink);
+  cursor: pointer;
+  transition: transform 120ms ease, border-color 120ms ease, background 200ms ease;
+}
+[dir="rtl"] .q-option { text-align: right; }
+.q-option:hover    { transform: translateY(-1px); border-color: var(--gold-deep); }
+.q-option.is-right { background: linear-gradient(135deg, #D9E5BD, #B6CC93); border-color: var(--sage-deep); color: #2F3F1A; }
+.q-option.is-wrong { background: linear-gradient(135deg, #F2D2C0, #E5A78A); border-color: var(--rust-deep); color: #4A1F0E; }
+.q-option:disabled { cursor: not-allowed; }
+
+/* Timer bar */
+.timer {
+  height: 8px; border-radius: 999px;
+  background: rgba(184, 99, 58, 0.15); overflow: hidden;
+  margin: 6px 0 18px;
+}
+.timer__fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--rust));
+  width: 100%;
+  transition: width 200ms linear;
+}
+
+/* Scramble */
+.scramble-word {
+  font-family: 'Dancing Script', cursive;
+  font-size: clamp(40px, 12vw, 64px);
+  text-align: center;
+  letter-spacing: 0.15em;
+  color: var(--rust-deep);
+  margin: 12px 0 16px;
+}
+.scramble-input {
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(184, 99, 58, 0.3);
+  background: rgba(255,255,255,0.85);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  text-align: center;
+  letter-spacing: 0.1em;
+  text-transform: lowercase;
+}
+.scramble-input:focus { outline: none; border-color: var(--gold-deep); }
+
+/* Final score card */
+.final-score {
+  text-align: center;
+  padding: 30px 20px;
+}
+.final-score__num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 72px;
+  font-weight: 600;
+  color: var(--rust-deep);
+  line-height: 1;
+}
+.final-score__lbl { letter-spacing: 0.25em; text-transform: uppercase; color: var(--ink-soft); margin-top: 4px; }
+
+/* Wall items (advice / predictions / names) */
+.wall {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+.wall-card {
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.8);
+  border: 1px solid rgba(184, 99, 58, 0.18);
+  box-shadow: 0 4px 12px -6px rgba(184, 99, 58, 0.2);
+}
+.wall-card__nick {
+  display: block;
+  font-family: 'Dancing Script', cursive;
+  font-size: 22px;
+  color: var(--rust-deep);
+  margin-bottom: 4px;
+}
+.wall-card__msg { font-size: 16px; line-height: 1.5; }
+.wall-card__meta { display: block; margin-top: 6px; font-size: 12px; color: var(--ink-soft); font-style: italic; }
+
+textarea.lb-text, input.lb-text {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(184, 99, 58, 0.25);
+  background: rgba(255,255,255,0.85);
+  font-family: inherit;
+  font-size: 17px;
+  color: var(--ink);
+}
+textarea.lb-text:focus, input.lb-text:focus { outline: none; border-color: var(--gold-deep); }
+
+.muted { color: var(--ink-soft); font-style: italic; }

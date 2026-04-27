@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+  <title>🧠 Baby Trivia — Little Bee</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Dancing+Script:wght@500;600;700&family=Amiri&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/games.css" />
+</head>
+<body class="botanical">
+
+  <a href="./index.html" class="back-link">← <span data-i18n="common.back">Back</span></a>
+  <div class="lang-toggle" role="group"><button data-lang="en" class="active">EN</button><button data-lang="ar">ع</button></div>
+
+  <main class="game-shell">
+    <header class="text-center mb-4">
+      <p class="font-script text-3xl text-[color:var(--rust-deep)]">🧠</p>
+      <h1 class="font-display text-2xl uppercase tracking-[0.18em]">Baby Trivia</h1>
+    </header>
+
+    <div id="game" class="game-card">
+      <div class="flex justify-between items-center">
+        <span class="q-num"><span id="q-idx">1</span> / <span id="q-total">10</span></span>
+        <span class="badge-pill"><span class="num" id="score">0</span> pts</span>
+      </div>
+      <div class="timer mt-3"><div class="timer__fill" id="timer"></div></div>
+      <p class="q-text" id="q-text">…</p>
+      <div class="q-options" id="options"></div>
+    </div>
+
+    <div id="end" class="game-card final-score" hidden>
+      <p class="muted">Your score</p>
+      <p class="final-score__num" id="final">0</p>
+      <p class="final-score__lbl">points</p>
+      <p id="end-msg" class="mt-3"></p>
+      <div class="grid gap-2 mt-6">
+        <a class="btn" href="../leaderboard.html">🏆 See Leaderboard</a>
+        <a class="btn btn--ghost" href="./index.html">More Games</a>
+      </div>
+    </div>
+  </main>
+
+  <script src="../js/i18n.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/join.js"></script>
+  <script>
+  // 12 generic baby trivia questions; shuffled and 10 used per session.
+  const POOL = [
+    { q: "How many bones does a newborn baby have?",
+      opts: ["206 (same as adults)", "270", "300", "150"], a: 1,
+      explain: "Babies have ~270 bones. Many fuse together as they grow into 206 adult bones." },
+    { q: "How long is the average pregnancy in weeks?",
+      opts: ["32 weeks", "36 weeks", "40 weeks", "44 weeks"], a: 2 },
+    { q: "What colour are most babies' eyes at birth?",
+      opts: ["Blue or grey", "Brown", "Green", "Already their final colour"], a: 0 },
+    { q: "When can babies typically smile in response to people?",
+      opts: ["Day 1", "1–2 weeks", "6–8 weeks", "6 months"], a: 2 },
+    { q: "What is a baby's first poop called?",
+      opts: ["Lanugo", "Vernix", "Meconium", "Colostrum"], a: 2 },
+    { q: "Roughly how many diapers do parents change in a baby's first year?",
+      opts: ["~500", "~1,200", "~2,500", "~6,000"], a: 2 },
+    { q: "Babies are born without which of these?",
+      opts: ["Fingerprints", "Tear ducts that produce tears", "Hair follicles", "All of the above"], a: 1,
+      explain: "Babies cry, but real tears usually start around 2 weeks." },
+    { q: "What's the technical name for a baby's soft spot on the head?",
+      opts: ["Sutura", "Fontanelle", "Cranium", "Vellus"], a: 1 },
+    { q: "Babies typically triple their birth weight by:",
+      opts: ["3 months", "6 months", "1 year", "2 years"], a: 2 },
+    { q: "How many words does the average 1-year-old say?",
+      opts: ["0", "1–3", "10–15", "50+"], a: 1 },
+    { q: "Newborns can taste differences between sweet, sour and bitter:",
+      opts: ["From birth", "After 1 month", "After 6 months", "Only after starting solids"], a: 0 },
+    { q: "The fine downy hair some babies have at birth is called:",
+      opts: ["Vernix", "Lanugo", "Vellus", "Caul"], a: 1 },
+  ];
+
+  const QUESTION_TIME = 15; // seconds
+  const POINTS_BASE = 100;
+
+  function shuffle(a) { for (let i = a.length-1; i>0; i--) { const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+  const questions = shuffle([...POOL]).slice(0, 10);
+
+  let qIdx = 0, score = 0, timer, locked = false, timeLeft = QUESTION_TIME;
+  const $q     = document.getElementById('q-text');
+  const $opts  = document.getElementById('options');
+  const $score = document.getElementById('score');
+  const $idx   = document.getElementById('q-idx');
+  const $tot   = document.getElementById('q-total');
+  const $bar   = document.getElementById('timer');
+  const $game  = document.getElementById('game');
+  const $end   = document.getElementById('end');
+  const $final = document.getElementById('final');
+  const $endMsg= document.getElementById('end-msg');
+
+  $tot.textContent = String(questions.length);
+
+  function renderQ() {
+    locked = false;
+    timeLeft = QUESTION_TIME;
+    $bar.style.width = '100%';
+    const q = questions[qIdx];
+    $idx.textContent = String(qIdx + 1);
+    $q.textContent = q.q;
+    $opts.innerHTML = '';
+    q.opts.forEach((opt, i) => {
+      const b = document.createElement('button');
+      b.className = 'q-option';
+      b.textContent = opt;
+      b.addEventListener('click', () => answer(i));
+      $opts.appendChild(b);
+    });
+    clearInterval(timer);
+    timer = setInterval(() => {
+      timeLeft -= 0.1;
+      $bar.style.width = `${Math.max(0, timeLeft / QUESTION_TIME * 100)}%`;
+      if (timeLeft <= 0) { answer(-1); }
+    }, 100);
+  }
+
+  function answer(idx) {
+    if (locked) return;
+    locked = true;
+    clearInterval(timer);
+    const q = questions[qIdx];
+    const buttons = $opts.querySelectorAll('button');
+    buttons.forEach((b, i) => {
+      b.disabled = true;
+      if (i === q.a) b.classList.add('is-right');
+      else if (i === idx) b.classList.add('is-wrong');
+    });
+    if (idx === q.a) {
+      // Speed bonus: more time left = more points (max 200, min 50)
+      const earned = Math.round(POINTS_BASE + (timeLeft / QUESTION_TIME) * POINTS_BASE);
+      score += earned;
+      $score.textContent = score;
+    }
+    setTimeout(() => {
+      qIdx++;
+      if (qIdx >= questions.length) finish();
+      else renderQ();
+    }, 1200);
+  }
+
+  async function finish() {
+    $game.hidden = true;
+    $end.hidden  = false;
+    $final.textContent = score;
+    let msg = "Thanks for playing! 🐝";
+    if (score >= 1500) msg = "Baby genius! 👶✨";
+    else if (score >= 1000) msg = "Solid! You've been studying.";
+    else if (score >= 500)  msg = "Not bad — bee proud.";
+    else                     msg = "Hey, the cake makes up for it 🍰";
+    $endMsg.textContent = msg;
+    try { await window.LittleBeeAPI.submitScore('trivia', score); }
+    catch (err) { console.warn('score submit failed', err); }
+  }
+
+  function start() { renderQ(); }
+  if (window.LittleBeeAPI.isJoined()) start();
+  else window.addEventListener('lb-joined', start);
+  </script>
+</body>
+</html>
