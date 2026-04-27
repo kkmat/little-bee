@@ -23,7 +23,13 @@
       <h1 class="font-display text-2xl uppercase tracking-[0.18em]">Baby Trivia</h1>
     </header>
 
-    <div id="game" class="game-card">
+    <div id="intro" class="game-card text-center">
+      <p data-i18n="trivia.intro">10 questions about babies and pregnancy. 15 seconds per question. Speed bonus for fast correct answers.</p>
+      <p class="muted mt-3" data-i18n="trivia.scoring">100 points per correct answer + up to 100 bonus points based on how fast you tap.</p>
+      <button id="start-btn" class="btn mt-5" data-i18n="trivia.start">Start the quiz</button>
+    </div>
+
+    <div id="game" class="game-card" hidden>
       <div class="flex justify-between items-center">
         <span class="q-num"><span id="q-idx">1</span> / <span id="q-total">10</span></span>
         <span class="badge-pill"><span class="num" id="score">0</span> pts</span>
@@ -194,16 +200,22 @@
     catch (err) { console.warn('score submit failed', err); }
   }
 
-  // Wait for i18n to apply the chosen language before rendering Q1. Without
-  // this await, the first question paints synchronously while the AR JSON
-  // is still being fetched, so guests with AR pre-selected see Q1 in
-  // English and only Q2 onwards in Arabic.
-  async function start() {
+  const $intro = document.getElementById('intro');
+  const $startBtn = document.getElementById('start-btn');
+
+  async function startGame() {
+    // Wait for i18n so Q1 paints in the correct language.
     try { await window.LittleBeeI18n.ready; } catch {}
+    $intro.hidden = true;
+    $game.hidden = false;
     renderQ();
   }
-  if (window.LittleBeeAPI.isJoined()) start();
-  else window.addEventListener('lb-joined', start);
+  $startBtn.addEventListener('click', startGame);
+  if (!window.LittleBeeAPI.isJoined()) {
+    // hide intro until joined; show after join modal closes
+    $intro.hidden = true;
+    window.addEventListener('lb-joined', () => { $intro.hidden = false; });
+  }
 
   // Re-render the current question in the new language whenever the user
   // toggles ع / EN, OR when the initial async i18n load finishes (which

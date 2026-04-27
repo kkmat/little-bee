@@ -112,6 +112,9 @@
     "intro": "Pick a nickname so we can show your name on the leaderboard."
   },
   "trivia": {
+    "intro": "10 questions about babies and pregnancy. 15 seconds per question. Speed bonus for fast correct answers.",
+    "scoring": "100 points per correct answer + up to 100 bonus points based on how fast you tap.",
+    "start": "Start the quiz",
     "yourScore": "Your score",
     "points": "points",
     "seeLb": "🏆 See Leaderboard",
