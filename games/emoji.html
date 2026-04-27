@@ -150,9 +150,13 @@
     catch (err) { console.warn('score submit failed', err); }
   }
 
-  function start() { render(); }
+  async function start() {
+    try { await window.LittleBeeI18n.ready; } catch {}
+    render();
+  }
   if (window.LittleBeeAPI.isJoined()) start();
   else window.addEventListener('lb-joined', start);
+  window.addEventListener('lb-lang-changed', () => { if (qi < rounds.length) render(); });
   </script>
 </body>
 </html>

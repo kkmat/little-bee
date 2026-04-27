@@ -67,15 +67,21 @@
     if (lang && lang !== current) apply(lang);
   });
 
-  // Apply on load (only if a non-default lang was chosen previously)
+  // ready promise — resolves once the initial language has been applied to the
+  // DOM. Pages that build content dynamically (trivia, emoji, etc.) can
+  // `await window.LittleBeeI18n.ready` so they don't paint in the wrong
+  // language before the async fetch + apply completes.
+  let _resolveReady;
+  const readyPromise = new Promise((resolve) => { _resolveReady = resolve; });
+
   if (current !== DEFAULT) {
-    document.addEventListener('DOMContentLoaded', () => apply(current));
+    document.addEventListener('DOMContentLoaded', () => apply(current).then(_resolveReady));
   } else {
-    // Still set the toggle's active state visually
     document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.lang-toggle button').forEach((b) => {
         b.classList.toggle('active', b.dataset.lang === DEFAULT);
       });
+      _resolveReady();
     });
   }
 
@@ -101,5 +107,5 @@
     window.dispatchEvent(new CustomEvent('lb-lang-changed', { detail: { lang } }));
   };
 
-  window.LittleBeeI18n = { apply, current: () => current, t, isAr: () => current === 'ar' };
+  window.LittleBeeI18n = { apply, current: () => current, t, isAr: () => current === 'ar', ready: readyPromise };
 })();

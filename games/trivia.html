@@ -194,7 +194,14 @@
     catch (err) { console.warn('score submit failed', err); }
   }
 
-  function start() { renderQ(); }
+  // Wait for i18n to apply the chosen language before rendering Q1. Without
+  // this await, the first question paints synchronously while the AR JSON
+  // is still being fetched, so guests with AR pre-selected see Q1 in
+  // English and only Q2 onwards in Arabic.
+  async function start() {
+    try { await window.LittleBeeI18n.ready; } catch {}
+    renderQ();
+  }
   if (window.LittleBeeAPI.isJoined()) start();
   else window.addEventListener('lb-joined', start);
 
