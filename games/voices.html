@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+  <title>🎙️ Voice Notes for Baby — Little Bee</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Dancing+Script:wght@500;600;700&family=Amiri&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/games.css" />
+  <style>
+    .mic-btn {
+      width: 160px; height: 160px;
+      margin: 12px auto;
+      border-radius: 50%;
+      border: 0;
+      display: grid; place-items: center;
+      cursor: pointer;
+      color: var(--cream);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      font-style: italic;
+      letter-spacing: 0.05em;
+      background:
+        radial-gradient(circle at 35% 28%, #E29275, var(--rust) 55%, var(--rust-deep));
+      box-shadow:
+        inset 0 -6px 12px rgba(0,0,0,0.25),
+        inset 0 4px 8px rgba(255,200,170,0.25),
+        0 16px 32px -10px rgba(165, 95, 56, 0.5);
+      position: relative;
+      transition: transform 200ms ease;
+    }
+    .mic-btn:active { transform: scale(0.95); }
+    .mic-btn.recording {
+      background: radial-gradient(circle at 35% 28%, #FF7B5A, #B8633A 55%, #6F2A14);
+      animation: micPulse 1s ease-in-out infinite;
+    }
+    @keyframes micPulse {
+      0%,100% { box-shadow: inset 0 -6px 12px rgba(0,0,0,0.25), inset 0 4px 8px rgba(255,200,170,0.25), 0 16px 32px -10px rgba(165, 95, 56, 0.7), 0 0 0 0 rgba(232, 95, 56, 0.5); }
+      50%     { box-shadow: inset 0 -6px 12px rgba(0,0,0,0.25), inset 0 4px 8px rgba(255,200,170,0.25), 0 16px 32px -10px rgba(165, 95, 56, 0.7), 0 0 0 24px rgba(232, 95, 56, 0); }
+    }
+    .mic-icon { font-size: 56px; margin-bottom: 4px; }
+    .mic-timer {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 4px 14px;
+      border-radius: 999px;
+      background: rgba(60, 32, 12, 0.85);
+      color: var(--cream);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 14px;
+      letter-spacing: 0.18em;
+      min-width: 80px;
+    }
+    audio { width: 100%; max-width: 320px; }
+    audio::-webkit-media-controls-panel { background: var(--cream-2); }
+  </style>
+</head>
+<body class="botanical">
+  <a href="./index.html" class="back-link">← Back</a>
+  <div class="lang-toggle" role="group"><button data-lang="en" class="active">EN</button><button data-lang="ar">ع</button></div>
+
+  <main class="game-shell">
+    <header class="text-center mb-4">
+      <p class="font-script text-3xl text-[color:var(--rust-deep)]">🎙️</p>
+      <h1 class="font-display text-2xl uppercase tracking-[0.18em]">Voice Notes for Baby</h1>
+      <p class="muted mt-1 max-w-md mx-auto">Record a 30-second message. We'll play these for our little one when they're old enough to understand them.</p>
+    </header>
+
+    <div class="game-card text-center" id="recorder">
+      <p class="muted italic mb-2" id="rec-help">Tap and hold to record — release when done</p>
+      <button class="mic-btn" id="mic"><span class="text-center"><span class="mic-icon block">🎙️</span><span id="mic-label">Hold</span></span></button>
+      <div class="mt-2"><span class="mic-timer" id="timer">0.0s</span></div>
+      <p class="muted text-sm mt-3" id="status">Max 30 seconds 🐝</p>
+
+      <div id="preview" class="mt-4" hidden>
+        <audio id="preview-audio" controls></audio>
+        <div class="grid grid-cols-2 gap-2 mt-3">
+          <button id="discard" class="btn btn--ghost">↻ Re-record</button>
+          <button id="send"    class="btn">Send 💛</button>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="section-title mt-8">From the room</h2>
+    <p class="muted text-center mb-3">Tap any card to listen</p>
+    <div id="wall" class="wall"><p class="muted text-center">Loading...</p></div>
+  </main>
+
+  <script src="../js/i18n.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/join.js"></script>
+  <script>
+  // Voice recording flow
+  // - Press-and-hold or tap-to-toggle on the mic button
+  // - MediaRecorder captures audio (webm/opus or mp4 fallback)
+  // - Stops automatically at 30s
+  // - Preview → send to /api/voice as base64 data URL
+
+  const $mic   = document.getElementById('mic');
+  const $label = document.getElementById('mic-label');
+  const $timer = document.getElementById('timer');
+  const $status= document.getElementById('status');
+  const $help  = document.getElementById('rec-help');
+  const $preview = document.getElementById('preview');
+  const $previewAudio = document.getElementById('preview-audio');
+  const $discard = document.getElementById('discard');
+  const $send   = document.getElementById('send');
+  const $wall   = document.getElementById('wall');
+
+  let mediaRecorder = null;
+  let chunks = [];
+  let stream = null;
+  let recording = false;
+  let startedAt = 0;
+  let stopTimer = null;
+  let timerInt = null;
+  let lastBlob = null;
+  let lastDataURL = null;
+  let lastDuration = 0;
+
+  function pickMime() {
+    const candidates = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/aac'];
+    for (const m of candidates) {
+      if (window.MediaRecorder && MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(m)) return m;
+    }
+    return '';
+  }
+
+  function blobToDataURL(blob) {
+    return new Promise((resolve, reject) => {
+      const r = new FileReader();
+      r.onload = () => resolve(r.result);
+      r.onerror = reject;
+      r.readAsDataURL(blob);
+    });
+  }
+
+  async function startRecording() {
+    if (recording) return;
+    if (!navigator.mediaDevices || !window.MediaRecorder) {
+      $status.textContent = 'Your browser does not support recording 😢';
+      return;
+    }
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch (err) {
+      $status.textContent = 'Microphone access denied. Please allow it.';
+      return;
+    }
+    const mime = pickMime();
+    chunks = [];
+    mediaRecorder = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
+    mediaRecorder.ondataavailable = (e) => { if (e.data && e.data.size > 0) chunks.push(e.data); };
+    mediaRecorder.onstop = onRecordingStopped;
+    mediaRecorder.start();
+    recording = true;
+    startedAt = Date.now();
+    $mic.classList.add('recording');
+    $label.textContent = 'Recording...';
+    $status.textContent = '🔴 listening';
+    $help.style.opacity = '0.4';
+
+    // tick timer
+    timerInt = setInterval(() => {
+      const sec = (Date.now() - startedAt) / 1000;
+      $timer.textContent = sec.toFixed(1) + 's';
+    }, 80);
+
+    // hard cap at 30s
+    stopTimer = setTimeout(stopRecording, 30000);
+  }
+
+  function stopRecording() {
+    if (!recording) return;
+    recording = false;
+    clearTimeout(stopTimer);
+    clearInterval(timerInt);
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+    if (stream) stream.getTracks().forEach(t => t.stop());
+    $mic.classList.remove('recording');
+    $label.textContent = 'Hold';
+  }
+
+  async function onRecordingStopped() {
+    const blob = new Blob(chunks, { type: chunks[0]?.type || 'audio/webm' });
+    if (blob.size < 1000) {
+      $status.textContent = 'Too short — try again 🐝';
+      return;
+    }
+    lastBlob = blob;
+    lastDuration = (Date.now() - startedAt) / 1000;
+    lastDataURL = await blobToDataURL(blob);
+    $previewAudio.src = URL.createObjectURL(blob);
+    $preview.hidden = false;
+    $status.textContent = `Recorded ${lastDuration.toFixed(1)}s — preview below`;
+  }
+
+  // Press-and-hold
+  $mic.addEventListener('mousedown', startRecording);
+  $mic.addEventListener('touchstart', (e) => { e.preventDefault(); startRecording(); }, { passive: false });
+  ['mouseup','mouseleave','touchend','touchcancel'].forEach(ev =>
+    $mic.addEventListener(ev, (e) => { e.preventDefault?.(); stopRecording(); }, { passive: false })
+  );
+
+  $discard.addEventListener('click', () => {
+    $preview.hidden = true;
+    lastBlob = null; lastDataURL = null; lastDuration = 0;
+    $timer.textContent = '0.0s';
+    $status.textContent = 'Max 30 seconds 🐝';
+  });
+
+  $send.addEventListener('click', async () => {
+    if (!lastDataURL) return;
+    $send.disabled = true; $send.textContent = 'Sending...';
+    try {
+      await window.LittleBeeAPI.postVoice(lastDataURL, lastBlob.type || 'audio/webm', lastDuration);
+      $preview.hidden = true;
+      $status.textContent = 'Saved 💛 thank you!';
+      lastDataURL = null;
+      $timer.textContent = '0.0s';
+      load();
+    } catch (err) {
+      $status.textContent = 'Could not save. Maybe too long?';
+    } finally {
+      $send.disabled = false;
+      $send.textContent = 'Send 💛';
+    }
+  });
+
+  function fmt(ts) {
+    const d = new Date(ts);
+    return d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+  }
+
+  async function load() {
+    try {
+      const data = await window.LittleBeeAPI.listVoices();
+      $wall.innerHTML = '';
+      if (!data.items || data.items.length === 0) {
+        $wall.innerHTML = '<p class="muted text-center">No notes yet — be the first to say hello!</p>';
+        return;
+      }
+      data.items.forEach(it => {
+        const c = document.createElement('div');
+        c.className = 'wall-card';
+        c.innerHTML = `
+          <span class="wall-card__nick"></span>
+          <audio controls preload="none"></audio>
+          <span class="wall-card__meta"></span>
+        `;
+        c.querySelector('.wall-card__nick').textContent = it.nickname;
+        c.querySelector('audio').src = it.audio_b64;
+        c.querySelector('.wall-card__meta').textContent = `${it.duration?.toFixed(1) || '?'}s · ${fmt(it.created_at)}`;
+        $wall.appendChild(c);
+      });
+    } catch (err) {
+      $wall.innerHTML = '<p class="muted text-center">Could not load notes yet.</p>';
+    }
+  }
+
+  if (window.LittleBeeAPI.isJoined()) load();
+  else window.addEventListener('lb-joined', load);
+  </script>
+</body>
+</html>

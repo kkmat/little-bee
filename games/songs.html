@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+  <title>🎵 Music Requests — Little Bee</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Dancing+Script:wght@500;600;700&family=Amiri&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/games.css" />
+</head>
+<body class="botanical">
+  <a href="./index.html" class="back-link">← Back</a>
+  <div class="lang-toggle" role="group"><button data-lang="en" class="active">EN</button><button data-lang="ar">ع</button></div>
+
+  <main class="game-shell">
+    <header class="text-center mb-4">
+      <p class="font-script text-3xl text-[color:var(--rust-deep)]">🎵</p>
+      <h1 class="font-display text-2xl uppercase tracking-[0.18em]">Music Requests</h1>
+      <p class="muted mt-1">Drop a song you'd love to hear — we'll play your favourites!</p>
+    </header>
+
+    <div class="game-card">
+      <input id="song"   class="lb-text"     maxlength="120" placeholder="Song name..." />
+      <input id="artist" class="lb-text mt-3" maxlength="120" placeholder="Artist (optional)" />
+      <button id="send"  class="btn w-full mt-3">🎶 Add to the playlist</button>
+      <p id="status" class="muted text-sm mt-2 text-center">&nbsp;</p>
+    </div>
+
+    <h2 class="section-title mt-8">Tonight's queue</h2>
+    <div id="list" class="wall"><p class="muted text-center">Loading...</p></div>
+  </main>
+
+  <script src="../js/i18n.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/join.js"></script>
+  <script>
+  const $song   = document.getElementById('song');
+  const $artist = document.getElementById('artist');
+  const $send   = document.getElementById('send');
+  const $status = document.getElementById('status');
+  const $list   = document.getElementById('list');
+
+  function fmt(ts) {
+    const d = new Date(ts);
+    return d.toLocaleString(undefined, { hour: 'numeric', minute: '2-digit' });
+  }
+
+  async function load() {
+    try {
+      const data = await window.LittleBeeAPI.listSongs();
+      $list.innerHTML = '';
+      if (!data.items || data.items.length === 0) {
+        $list.innerHTML = '<p class="muted text-center">Be the first to add a song 🎶</p>';
+        return;
+      }
+      data.items.forEach(it => {
+        const c = document.createElement('div');
+        c.className = 'wall-card';
+        c.innerHTML = `
+          <span class="wall-card__nick"></span>
+          <p class="wall-card__msg"><span class="font-display text-xl"></span><span class="muted block text-sm artist"></span></p>
+          <span class="wall-card__meta"></span>
+        `;
+        c.querySelector('.wall-card__nick').textContent = it.nickname;
+        c.querySelector('.font-display').textContent = it.song;
+        c.querySelector('.artist').textContent = it.artist ? `by ${it.artist}` : '';
+        c.querySelector('.wall-card__meta').textContent = (it.played ? '✓ played · ' : '') + fmt(it.created_at);
+        if (it.played) c.style.opacity = '0.65';
+        $list.appendChild(c);
+      });
+    } catch (err) {
+      $list.innerHTML = '<p class="muted text-center">Could not load yet.</p>';
+    }
+  }
+
+  async function send() {
+    const song = $song.value.trim();
+    if (!song) return;
+    $send.disabled = true;
+    try {
+      await window.LittleBeeAPI.postSong(song, $artist.value.trim());
+      $song.value = ''; $artist.value = '';
+      $status.textContent = 'Added 💛';
+      setTimeout(() => { $status.textContent = ' '; }, 1500);
+      load();
+    } catch (err) {
+      $status.textContent = 'Could not save — try again?';
+    } finally {
+      $send.disabled = false;
+    }
+  }
+
+  $send.addEventListener('click', send);
+  $song.addEventListener('keydown', (e) => { if (e.key === 'Enter') $artist.focus(); });
+  $artist.addEventListener('keydown', (e) => { if (e.key === 'Enter') send(); });
+  if (window.LittleBeeAPI.isJoined()) load();
+  else window.addEventListener('lb-joined', load);
+  </script>
+</body>
+</html>
