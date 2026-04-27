@@ -5,7 +5,7 @@
 
 window.LittleBeeAPI = (function () {
   // Override at runtime if needed: localStorage.setItem('lb-api', 'https://...');
-  const DEFAULT_API = 'https://little-bee-api.kkmat.workers.dev';
+  const DEFAULT_API = 'https://little-bee-api.kevin-kw.workers.dev';
   const API_BASE = (localStorage.getItem('lb-api') || DEFAULT_API).replace(/\/$/, '');
 
   const STORE_NICK = 'lb-nick';

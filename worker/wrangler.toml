@@ -11,7 +11,7 @@ ALLOWED_ORIGINS = "https://kkmat.github.io,http://localhost:8765,http://localhos
 [[d1_databases]]
 binding       = "DB"
 database_name = "little-bee"
-database_id   = "REPLACE_WITH_D1_ID"
+database_id   = "29cba4d1-bcb2-4057-91a6-801b0aef9ee3"
 
 # Optional: bind to a custom subdomain after deploy, e.g.:
 # routes = [{ pattern = "babyshower-api.nexus.com.kw", custom_domain = true }]
