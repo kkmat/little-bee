@@ -28,7 +28,7 @@
       "lemon": "Fresh Lemon Mint"
     },
     "salad": "Salad",
-    "salad.green": "Green Salad",
+    "saladGreen": "Green Salad",
     "starters": "Starters",
     "start": {
       "paneer": "Paneer Chilli",
@@ -38,16 +38,16 @@
       "spinach": "Cheese Spinach Rolls"
     },
     "main": "Main Course",
-    "main.rice": "Steamed Rice",
-    "main.thai": "Veg Thai Curry",
-    "main.dal": "Dal Tadka",
-    "main.mutton": "Mutton Rogan Josh",
+    "mainRice": "Steamed Rice",
+    "mainThai": "Veg Thai Curry",
+    "mainDal": "Dal Tadka",
+    "mainMutton": "Mutton Rogan Josh",
     "stations": "Live Stations",
-    "stations.roti": "Assorted Roti & Naan",
-    "stations.dosa": "Masala Dosa (Keema, Egg, Potato)",
-    "stations.panipuri": "Pani Puri & Chat Papdi",
+    "stationsRoti": "Assorted Roti & Naan",
+    "stationsDosa": "Masala Dosa (Keema, Egg, Potato)",
+    "stationsPanipuri": "Pani Puri & Chat Papdi",
     "dessert": "Dessert",
-    "dessert.gulab": "Gulab Jamun with Ice Cream"
+    "dessertGulab": "Gulab Jamun with Ice Cream"
   },
   "scratch": {
     "eyebrow": "a little secret",
