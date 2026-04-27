@@ -28,8 +28,12 @@
   }
 
   // The full curtain panels are also tappable so guests don't have to hit
-  // the small tassel exactly.
-  stage.addEventListener('click', open);
+  // the small tassel exactly. Skip clicks on the language toggle so guests
+  // can switch EN/ع without accidentally opening the curtain.
+  stage.addEventListener('click', (e) => {
+    if (e.target.closest('.lang-toggle')) return;
+    open();
+  });
   tassel.addEventListener('keypress', (e) => {
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
   });

@@ -715,7 +715,7 @@ main, .lang-toggle, .back-link, header, footer { position: relative; z-index: 3;
 .lang-toggle {
   position: fixed;
   top: 16px; right: 16px;
-  z-index: 50;
+  z-index: 110;       /* above the curtain (z-index 100) so guests can switch lang before opening */
   display: inline-flex;
   background:
     linear-gradient(180deg, rgba(255,253,247,0.92), rgba(244,236,221,0.92));
