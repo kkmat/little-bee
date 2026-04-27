@@ -22,7 +22,11 @@
     "live": "LIVE",
     "foot": "Live stations are made-to-order — request your favourites!",
     "beverages": "Beverages",
-    "bev": { "soft": "Soft Drinks", "water": "Water", "lemon": "Fresh Lemon Mint" },
+    "bev": {
+      "soft": "Soft Drinks",
+      "water": "Water",
+      "lemon": "Fresh Lemon Mint"
+    },
     "salad": "Salad",
     "salad.green": "Green Salad",
     "starters": "Starters",
@@ -50,7 +54,10 @@
     "title": "Boy or Girl?",
     "sub": "Scratch the seal... but don't get too excited 😉",
     "hint": "✦ scratch here ✦",
-    "reveal": { "h": "Nice try!", "p": "The real reveal is at the cake-cutting — stay tuned! 🎂" }
+    "reveal": {
+      "h": "Nice try!",
+      "p": "The real reveal is at the cake-cutting — stay tuned! 🎂"
+    }
   },
   "cta": {
     "eyebrow": "while you're with us",
@@ -61,8 +68,7 @@
     "leaderboard": "Live Leaderboard",
     "memory": "Memory Wall",
     "voice": "Voice Note for Baby",
-    "songs": "Add to the Spotify Playlist",
-    "live": "Live Games at the Party"
+    "songs": "Add to the Spotify Playlist"
   },
   "favors": {
     "title": "Before You Go! 🤍",
@@ -90,29 +96,48 @@
     },
     "foot": "stick around · prizes for the winners 💛"
   },
-  "footer": { "line1": "made with 🐝 + 💛 for our little one" },
+  "footer": {
+    "line1": "made with 🐝 + 💛 for our little one"
+  },
   "common": {
-    "back": "Back", "submit": "Submit", "loading": "Loading...",
-    "yourName": "Your name", "namePh": "What should we call you?",
-    "saved": "Saved! Thank you 💛", "error": "Something went wrong. Try again?"
+    "back": "Back",
+    "submit": "Submit",
+    "loading": "Loading...",
+    "yourName": "Your name",
+    "namePh": "What should we call you?",
+    "saved": "Saved! Thank you 💛",
+    "error": "Something went wrong. Try again?"
   },
   "join": {
     "intro": "Pick a nickname so we can show your name on the leaderboard."
   },
   "games": {
-    "kicker": "Pick a game", "title": "Baby Shower Games",
+    "kicker": "Pick a game",
+    "title": "Baby Shower Games",
     "sub": "Earn points, leave wishes, draw a onesie 🐝",
-    "trivia": "Baby Trivia", "triviaSub": "Test your baby knowledge",
-    "scramble": "Word Scramble", "scrambleSub": "Unscramble baby words against the clock",
-    "emoji": "Emoji Pictionary", "emojiSub": "Decode baby phrases in emojis",
-    "due": "Due Date Guess", "dueSub": "Pick the arrival date — closest wins!",
-    "pred": "Predictions", "predSub": "Guess the future for this little one",
-    "names": "Suggest a Name", "namesSub": "Help us pick — vote for your favourites",
-    "onesie": "Design a Onesie", "onesieSub": "Doodle your design for baby to wear",
-    "advice": "Advice Wall", "adviceSub": "Leave Kevin & Neethu your best parenting wisdom",
-    "lb": "Live Leaderboard", "lbSub": "See who's winning right now",
-    "voice": "Voice Notes for Baby", "voiceSub": "Record a 30-second message for our little one",
-    "songs": "Add to the Spotify Playlist", "songsSub": "Open the live playlist · add your favourites directly",
-    "memory": "Memory Wall", "memorySub": "Everything everyone has left for our little one"
+    "trivia": "Baby Trivia",
+    "triviaSub": "Test your baby knowledge",
+    "scramble": "Word Scramble",
+    "scrambleSub": "Unscramble baby words against the clock",
+    "emoji": "Emoji Pictionary",
+    "emojiSub": "Decode baby phrases in emojis",
+    "due": "Due Date Guess",
+    "dueSub": "Pick the arrival date — closest wins!",
+    "pred": "Predictions",
+    "predSub": "Guess the future for this little one",
+    "names": "Suggest a Name",
+    "namesSub": "Help us pick — vote for your favourites",
+    "onesie": "Design a Onesie",
+    "onesieSub": "Doodle your design for baby to wear",
+    "advice": "Advice Wall",
+    "adviceSub": "Leave Kevin & Neethu your best parenting wisdom",
+    "lb": "Live Leaderboard",
+    "lbSub": "See who's winning right now",
+    "voice": "Voice Notes for Baby",
+    "voiceSub": "Record a 30-second message for our little one",
+    "songs": "Add to the Spotify Playlist",
+    "songsSub": "Open the live playlist · add your favourites directly",
+    "memory": "Memory Wall",
+    "memorySub": "Everything everyone has left for our little one"
   }
 }
