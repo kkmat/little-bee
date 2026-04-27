@@ -61,11 +61,34 @@
     "leaderboard": "Live Leaderboard",
     "memory": "Memory Wall",
     "voice": "Voice Note for Baby",
-    "songs": "Add to the Spotify Playlist"
+    "songs": "Add to the Spotify Playlist",
+    "live": "Live Games at the Party"
   },
   "favors": {
     "title": "Before You Go! 🤍",
     "body": "Please don't forget to grab a party favor on your way out! Just a little token of our appreciation for celebrating with us today."
+  },
+  "live": {
+    "eyebrow": "real-world games",
+    "title": "Live at the Party",
+    "sub": "A few games Neethu and her friends have cooked up — keep an eye out 🐝",
+    "lp1": {
+      "cat": "aim & toss",
+      "title": "Diaper Pong",
+      "rules": "Like beer pong — minus the beer. Toss table-tennis balls into the diapers across the table. Most balls landed wins."
+    },
+    "lp2": {
+      "cat": "blindfolded race",
+      "title": "Diaper Changing Race",
+      "rules": "Blindfolded, three people at a time race to fasten a diaper on a plastic baby. Cleanest fit takes the prize.",
+      "note": "Sorry — no real babies for this one 🐣"
+    },
+    "lp3": {
+      "cat": "cut & paste",
+      "title": "Assemble Baby Face",
+      "rules": "Strips of Neethu and Kevin's faces, cut up and shuffled. Piece them together to guess what our little duckling might look like."
+    },
+    "foot": "stick around · prizes for the winners 💛"
   },
   "footer": { "line1": "made with 🐝 + 💛 for our little one" },
   "common": {
