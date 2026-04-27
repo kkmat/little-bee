@@ -76,17 +76,22 @@
   }
 
   // Wire taps on bees + sun (the playful florals). Use event delegation so
-  // newly-added bees would also work.
+  // newly-added bees would also work. The bees drift via CSS animation, so
+  // spawn the confetti at the element's CURRENT visual center rather than
+  // the raw tap coordinate — that way the puff always lands ON the bee
+  // even if the user tapped a few pixels off.
   document.addEventListener('click', (e) => {
     const target = e.target.closest('.flora--bee, .flora--sun, .flora--daisy');
     if (!target) return;
-    spawn(e.clientX, e.clientY);
-    // gentle bounce to confirm interaction
+    const r = target.getBoundingClientRect();
+    spawn(r.left + r.width / 2, r.top + r.height / 2);
+    // gentle bounce to confirm interaction (composite transform so we don't
+    // override the drift/bobbin keyframes)
     target.animate(
-      [{ transform: target.style.transform + ' scale(1)' },
-       { transform: target.style.transform + ' scale(1.18)' },
-       { transform: target.style.transform + ' scale(1)' }],
-      { duration: 360, easing: 'ease-out' }
+      [{ transform: 'scale(1)' },
+       { transform: 'scale(1.18)' },
+       { transform: 'scale(1)' }],
+      { duration: 360, easing: 'ease-out', composite: 'add' }
     );
   });
 
