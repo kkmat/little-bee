@@ -1,111 +1,221 @@
-/* === Games shared styles ============================================ */
+/* === Games shared styles — botanical journal cards =================== */
 
 .game-shell {
   min-height: 100vh;
-  padding: 70px 20px 40px;
+  padding: 90px 20px 60px;
   max-width: 720px;
   margin: 0 auto;
+  position: relative;
+  z-index: 3;
 }
 
 .back-link {
   position: fixed;
-  top: 14px; left: 14px;
+  top: 16px; left: 16px;
   z-index: 50;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
+  gap: 8px;
+  padding: 9px 16px 9px 14px;
   border-radius: 999px;
-  background: rgba(255,255,255,0.85);
-  border: 1px solid rgba(184, 99, 58, 0.25);
+  background:
+    linear-gradient(180deg, rgba(255,253,247,0.92), rgba(244,236,221,0.92));
+  border: 1px solid rgba(184, 134, 42, 0.35);
   color: var(--ink);
   text-decoration: none;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
   font-size: 14px;
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-sm);
+  transition: transform 200ms ease;
 }
-[dir="rtl"] .back-link { left: auto; right: 14px; }
+.back-link:hover { transform: translateX(-2px); }
+[dir="rtl"] .back-link { left: auto; right: 16px; }
+[dir="rtl"] .back-link:hover { transform: translateX(2px); }
 
+/* Generic content card on game pages */
 .game-card {
-  background: rgba(255,255,255,0.75);
-  border: 1px solid rgba(184, 99, 58, 0.18);
-  border-radius: 18px;
-  padding: 24px 22px;
-  box-shadow: var(--shadow);
-  margin-bottom: 16px;
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(255,253,247,0.95), rgba(248,238,220,0.88));
+  border-radius: 4px;
+  padding: 28px 24px;
+  margin-bottom: 18px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.6),
+    0 0 0 1px rgba(184, 134, 42, 0.25),
+    0 18px 36px -18px rgba(60, 32, 12, 0.35);
+}
+.game-card.stitched::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 1px dashed rgba(165, 95, 56, 0.35);
+  border-radius: inherit;
+  pointer-events: none;
 }
 
-/* Hub tiles */
+/* === Hub tiles — illustrated journal cards =========================== */
+.tiles {
+  display: grid;
+  gap: 14px;
+}
+
 .game-tile {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 18px 18px;
-  border-radius: 18px;
-  background: rgba(255,255,255,0.8);
-  border: 1px solid rgba(184, 99, 58, 0.2);
-  box-shadow: 0 6px 16px -8px rgba(184, 99, 58, 0.25);
+  gap: 18px;
+  padding: 18px 18px 18px 22px;
+  border-radius: 4px;
   text-decoration: none;
   color: var(--ink);
-  transition: transform 200ms ease, box-shadow 200ms ease;
+  background:
+    linear-gradient(180deg, rgba(255,253,247,0.95), rgba(248,238,220,0.85));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.6),
+    0 0 0 1px rgba(184, 134, 42, 0.25),
+    0 14px 30px -16px rgba(60, 32, 12, 0.30);
+  transform: rotate(-0.4deg);
+  transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 280ms ease,
+              filter 280ms ease;
+  overflow: hidden;
+  isolation: isolate;
 }
-.game-tile:hover { transform: translateY(-2px); box-shadow: 0 14px 24px -10px rgba(184, 99, 58, 0.4); }
+.game-tile:nth-child(even) { transform: rotate(0.5deg); }
+.game-tile:hover {
+  transform: translateY(-3px) rotate(0deg);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.6),
+    0 0 0 1px rgba(184, 134, 42, 0.4),
+    0 26px 48px -20px rgba(60, 32, 12, 0.45);
+  filter: brightness(1.02);
+}
+
+/* tape strip at top corner of each tile */
+.game-tile::before {
+  content: '';
+  position: absolute;
+  top: -10px; left: 24px;
+  width: 56px; height: 18px;
+  background:
+    repeating-linear-gradient(45deg, rgba(232, 181, 71, 0.7) 0 7px, rgba(245, 200, 75, 0.7) 7px 14px);
+  transform: rotate(-8deg);
+  box-shadow: 0 2px 4px rgba(60,32,12,0.18);
+  border-radius: 2px;
+}
+.game-tile:nth-child(even)::before { left: auto; right: 24px; transform: rotate(8deg); }
+
+/* watercolor wash behind icon */
 .game-tile__icon {
-  width: 52px; height: 52px;
-  display: grid; place-items: center;
-  border-radius: 14px;
-  font-size: 26px;
-  background: linear-gradient(135deg, var(--gold), var(--gold-deep));
-  color: var(--ink);
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 30px;
   flex: none;
+  position: relative;
+  background:
+    radial-gradient(circle at 35% 30%, rgba(255,255,255,0.5), transparent 50%),
+    radial-gradient(circle at 60% 70%, rgba(60,32,12,0.08), transparent 60%),
+    var(--gold);
+  border: 1px solid rgba(60, 32, 12, 0.18);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.55),
+    0 4px 10px -4px rgba(184, 134, 42, 0.5);
+  color: var(--ink);
 }
-.game-tile.t-rust .game-tile__icon { background: linear-gradient(135deg, var(--rust), var(--rust-deep)); color: var(--cream); }
-.game-tile.t-sage .game-tile__icon { background: linear-gradient(135deg, #B0BE93, var(--sage-deep)); color: var(--cream); }
-.game-tile__label    { display: block; font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; letter-spacing: 0.02em; }
-.game-tile__sub      { display: block; font-size: 13px; color: var(--ink-soft); margin-top: 2px; }
 
-/* Big counters / score badges */
-.badge-pill {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 6px 14px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.7);
-  border: 1px solid rgba(184, 99, 58, 0.2);
+/* Color variants matched to invitation palette */
+.game-tile.t-rust  .game-tile__icon { background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.45), transparent 50%), var(--rust); color: var(--cream); }
+.game-tile.t-sage  .game-tile__icon { background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.45), transparent 50%), var(--sage-deep); color: var(--cream); }
+.game-tile.t-blush .game-tile__icon { background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.5), transparent 50%), #E2A58A; color: var(--ink); }
+.game-tile.t-ink   .game-tile__icon { background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.4), transparent 50%), var(--ink); color: var(--gold-light); }
+
+.game-tile__body { flex: 1; }
+.game-tile__cat {
+  display: block;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+  margin-bottom: 2px;
+}
+.game-tile__label {
+  display: block;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.1;
+  color: var(--ink);
+}
+.game-tile__sub {
+  display: block;
+  font-style: italic;
   font-size: 14px;
+  color: var(--ink-faded);
+  margin-top: 4px;
 }
-.badge-pill .num { font-size: 18px; font-weight: 600; color: var(--rust-deep); }
 
-/* Question / quiz layout */
-.q-num { font-size: 13px; color: var(--ink-soft); letter-spacing: 0.2em; text-transform: uppercase; }
+.game-tile__arrow {
+  position: relative;
+  font-family: 'Dancing Script', cursive;
+  font-size: 22px;
+  color: var(--rust-deep);
+  opacity: 0.7;
+  transition: transform 280ms ease, opacity 280ms ease;
+}
+.game-tile:hover .game-tile__arrow { transform: translateX(6px); opacity: 1; }
+[dir="rtl"] .game-tile__arrow { transform: scaleX(-1); }
+[dir="rtl"] .game-tile:hover .game-tile__arrow { transform: scaleX(-1) translateX(6px); }
+
+/* highlight tile (leaderboard) */
+.game-tile.featured {
+  background:
+    radial-gradient(circle at 80% 20%, rgba(232, 181, 71, 0.22), transparent 60%),
+    linear-gradient(180deg, rgba(255,253,247,0.95), rgba(244, 220, 165, 0.55));
+}
+
+/* === Quiz / question UI (unchanged with refresh) ===================== */
+.q-num { font-size: 11px; color: var(--ink-faded); letter-spacing: 0.3em; text-transform: uppercase; font-style: italic; }
 .q-text {
   font-family: 'Cormorant Garamond', serif;
   font-size: clamp(20px, 5vw, 26px);
-  line-height: 1.35;
-  margin: 8px 0 18px;
+  line-height: 1.4;
+  margin: 12px 0 22px;
 }
 .q-options { display: grid; gap: 10px; }
 .q-option {
   display: block; width: 100%; text-align: left;
-  padding: 14px 16px;
-  border-radius: 14px;
-  border: 1.5px solid rgba(184, 99, 58, 0.2);
-  background: rgba(255, 255, 255, 0.75);
-  font-family: inherit;
+  padding: 14px 18px;
+  border-radius: 4px;
+  border: 1px solid rgba(184, 134, 42, 0.25);
+  background:
+    linear-gradient(180deg, rgba(255,253,247,0.92), rgba(244,236,221,0.85));
+  font-family: 'Cormorant Garamond', serif;
   font-size: 17px;
   color: var(--ink);
   cursor: pointer;
-  transition: transform 120ms ease, border-color 120ms ease, background 200ms ease;
+  transition: transform 160ms ease, border-color 160ms ease, background 280ms ease;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.55);
 }
 [dir="rtl"] .q-option { text-align: right; }
 .q-option:hover    { transform: translateY(-1px); border-color: var(--gold-deep); }
-.q-option.is-right { background: linear-gradient(135deg, #D9E5BD, #B6CC93); border-color: var(--sage-deep); color: #2F3F1A; }
+.q-option.is-right { background: linear-gradient(135deg, #D9E5BD, #B0BE93); border-color: var(--sage-deep); color: #2F3F1A; }
 .q-option.is-wrong { background: linear-gradient(135deg, #F2D2C0, #E5A78A); border-color: var(--rust-deep); color: #4A1F0E; }
 .q-option:disabled { cursor: not-allowed; }
 
 /* Timer bar */
 .timer {
   height: 8px; border-radius: 999px;
-  background: rgba(184, 99, 58, 0.15); overflow: hidden;
-  margin: 6px 0 18px;
+  background: rgba(184, 134, 42, 0.18); overflow: hidden;
+  margin: 8px 0 22px;
+  box-shadow: inset 0 1px 2px rgba(60, 32, 12, 0.15);
 }
 .timer__fill {
   height: 100%;
@@ -122,68 +232,111 @@
   letter-spacing: 0.15em;
   color: var(--rust-deep);
   margin: 12px 0 16px;
+  text-shadow: 0 2px 0 rgba(255,255,255,0.6);
 }
 .scramble-input {
   width: 100%;
   padding: 14px 18px;
-  border-radius: 14px;
-  border: 1.5px solid rgba(184, 99, 58, 0.3);
-  background: rgba(255,255,255,0.85);
+  border-radius: 4px;
+  border: 1px solid rgba(184, 134, 42, 0.35);
+  background:
+    linear-gradient(180deg, rgba(255,253,247,0.95), rgba(248,238,220,0.85));
   font-family: 'Cormorant Garamond', serif;
   font-size: 22px;
   text-align: center;
   letter-spacing: 0.1em;
   text-transform: lowercase;
+  color: var(--ink);
 }
 .scramble-input:focus { outline: none; border-color: var(--gold-deep); }
 
-/* Final score card */
-.final-score {
-  text-align: center;
-  padding: 30px 20px;
-}
+/* Final score */
+.final-score { text-align: center; padding: 36px 22px; }
 .final-score__num {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 72px;
+  font-style: italic;
   font-weight: 600;
+  font-size: 88px;
   color: var(--rust-deep);
   line-height: 1;
 }
-.final-score__lbl { letter-spacing: 0.25em; text-transform: uppercase; color: var(--ink-soft); margin-top: 4px; }
+.final-score__lbl {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 12px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+  margin-top: 6px;
+}
+
+/* badge pill */
+.badge-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(255,253,247,0.92), rgba(244,236,221,0.85));
+  border: 1px solid rgba(184, 134, 42, 0.3);
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+.badge-pill .num { font-size: 18px; font-weight: 600; color: var(--rust-deep); font-style: italic; }
 
 /* Wall items (advice / predictions / names) */
-.wall {
-  display: grid;
-  gap: 12px;
-  margin-top: 16px;
-}
+.wall { display: grid; gap: 14px; margin-top: 16px; }
 .wall-card {
-  padding: 16px 18px;
-  border-radius: 14px;
-  background: rgba(255,255,255,0.8);
-  border: 1px solid rgba(184, 99, 58, 0.18);
-  box-shadow: 0 4px 12px -6px rgba(184, 99, 58, 0.2);
+  position: relative;
+  padding: 18px 20px;
+  border-radius: 4px;
+  background:
+    linear-gradient(180deg, rgba(255,253,247,0.96), rgba(248,238,220,0.85));
+  border: 1px solid rgba(184, 134, 42, 0.22);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.6),
+    0 10px 22px -14px rgba(60, 32, 12, 0.35);
+  transform: rotate(-0.3deg);
 }
+.wall-card:nth-child(even) { transform: rotate(0.4deg); }
 .wall-card__nick {
   display: block;
   font-family: 'Dancing Script', cursive;
-  font-size: 22px;
+  font-size: 24px;
   color: var(--rust-deep);
   margin-bottom: 4px;
+  line-height: 1;
 }
-.wall-card__msg { font-size: 16px; line-height: 1.5; }
-.wall-card__meta { display: block; margin-top: 6px; font-size: 12px; color: var(--ink-soft); font-style: italic; }
+.wall-card__msg {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px;
+  line-height: 1.5;
+}
+.wall-card__meta {
+  display: block;
+  margin-top: 8px;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+  font-style: italic;
+}
 
-textarea.lb-text, input.lb-text {
+textarea.lb-text, input.lb-text, select.lb-text {
   width: 100%;
-  padding: 14px 16px;
-  border-radius: 14px;
-  border: 1.5px solid rgba(184, 99, 58, 0.25);
-  background: rgba(255,255,255,0.85);
-  font-family: inherit;
+  padding: 14px 18px;
+  border-radius: 4px;
+  border: 1px solid rgba(184, 134, 42, 0.35);
+  background:
+    linear-gradient(180deg, rgba(255,253,247,0.95), rgba(248,238,220,0.85));
+  font-family: 'Cormorant Garamond', serif;
   font-size: 17px;
   color: var(--ink);
+  box-shadow: inset 0 1px 2px rgba(60, 32, 12, 0.08);
 }
-textarea.lb-text:focus, input.lb-text:focus { outline: none; border-color: var(--gold-deep); }
+textarea.lb-text:focus, input.lb-text:focus, select.lb-text:focus {
+  outline: none; border-color: var(--gold-deep);
+}
 
-.muted { color: var(--ink-soft); font-style: italic; }
+.muted { color: var(--ink-faded); font-style: italic; }
