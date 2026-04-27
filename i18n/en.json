@@ -111,6 +111,12 @@
   "join": {
     "intro": "Pick a nickname so we can show your name on the leaderboard."
   },
+  "trivia": {
+    "yourScore": "Your score",
+    "points": "points",
+    "seeLb": "🏆 See Leaderboard",
+    "moreGames": "More Games"
+  },
   "games": {
     "kicker": "Pick a game",
     "title": "Baby Shower Games",
