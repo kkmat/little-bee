@@ -84,10 +84,21 @@ CREATE TABLE IF NOT EXISTS songs (
   song        TEXT NOT NULL,
   artist      TEXT,
   played      INTEGER NOT NULL DEFAULT 0,
+  spotify_uri        TEXT,
+  spotify_track_id   TEXT,
+  cover_url          TEXT,
+  preview_url        TEXT,
   created_at  INTEGER NOT NULL,
   FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE
 );
 CREATE INDEX IF NOT EXISTS idx_songs_at ON songs(created_at DESC);
+
+-- App-level state (Spotify refresh token, playlist id, etc.)
+CREATE TABLE IF NOT EXISTS app_state (
+  key TEXT PRIMARY KEY,
+  value TEXT NOT NULL,
+  updated_at INTEGER NOT NULL
+);
 
 -- Bee-simple per-IP rate limiter for likes / posts
 CREATE TABLE IF NOT EXISTS rate_limits (

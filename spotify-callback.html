@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Spotify Connect — Little Bee</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Dancing+Script:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body class="botanical">
+  <main class="px-5 py-24 max-w-md mx-auto text-center">
+    <p class="font-script text-5xl text-[color:var(--rust-deep)] mb-3">Connecting...</p>
+    <p class="muted italic" id="status">Talking to Spotify — one moment 🎵</p>
+    <div class="mt-8">
+      <a href="./spotify-admin.html" class="btn btn--ghost" id="back" hidden>← Back to admin</a>
+    </div>
+  </main>
+
+  <script>
+  // Receives ?code=...&state=... from Spotify, posts it to the worker which
+  // exchanges the code for a refresh token and stashes it in app_state.
+  (async () => {
+    const $status = document.getElementById('status');
+    const $back   = document.getElementById('back');
+    const params = new URLSearchParams(location.search);
+    const code  = params.get('code');
+    const state = params.get('state');
+    const err   = params.get('error');
+
+    if (err) {
+      $status.textContent = `Spotify said: ${err}. Please retry.`;
+      $back.hidden = false;
+      return;
+    }
+    if (!code || !state) {
+      $status.textContent = 'Missing code or state — go back and try again.';
+      $back.hidden = false;
+      return;
+    }
+
+    // The PIN was stored by the admin page in sessionStorage so we can finish the round-trip.
+    const pin = sessionStorage.getItem('lb-admin-pin');
+    if (!pin) {
+      $status.textContent = 'Admin PIN missing — open this from the admin page.';
+      $back.hidden = false;
+      return;
+    }
+
+    const API = (localStorage.getItem('lb-api') || 'https://little-bee-api.kevin-kw.workers.dev').replace(/\/$/, '');
+    const redirect_uri = `${location.origin}${location.pathname}`;
+    try {
+      const res = await fetch(`${API}/api/spotify/exchange`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code, state, redirect_uri, pin }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) throw new Error(data.error || 'failed');
+      $status.textContent = `Connected as ${data.user || 'Spotify user'} 💛 — redirecting...`;
+      setTimeout(() => location.replace('./spotify-admin.html'), 1200);
+    } catch (e) {
+      $status.textContent = 'Could not finish connecting: ' + (e.message || e);
+      $back.hidden = false;
+    }
+  })();
+  </script>
+</body>
+</html>

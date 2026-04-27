@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Spotify Admin — Little Bee</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Dancing+Script:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/style.css" />
+  <style>
+    .pill-ok    { background: #B0BE93; color: #1F2D0A; padding: 4px 12px; border-radius: 999px; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; font-style: italic; }
+    .pill-warn  { background: #E2A58A; color: #4A1F0E; padding: 4px 12px; border-radius: 999px; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; font-style: italic; }
+  </style>
+</head>
+<body class="botanical">
+  <a href="./index.html" class="back-link">← Back</a>
+
+  <main class="px-5 py-20 max-w-lg mx-auto">
+    <header class="text-center mb-8">
+      <p class="font-display italic text-xs tracking-[0.4em] uppercase text-[color:var(--ink-faded)] mb-2">host only</p>
+      <h1 class="font-script text-5xl text-[color:var(--rust-deep)]">Spotify Setup</h1>
+      <p class="muted mt-2">Connect once. Songs guests pick will auto-add to your playlist.</p>
+    </header>
+
+    <!-- Step 1: PIN -->
+    <div class="card deckle stitched mb-6" id="step-pin">
+      <p class="font-display italic uppercase tracking-[0.32em] text-xs text-[color:var(--ink-faded)] mb-3">Step 1 — Admin PIN</p>
+      <input id="pin" type="password" inputmode="numeric" maxlength="6" autocomplete="off" placeholder="6-digit PIN"
+             class="lb-text text-center" style="font-size: 22px; letter-spacing: 0.4em;" />
+      <button id="pin-go" class="btn w-full mt-3">Unlock</button>
+      <p id="pin-err" class="muted text-sm text-center mt-2" style="color: var(--rust-deep)"></p>
+    </div>
+
+    <!-- Step 2: Status + connect -->
+    <div class="card deckle mb-6" id="step-connect" hidden>
+      <p class="font-display italic uppercase tracking-[0.32em] text-xs text-[color:var(--ink-faded)] mb-3">Step 2 — Spotify account</p>
+      <div class="flex items-center justify-between gap-3 mb-4">
+        <span>Connection</span>
+        <span id="conn-pill" class="pill-warn">not connected</span>
+      </div>
+      <button id="connect" class="btn btn--rust w-full">Connect Spotify →</button>
+      <p class="muted text-xs text-center mt-3 italic">You'll be redirected to Spotify, then back here.</p>
+    </div>
+
+    <!-- Step 3: Playlist -->
+    <div class="card deckle mb-6" id="step-playlist" hidden>
+      <p class="font-display italic uppercase tracking-[0.32em] text-xs text-[color:var(--ink-faded)] mb-3">Step 3 — Playlist</p>
+      <p class="muted text-sm mb-3">Paste a playlist URL or ID. Open Spotify, find the playlist, tap Share → Copy link.</p>
+      <input id="playlist" class="lb-text" placeholder="https://open.spotify.com/playlist/..." />
+      <button id="save-playlist" class="btn w-full mt-3">Save playlist</button>
+      <p id="pl-status" class="muted text-sm text-center mt-2"></p>
+    </div>
+
+    <div class="card deckle deep" id="step-done" hidden>
+      <p class="font-script text-3xl text-[color:var(--rust-deep)] text-center">All set 💛</p>
+      <p class="text-center mt-2 muted">Songs guests pick will auto-add to your playlist.</p>
+      <a class="btn w-full mt-4" href="./games/songs.html">Open the song page →</a>
+    </div>
+  </main>
+
+  <script>
+  const API = (localStorage.getItem('lb-api') || 'https://little-bee-api.kevin-kw.workers.dev').replace(/\/$/, '');
+  const $pin  = document.getElementById('pin');
+  const $pinGo= document.getElementById('pin-go');
+  const $pinErr = document.getElementById('pin-err');
+  const $connect = document.getElementById('connect');
+  const $connPill = document.getElementById('conn-pill');
+  const $playlist = document.getElementById('playlist');
+  const $savePl = document.getElementById('save-playlist');
+  const $plStatus = document.getElementById('pl-status');
+
+  const stepPin = document.getElementById('step-pin');
+  const stepConnect = document.getElementById('step-connect');
+  const stepPlaylist = document.getElementById('step-playlist');
+  const stepDone = document.getElementById('step-done');
+
+  function show(...els) { els.forEach(e => e.hidden = false); }
+  function hide(...els) { els.forEach(e => e.hidden = true); }
+
+  // If we have a saved PIN from a previous session, skip Step 1.
+  const savedPin = sessionStorage.getItem('lb-admin-pin');
+  if (savedPin) { hide(stepPin); refresh(); }
+
+  $pinGo.addEventListener('click', tryPin);
+  $pin.addEventListener('keydown', e => { if (e.key === 'Enter') tryPin(); });
+
+  async function tryPin() {
+    const pin = $pin.value.trim();
+    if (pin.length !== 6) { $pinErr.textContent = '6 digits'; return; }
+    // We don't have a /verify endpoint — just attempt to fetch the auth-url
+    // with this PIN; if it works, the PIN is correct.
+    try {
+      const res = await fetch(`${API}/api/spotify/auth-url?pin=${pin}&redirect_uri=${encodeURIComponent(location.origin + '/little-bee/spotify-callback.html')}`);
+      if (res.status === 403) { $pinErr.textContent = 'Wrong PIN'; return; }
+      if (!res.ok) { $pinErr.textContent = 'Server error — try again'; return; }
+      sessionStorage.setItem('lb-admin-pin', pin);
+      hide(stepPin);
+      refresh();
+    } catch (e) { $pinErr.textContent = 'Network error — try again'; }
+  }
+
+  async function refresh() {
+    const pin = sessionStorage.getItem('lb-admin-pin');
+    const status = await fetch(`${API}/api/spotify/status`).then(r => r.json()).catch(() => ({}));
+    show(stepConnect);
+    if (status.connected) {
+      $connPill.className = 'pill-ok';
+      $connPill.textContent = 'connected';
+      $connect.textContent = 'Reconnect Spotify';
+      show(stepPlaylist);
+      if (status.playlist_id) {
+        $playlist.value = status.playlist_id;
+        $plStatus.textContent = `Saved · playlist ${status.playlist_id}`;
+        show(stepDone);
+      }
+    } else {
+      $connPill.className = 'pill-warn';
+      $connPill.textContent = 'not connected';
+    }
+  }
+
+  $connect.addEventListener('click', async () => {
+    const pin = sessionStorage.getItem('lb-admin-pin');
+    const redirect = location.origin + '/little-bee/spotify-callback.html';
+    const res = await fetch(`${API}/api/spotify/auth-url?pin=${pin}&redirect_uri=${encodeURIComponent(redirect)}`);
+    const data = await res.json();
+    if (data.url) location.href = data.url;
+  });
+
+  $savePl.addEventListener('click', async () => {
+    const pin = sessionStorage.getItem('lb-admin-pin');
+    const id = $playlist.value.trim();
+    if (!id) return;
+    $savePl.disabled = true;
+    try {
+      const res = await fetch(`${API}/api/spotify/playlist`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pin, playlist_id: id }),
+      });
+      const data = await res.json();
+      if (!data.ok) { $plStatus.textContent = data.error || 'failed'; return; }
+      $plStatus.textContent = `Saved · playlist ${data.playlist_id}`;
+      show(stepDone);
+    } finally {
+      $savePl.disabled = false;
+    }
+  });
+  </script>
+</body>
+</html>

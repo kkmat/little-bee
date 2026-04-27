@@ -10,6 +10,61 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Dancing+Script:wght@500;600;700&family=Amiri&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../css/style.css" />
   <link rel="stylesheet" href="../css/games.css" />
+  <style>
+    .search-shell { position: relative; }
+    .suggest {
+      position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+      z-index: 30;
+      background: linear-gradient(180deg, rgba(255,253,247,0.98), rgba(248,238,220,0.95));
+      border: 1px solid rgba(184, 134, 42, 0.32);
+      border-radius: 6px;
+      max-height: 360px; overflow-y: auto;
+      box-shadow: 0 18px 36px -16px rgba(60, 32, 12, 0.45);
+    }
+    .suggest button {
+      width: 100%; display: flex; gap: 12px; align-items: center;
+      padding: 10px 12px;
+      background: transparent; border: 0;
+      border-bottom: 1px dotted rgba(165, 95, 56, 0.2);
+      cursor: pointer; text-align: left;
+      font-family: inherit; color: var(--ink);
+      font-size: 15px;
+    }
+    .suggest button:last-child { border-bottom: 0; }
+    .suggest button:hover { background: rgba(232, 181, 71, 0.10); }
+    .suggest img { width: 44px; height: 44px; border-radius: 4px; object-fit: cover; flex: none; box-shadow: 0 2px 6px rgba(60,32,12,0.25); }
+    .suggest .meta { flex: 1; min-width: 0; }
+    .suggest .meta .t { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 600; color: var(--ink); display: block; line-height: 1.15; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .suggest .meta .a { font-style: italic; font-size: 13px; color: var(--ink-faded); display: block; line-height: 1.15; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .pick-card {
+      display: flex; gap: 14px; align-items: center;
+      padding: 12px 14px;
+      border: 1px solid rgba(184, 134, 42, 0.28);
+      border-radius: 6px;
+      background: linear-gradient(180deg, rgba(255,253,247,0.95), rgba(248,238,220,0.85));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 8px 18px -8px rgba(60, 32, 12, 0.3);
+      margin-top: 12px;
+    }
+    .pick-card img { width: 60px; height: 60px; border-radius: 4px; object-fit: cover; flex: none; box-shadow: 0 4px 10px rgba(60,32,12,0.3); }
+    .pick-card__t { font-family: 'Cormorant Garamond', serif; font-size: 19px; font-weight: 600; line-height: 1.1; }
+    .pick-card__a { font-style: italic; color: var(--ink-faded); font-size: 14px; }
+    .wall-card.queue { display: flex; gap: 12px; align-items: center; }
+    .wall-card.queue img { width: 56px; height: 56px; border-radius: 4px; object-fit: cover; flex: none; box-shadow: 0 3px 8px rgba(60,32,12,0.25); }
+    .wall-card.queue .body { flex: 1; min-width: 0; }
+    .wall-card.queue .body .title { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 600; line-height: 1.15; }
+    .wall-card.queue .body .a { font-style: italic; font-size: 13px; color: var(--ink-faded); }
+    .wall-card.queue .body .who { font-family: 'Dancing Script', cursive; color: var(--rust-deep); font-size: 18px; line-height: 1; margin-top: 2px; }
+    .preview-btn {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 1px solid rgba(184, 134, 42, 0.4);
+      background: linear-gradient(135deg, var(--gold-light), var(--gold-deep));
+      color: var(--ink);
+      cursor: pointer;
+      display: grid; place-items: center;
+      flex: none;
+    }
+    .preview-btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+  </style>
 </head>
 <body class="botanical">
   <a href="./index.html" class="back-link">← Back</a>
@@ -19,34 +74,178 @@
     <header class="text-center mb-4">
       <p class="font-script text-3xl text-[color:var(--rust-deep)]">🎵</p>
       <h1 class="font-display text-2xl uppercase tracking-[0.18em]">Music Requests</h1>
-      <p class="muted mt-1">Drop a song you'd love to hear — we'll play your favourites!</p>
+      <p class="muted mt-1">Search Spotify and pick a song you'd love to hear tonight</p>
     </header>
 
     <div class="game-card">
-      <input id="song"   class="lb-text"     maxlength="120" placeholder="Song name..." />
-      <input id="artist" class="lb-text mt-3" maxlength="120" placeholder="Artist (optional)" />
-      <button id="send"  class="btn w-full mt-3">🎶 Add to the playlist</button>
+      <div class="search-shell">
+        <input id="q" class="lb-text" placeholder="Search a song or artist..." autocomplete="off" />
+        <div id="suggest" class="suggest" hidden></div>
+      </div>
+
+      <div id="picked" hidden></div>
+
+      <button id="send" class="btn w-full mt-3" disabled>🎶 Add to the playlist</button>
       <p id="status" class="muted text-sm mt-2 text-center">&nbsp;</p>
+      <p class="muted text-xs text-center mt-2 italic" id="manual-link">
+        Can't find it? <a href="#" id="manual-toggle" style="text-decoration: underline; color: var(--ink-soft)">Type it manually</a>.
+      </p>
+      <div id="manual-form" hidden class="mt-3">
+        <input id="m-song"   class="lb-text"      maxlength="120" placeholder="Song name..." />
+        <input id="m-artist" class="lb-text mt-2" maxlength="120" placeholder="Artist (optional)" />
+      </div>
     </div>
 
     <h2 class="section-title mt-8">Tonight's queue</h2>
     <div id="list" class="wall"><p class="muted text-center">Loading...</p></div>
   </main>
 
+  <audio id="preview-audio"></audio>
+
   <script src="../js/i18n.js"></script>
   <script src="../js/api.js"></script>
   <script src="../js/join.js"></script>
   <script>
-  const $song   = document.getElementById('song');
-  const $artist = document.getElementById('artist');
-  const $send   = document.getElementById('send');
-  const $status = document.getElementById('status');
-  const $list   = document.getElementById('list');
+  const API = window.LittleBeeAPI.apiBase;
+  const $q       = document.getElementById('q');
+  const $suggest = document.getElementById('suggest');
+  const $picked  = document.getElementById('picked');
+  const $send    = document.getElementById('send');
+  const $status  = document.getElementById('status');
+  const $list    = document.getElementById('list');
+  const $manualToggle = document.getElementById('manual-toggle');
+  const $manualForm   = document.getElementById('manual-form');
+  const $mSong  = document.getElementById('m-song');
+  const $mArtist= document.getElementById('m-artist');
+  const $audio  = document.getElementById('preview-audio');
 
-  function fmt(ts) {
-    const d = new Date(ts);
-    return d.toLocaleString(undefined, { hour: 'numeric', minute: '2-digit' });
+  let pick = null;     // chosen Spotify track
+  let manual = false;
+  let curPreview = null;
+
+  function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
+
+  async function search(q) {
+    if (!q.trim()) { $suggest.hidden = true; return; }
+    try {
+      const res = await fetch(`${API}/api/spotify/search?q=${encodeURIComponent(q)}`);
+      if (!res.ok) throw 0;
+      const data = await res.json();
+      renderSuggest(data.items || []);
+    } catch { $suggest.hidden = true; }
   }
+  const debouncedSearch = debounce(search, 220);
+
+  function escape(s){return String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));}
+
+  function renderSuggest(items) {
+    if (items.length === 0) { $suggest.hidden = true; return; }
+    $suggest.innerHTML = '';
+    items.forEach(it => {
+      const b = document.createElement('button');
+      b.innerHTML = `
+        ${it.cover_url ? `<img src="${it.cover_url}" alt="">` : '<div style="width:44px;height:44px;border-radius:4px;background:#EDE0C5;flex:none"></div>'}
+        <div class="meta"><span class="t"></span><span class="a"></span></div>
+      `;
+      b.querySelector('.t').textContent = it.name;
+      b.querySelector('.a').textContent = it.artist + (it.album ? ` · ${it.album}` : '');
+      b.addEventListener('click', () => choose(it));
+      $suggest.appendChild(b);
+    });
+    $suggest.hidden = false;
+  }
+
+  function choose(it) {
+    pick = it;
+    manual = false;
+    $suggest.hidden = true;
+    $q.value = `${it.name} — ${it.artist}`;
+    $picked.hidden = false;
+    $picked.innerHTML = `
+      <div class="pick-card">
+        ${it.cover_url ? `<img src="${it.cover_url}" alt="">` : ''}
+        <div style="flex:1; min-width:0">
+          <div class="pick-card__t"></div>
+          <div class="pick-card__a"></div>
+        </div>
+        <button class="preview-btn" id="preview-btn" ${it.preview_url ? '' : 'disabled'} title="${it.preview_url ? 'Preview 30s' : 'No preview available'}">▶</button>
+      </div>
+    `;
+    $picked.querySelector('.pick-card__t').textContent = it.name;
+    $picked.querySelector('.pick-card__a').textContent = it.artist;
+    const $pv = document.getElementById('preview-btn');
+    if ($pv && it.preview_url) {
+      $pv.addEventListener('click', () => {
+        if (curPreview === it.preview_url && !$audio.paused) { $audio.pause(); $pv.textContent = '▶'; return; }
+        $audio.src = it.preview_url;
+        $audio.play();
+        curPreview = it.preview_url;
+        $pv.textContent = '⏸';
+        $audio.onended = () => { $pv.textContent = '▶'; };
+      });
+    }
+    $send.disabled = false;
+  }
+
+  $q.addEventListener('input', () => {
+    pick = null;
+    $picked.hidden = true;
+    $send.disabled = !manual;
+    debouncedSearch($q.value);
+  });
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.search-shell, .suggest')) $suggest.hidden = true;
+  });
+
+  $manualToggle.addEventListener('click', (e) => {
+    e.preventDefault();
+    manual = true;
+    $manualForm.hidden = false;
+    $picked.hidden = true;
+    $suggest.hidden = true;
+    pick = null;
+    $send.disabled = false;
+  });
+
+  async function send() {
+    let payload;
+    if (manual) {
+      const song = $mSong.value.trim() || $q.value.trim();
+      if (!song) return;
+      payload = { song, artist: $mArtist.value.trim() };
+    } else {
+      if (!pick) return;
+      payload = {
+        song: pick.name, artist: pick.artist,
+        spotify_uri: pick.uri,
+        spotify_track_id: pick.id,
+        cover_url: pick.cover_url || '',
+        preview_url: pick.preview_url || '',
+      };
+    }
+    $send.disabled = true; $send.textContent = 'Adding...';
+    try {
+      const data = await fetch(`${API}/api/song`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Player-Id': window.LittleBeeAPI.playerId() },
+        body: JSON.stringify(payload),
+      }).then(r => r.json());
+      if (data.error) throw new Error(data.error);
+      $status.textContent = data.pushed ? 'Added 💛 (+ Spotify)' : 'Added 💛';
+      $q.value = ''; $mSong.value=''; $mArtist.value='';
+      $picked.hidden = true; $manualForm.hidden = true; manual = false; pick = null;
+      setTimeout(() => $status.textContent = ' ', 1800);
+      load();
+    } catch (e) {
+      $status.textContent = 'Could not save — try again?';
+    } finally {
+      $send.disabled = false; $send.textContent = '🎶 Add to the playlist';
+    }
+  }
+
+  $send.addEventListener('click', send);
+
+  function fmt(ts) { return new Date(ts).toLocaleString(undefined, { hour: 'numeric', minute: '2-digit' }); }
 
   async function load() {
     try {
@@ -58,44 +257,37 @@
       }
       data.items.forEach(it => {
         const c = document.createElement('div');
-        c.className = 'wall-card';
+        c.className = 'wall-card queue';
         c.innerHTML = `
-          <span class="wall-card__nick"></span>
-          <p class="wall-card__msg"><span class="font-display text-xl"></span><span class="muted block text-sm artist"></span></p>
-          <span class="wall-card__meta"></span>
+          ${it.cover_url ? `<img src="${it.cover_url}" alt="">` : '<div style="width:56px;height:56px;border-radius:4px;background:#EDE0C5;flex:none"></div>'}
+          <div class="body">
+            <div class="title"></div>
+            <div class="a"></div>
+            <div class="who"></div>
+          </div>
+          ${it.preview_url ? `<button class="preview-btn" data-pv="${escape(it.preview_url)}">▶</button>` : ''}
         `;
-        c.querySelector('.wall-card__nick').textContent = it.nickname;
-        c.querySelector('.font-display').textContent = it.song;
-        c.querySelector('.artist').textContent = it.artist ? `by ${it.artist}` : '';
-        c.querySelector('.wall-card__meta').textContent = (it.played ? '✓ played · ' : '') + fmt(it.created_at);
-        if (it.played) c.style.opacity = '0.65';
+        c.querySelector('.title').textContent = it.song;
+        c.querySelector('.a').textContent = it.artist || '';
+        c.querySelector('.who').textContent = it.nickname;
+        if (it.played) c.style.opacity = '0.55';
         $list.appendChild(c);
+      });
+      // Hook preview buttons
+      $list.querySelectorAll('.preview-btn').forEach(btn => {
+        const url = btn.getAttribute('data-pv');
+        btn.addEventListener('click', () => {
+          if (curPreview === url && !$audio.paused) { $audio.pause(); btn.textContent = '▶'; return; }
+          $list.querySelectorAll('.preview-btn').forEach(b => b.textContent = '▶');
+          $audio.src = url; $audio.play(); curPreview = url; btn.textContent = '⏸';
+          $audio.onended = () => { btn.textContent = '▶'; };
+        });
       });
     } catch (err) {
       $list.innerHTML = '<p class="muted text-center">Could not load yet.</p>';
     }
   }
 
-  async function send() {
-    const song = $song.value.trim();
-    if (!song) return;
-    $send.disabled = true;
-    try {
-      await window.LittleBeeAPI.postSong(song, $artist.value.trim());
-      $song.value = ''; $artist.value = '';
-      $status.textContent = 'Added 💛';
-      setTimeout(() => { $status.textContent = ' '; }, 1500);
-      load();
-    } catch (err) {
-      $status.textContent = 'Could not save — try again?';
-    } finally {
-      $send.disabled = false;
-    }
-  }
-
-  $send.addEventListener('click', send);
-  $song.addEventListener('keydown', (e) => { if (e.key === 'Enter') $artist.focus(); });
-  $artist.addEventListener('keydown', (e) => { if (e.key === 'Enter') send(); });
   if (window.LittleBeeAPI.isJoined()) load();
   else window.addEventListener('lb-joined', load);
   </script>
