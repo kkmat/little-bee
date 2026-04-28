@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>QR Card · Little Bee Baby Shower</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital@0;1&family=Poppins:wght@200;300;400&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --parchment: #f7f0e6;
+      --brown-d:   #7a3a18;
+      --brown:     #9b5028;
+      --gold:      #c8962a;
+      --gold-l:    #e8c870;
+      --sage:      #8a9e72;
+      --sage-l:    #b5c99a;
+      --border:    #d4a048;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #d6cdc1;
+      display: grid;
+      place-items: center;
+      min-height: 100vh;
+      font-family: 'Poppins', system-ui, sans-serif;
+      color: var(--brown-d);
+      padding: 20px;
+    }
+
+    /* A6 — 105 × 148 mm — at screen we render larger for legibility, print scales it 1:1 */
+    .card {
+      position: relative;
+      width: 105mm;
+      height: 148mm;
+      background: var(--parchment);
+      border: 2.4px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 14px 40px -16px rgba(80, 50, 20, 0.35);
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    /* Inner dashed border */
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 6mm;
+      border: 1px dashed var(--gold);
+      border-radius: 6px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Vine border SVG layer */
+    .vine-frame {
+      position: absolute;
+      inset: 3mm;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Top sun + side bees */
+    .top-deco {
+      position: absolute;
+      top: 4.5mm; left: 0; right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 7mm;
+      z-index: 3;
+    }
+    .bee { width: 9mm; height: 7mm; }
+    .sun { width: 14mm; height: 10mm; }
+
+    /* Content */
+    .content {
+      position: relative;
+      z-index: 3;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 19mm 12mm 14mm;
+      text-align: center;
+    }
+
+    .eyebrow {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 300;
+      font-size: 9pt;
+      letter-spacing: 0.42em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin: 0;
+    }
+
+    .qr-frame {
+      position: relative;
+      padding: 4mm;
+      background: var(--parchment);
+      border: 1px solid rgba(200, 150, 42, 0.35);
+      border-radius: 4px;
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.6),
+        0 4px 14px -8px rgba(80, 50, 20, 0.3);
+    }
+    .qr-frame img {
+      display: block;
+      width: 50mm;
+      height: 50mm;
+      image-rendering: pixelated;
+    }
+
+    .tagline {
+      font-family: 'Lora', Georgia, serif;
+      font-style: italic;
+      font-size: 12pt;
+      color: var(--brown-d);
+      margin: 0;
+      line-height: 1.3;
+    }
+
+    .footer {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 300;
+      font-size: 7.5pt;
+      letter-spacing: 0.32em;
+      color: var(--brown);
+      text-transform: uppercase;
+      line-height: 1.6;
+      margin: 0;
+    }
+    .footer .names {
+      font-family: 'Lora', serif;
+      font-style: italic;
+      font-size: 11pt;
+      letter-spacing: 0.04em;
+      text-transform: none;
+      color: var(--brown-d);
+      display: block;
+      margin-bottom: 1.5mm;
+    }
+
+    /* Hand-drawn rule between sections */
+    .rule {
+      width: 22mm; height: 6px;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 90 14' fill='none'><path d='M2 7 Q 22 0, 45 7 T 88 7' stroke='%239b5028' stroke-width='1.4' fill='none' stroke-linecap='round'/><circle cx='45' cy='7' r='2.4' fill='%239b5028'/></svg>");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      opacity: 0.85;
+    }
+
+    /* Print button (hidden on print) */
+    .print-btn {
+      position: fixed;
+      bottom: 22px; left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 26px;
+      border: 0;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #e8c870, #c8962a 60%, #9b5028);
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 10px 28px -10px rgba(155, 80, 40, 0.55);
+      z-index: 100;
+    }
+    .print-btn:hover { filter: brightness(1.05); }
+
+    /* Print rules — exact A6 */
+    @page {
+      size: 105mm 148mm;
+      margin: 0;
+    }
+    @media print {
+      body { background: white; padding: 0; }
+      .card {
+        box-shadow: none;
+        margin: 0;
+        page-break-after: avoid;
+      }
+      .print-btn { display: none !important; }
+      /* ensure background colours print */
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <article class="card" role="figure" aria-label="QR card for Neethu and Kevin's baby shower">
+
+    <!-- Continuous vine border with olive leaves. ViewBox uses 1000×1480 (10×
+         actual mm) and preserveAspectRatio default so units behave naturally. -->
+    <svg class="vine-frame" viewBox="0 0 1000 1480" aria-hidden="true">
+      <g stroke="#5e6f3f" stroke-width="3.5" fill="none" stroke-linecap="round">
+        <!-- Top wavy vine -->
+        <path d="M 60 50 Q 250 80, 500 50 T 940 50" />
+        <!-- Right vine -->
+        <path d="M 950 80 Q 920 350, 950 650 T 950 1400" />
+        <!-- Bottom vine -->
+        <path d="M 60 1430 Q 250 1400, 500 1430 T 940 1430" />
+        <!-- Left vine -->
+        <path d="M 50 80 Q 80 350, 50 650 T 50 1400" />
+      </g>
+
+      <!-- Olive leaves (alternating angles). Each ellipse is 60×24 in SVG units. -->
+      <g fill="#8a9e72" stroke="#5e6f3f" stroke-width="2">
+        <!-- TOP edge -->
+        <ellipse cx="140" cy="50"  rx="30" ry="10" transform="rotate(-25 140 50)"/>
+        <ellipse cx="220" cy="60"  rx="30" ry="10" transform="rotate(20 220 60)"/>
+        <ellipse cx="300" cy="50"  rx="30" ry="10" transform="rotate(-25 300 50)"/>
+        <ellipse cx="380" cy="60"  rx="30" ry="10" transform="rotate(20 380 60)"/>
+        <ellipse cx="560" cy="60"  rx="30" ry="10" transform="rotate(-25 560 60)"/>
+        <ellipse cx="640" cy="50"  rx="30" ry="10" transform="rotate(20 640 50)"/>
+        <ellipse cx="720" cy="60"  rx="30" ry="10" transform="rotate(-25 720 60)"/>
+        <ellipse cx="800" cy="50"  rx="30" ry="10" transform="rotate(20 800 50)"/>
+        <ellipse cx="860" cy="60"  rx="30" ry="10" transform="rotate(-25 860 60)"/>
+
+        <!-- RIGHT edge -->
+        <ellipse cx="945" cy="160"  rx="30" ry="10" transform="rotate(70 945 160)"/>
+        <ellipse cx="935" cy="240"  rx="30" ry="10" transform="rotate(110 935 240)"/>
+        <ellipse cx="945" cy="320"  rx="30" ry="10" transform="rotate(70 945 320)"/>
+        <ellipse cx="935" cy="400"  rx="30" ry="10" transform="rotate(110 935 400)"/>
+        <ellipse cx="945" cy="500"  rx="30" ry="10" transform="rotate(70 945 500)"/>
+        <ellipse cx="935" cy="600"  rx="30" ry="10" transform="rotate(110 935 600)"/>
+        <ellipse cx="945" cy="700"  rx="30" ry="10" transform="rotate(70 945 700)"/>
+        <ellipse cx="935" cy="800"  rx="30" ry="10" transform="rotate(110 935 800)"/>
+        <ellipse cx="945" cy="900"  rx="30" ry="10" transform="rotate(70 945 900)"/>
+        <ellipse cx="935" cy="1000" rx="30" ry="10" transform="rotate(110 935 1000)"/>
+        <ellipse cx="945" cy="1100" rx="30" ry="10" transform="rotate(70 945 1100)"/>
+        <ellipse cx="935" cy="1200" rx="30" ry="10" transform="rotate(110 935 1200)"/>
+        <ellipse cx="945" cy="1300" rx="30" ry="10" transform="rotate(70 945 1300)"/>
+
+        <!-- BOTTOM edge -->
+        <ellipse cx="140" cy="1430" rx="30" ry="10" transform="rotate(155 140 1430)"/>
+        <ellipse cx="220" cy="1420" rx="30" ry="10" transform="rotate(200 220 1420)"/>
+        <ellipse cx="300" cy="1430" rx="30" ry="10" transform="rotate(155 300 1430)"/>
+        <ellipse cx="380" cy="1420" rx="30" ry="10" transform="rotate(200 380 1420)"/>
+        <ellipse cx="560" cy="1420" rx="30" ry="10" transform="rotate(155 560 1420)"/>
+        <ellipse cx="640" cy="1430" rx="30" ry="10" transform="rotate(200 640 1430)"/>
+        <ellipse cx="720" cy="1420" rx="30" ry="10" transform="rotate(155 720 1420)"/>
+        <ellipse cx="800" cy="1430" rx="30" ry="10" transform="rotate(200 800 1430)"/>
+        <ellipse cx="860" cy="1420" rx="30" ry="10" transform="rotate(155 860 1420)"/>
+
+        <!-- LEFT edge -->
+        <ellipse cx="55"  cy="160"  rx="30" ry="10" transform="rotate(-70 55 160)"/>
+        <ellipse cx="65"  cy="240"  rx="30" ry="10" transform="rotate(-110 65 240)"/>
+        <ellipse cx="55"  cy="320"  rx="30" ry="10" transform="rotate(-70 55 320)"/>
+        <ellipse cx="65"  cy="400"  rx="30" ry="10" transform="rotate(-110 65 400)"/>
+        <ellipse cx="55"  cy="500"  rx="30" ry="10" transform="rotate(-70 55 500)"/>
+        <ellipse cx="65"  cy="600"  rx="30" ry="10" transform="rotate(-110 65 600)"/>
+        <ellipse cx="55"  cy="700"  rx="30" ry="10" transform="rotate(-70 55 700)"/>
+        <ellipse cx="65"  cy="800"  rx="30" ry="10" transform="rotate(-110 65 800)"/>
+        <ellipse cx="55"  cy="900"  rx="30" ry="10" transform="rotate(-70 55 900)"/>
+        <ellipse cx="65"  cy="1000" rx="30" ry="10" transform="rotate(-110 65 1000)"/>
+        <ellipse cx="55"  cy="1100" rx="30" ry="10" transform="rotate(-70 55 1100)"/>
+        <ellipse cx="65"  cy="1200" rx="30" ry="10" transform="rotate(-110 65 1200)"/>
+        <ellipse cx="55"  cy="1300" rx="30" ry="10" transform="rotate(-70 55 1300)"/>
+      </g>
+
+      <!-- Berry clusters at top-center & bottom-center (rust ink dots) -->
+      <g fill="#c8962a" stroke="#7a3a18" stroke-width="1">
+        <circle cx="450" cy="55"   r="6"/>
+        <circle cx="465" cy="62"   r="5"/>
+        <circle cx="450" cy="1428" r="6"/>
+        <circle cx="465" cy="1421" r="5"/>
+      </g>
+
+      <!-- Top corner two-branch sprigs -->
+      <g stroke="#5e6f3f" stroke-width="3.5" fill="none" stroke-linecap="round">
+        <path d="M 90 90 Q 130 60, 165 90"/>
+        <path d="M 90 90 Q 60 130, 90 165"/>
+        <path d="M 910 90 Q 870 60, 835 90"/>
+        <path d="M 910 90 Q 940 130, 910 165"/>
+        <!-- Bottom corner sprigs (upward only) -->
+        <path d="M 90 1390 Q 130 1360, 165 1390"/>
+        <path d="M 910 1390 Q 870 1360, 835 1390"/>
+      </g>
+    </svg>
+
+    <!-- Top sun + bees layer -->
+    <div class="top-deco">
+      <!-- Left bee -->
+      <svg class="bee" viewBox="0 0 36 28" aria-hidden="true">
+        <ellipse cx="11" cy="9" rx="7" ry="4" fill="#dcd0bc" stroke="#7a3a18" stroke-width="0.7" />
+        <ellipse cx="22" cy="9" rx="7" ry="4" fill="#dcd0bc" stroke="#7a3a18" stroke-width="0.7" />
+        <ellipse cx="17" cy="17" rx="9" ry="7" fill="#c89665" stroke="#7a3a18" stroke-width="0.9" />
+        <path d="M10 14 Q12 20, 10 24" stroke="#7a3a18" stroke-width="1.4" fill="none" />
+        <path d="M17 13 Q19 20, 17 25" stroke="#7a3a18" stroke-width="1.4" fill="none" />
+        <path d="M24 14 Q22 20, 24 24" stroke="#7a3a18" stroke-width="1.4" fill="none" />
+      </svg>
+
+      <!-- Sun -->
+      <svg class="sun" viewBox="0 0 56 40" aria-hidden="true">
+        <g stroke="#9b5028" stroke-width="0.9" stroke-linecap="round">
+          <path d="M28 10 L28 4" />
+          <path d="M14 14 L10 9" />
+          <path d="M42 14 L46 9" />
+          <path d="M8 24 L3 24" />
+          <path d="M48 24 L53 24" />
+          <path d="M14 32 L10 36" />
+          <path d="M42 32 L46 36" />
+        </g>
+        <circle cx="28" cy="24" r="9" fill="#e8c870" stroke="#9b5028" stroke-width="0.9" />
+      </svg>
+
+      <!-- Right bee (mirrored) -->
+      <svg class="bee" viewBox="0 0 36 28" style="transform: scaleX(-1);" aria-hidden="true">
+        <ellipse cx="11" cy="9" rx="7" ry="4" fill="#dcd0bc" stroke="#7a3a18" stroke-width="0.7" />
+        <ellipse cx="22" cy="9" rx="7" ry="4" fill="#dcd0bc" stroke="#7a3a18" stroke-width="0.7" />
+        <ellipse cx="17" cy="17" rx="9" ry="7" fill="#c89665" stroke="#7a3a18" stroke-width="0.9" />
+        <path d="M10 14 Q12 20, 10 24" stroke="#7a3a18" stroke-width="1.4" fill="none" />
+        <path d="M17 13 Q19 20, 17 25" stroke="#7a3a18" stroke-width="1.4" fill="none" />
+        <path d="M24 14 Q22 20, 24 24" stroke="#7a3a18" stroke-width="1.4" fill="none" />
+      </svg>
+    </div>
+
+    <div class="content">
+
+      <p class="eyebrow">Scan to Join the Fun</p>
+
+      <div class="qr-frame">
+        <!-- Server-side QR — reliable, prints crisply, no JS dependency.
+             Dark brown ink on parchment, error correction high. -->
+        <img id="qr" alt="QR code · scan to open Neethu and Kevin's baby shower hub"
+             src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&data=https%3A%2F%2Fkkmat.github.io%2Flittle-bee%2F&color=7a3a18&bgcolor=f7f0e6&qzone=1&ecc=H" />
+      </div>
+
+      <p class="tagline">🐝 Games · Photos · Memories</p>
+
+      <span class="rule" aria-hidden="true"></span>
+
+      <p class="footer">
+        <span class="names">Neethu &amp; Kevin</span>
+        Baby Shower &middot; May 1, 2026
+      </p>
+
+    </div>
+
+  </article>
+
+  <button class="print-btn" onclick="window.print()">🖨️  Print</button>
+
+</body>
+</html>
